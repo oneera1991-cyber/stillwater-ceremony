@@ -2,1590 +2,555 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Stillwater</title>
+<title>Stillwater Universe — AI Reading Prototype</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@300;400;500&family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@300;400;500;600&family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
 
 :root{
-  --deep:#050510;
-  --space:#0a0a1a;
-  --indigo:#1a1040;
-  --violet:#2a1850;
-
-  --cream:#f5f0e6;
-
-  --text:rgba(230,235,255,.92);
-  --text-soft:rgba(200,210,240,.70);
-
-  --accent:rgba(200,180,255,.90);
-  --glow:rgba(160,180,255,.35);
+  --bg:#09081a;
+  --panel:rgba(20,17,46,.78);
+  --panel2:rgba(8,7,24,.55);
+  --line:rgba(220,210,255,.16);
+  --text:#f4f0ff;
+  --muted:#b9b2d0;
+  --accent:#d9c8ff;
+  --accent2:#eee8ff;
 }
 
 *{
   box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
 }
 
-html,
+html{
+  scroll-behavior:smooth;
+}
+
 body{
-  width:100%;
-  height:100%;
   margin:0;
-  padding:0;
-  overflow:hidden;
-  background:var(--deep);
+  min-height:100vh;
   color:var(--text);
-}
 
-body{
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(116,88,210,.23),
+      transparent 38%
+    ),
+    radial-gradient(
+      circle at 20% 80%,
+      rgba(70,110,190,.12),
+      transparent 35%
+    ),
+    var(--bg);
+
   font-family:"Anuphan",sans-serif;
-  font-weight:300;
-  letter-spacing:.01em;
 }
-
-button,
-input,
-textarea{
-  font:inherit;
-}
-
-button{
-  border:0;
-  outline:0;
-}
-
-
-/* =========================================================
-   CANVAS
-========================================================= */
-
-#cosmos,
-#water{
-  position:fixed;
-  inset:0;
-  width:100%;
-  height:100%;
-  pointer-events:none;
-}
-
-#cosmos{
-  z-index:0;
-}
-
-#water{
-  z-index:1;
-}
-
-
-/* =========================================================
-   ATMOSPHERE
-========================================================= */
 
 body::before{
   content:"";
   position:fixed;
   inset:0;
-  z-index:2;
   pointer-events:none;
 
   background:
-    radial-gradient(
-      ellipse at 50% 48%,
-      rgba(50,35,100,.22) 0%,
-      rgba(12,10,35,.10) 38%,
-      rgba(0,0,0,.42) 100%
-    );
+    radial-gradient(circle at 30% 20%,rgba(255,255,255,.035) 0 1px,transparent 2px),
+    radial-gradient(circle at 70% 60%,rgba(255,255,255,.025) 0 1px,transparent 2px);
+
+  background-size:170px 170px,230px 230px;
+
+  opacity:.7;
 }
 
-body::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  z-index:3;
-  pointer-events:none;
-  opacity:.16;
+.wrap{
+  position:relative;
+  z-index:1;
 
-  background-image:
-    radial-gradient(
-      rgba(255,255,255,.20) 1px,
-      transparent 1px
-    );
+  width:100%;
+  max-width:1080px;
 
-  background-size:4px 4px;
-  mix-blend-mode:screen;
-}
-
-.fog-band{
-  position:fixed;
-  left:-10%;
-  right:-10%;
-  bottom:17%;
-  height:28%;
-  z-index:4;
-  pointer-events:none;
-
-  background:
-    radial-gradient(
-      ellipse at center,
-      rgba(190,205,255,.10) 0%,
-      rgba(130,150,220,.06) 32%,
-      transparent 72%
-    );
-
-  filter:blur(25px);
-  opacity:.75;
-
-  animation:
-    fogFloat 12s ease-in-out infinite alternate;
-}
-
-@keyframes fogFloat{
-  from{
-    transform:translate3d(-1%,0,0);
-  }
-
-  to{
-    transform:translate3d(1%,2%,0) scale(1.04);
-  }
-}
-
-
-/* =========================================================
-   SOUND
-========================================================= */
-
-.sound-toggle{
-  position:fixed;
-
-  top:
-    calc(
-      18px +
-      env(safe-area-inset-top)
-    );
-
-  right:18px;
-  z-index:50;
-
-  width:42px;
-  height:42px;
-
-  border-radius:50%;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  color:rgba(235,240,255,.72);
-
-  background:
-    rgba(10,10,28,.28);
-
-  border:
-    1px solid
-    rgba(220,225,255,.14);
-
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
-
-  cursor:pointer;
-  transition:.4s ease;
-}
-
-.sound-toggle:hover{
-  background:
-    rgba(50,40,100,.28);
-
-  border-color:
-    rgba(220,225,255,.28);
-}
-
-.sound-icon{
-  font-size:15px;
-}
-
-
-/* =========================================================
-   SCREENS
-========================================================= */
-
-.screen{
-  position:fixed;
-  inset:0;
-  z-index:10;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  margin:auto;
 
   padding:
-    calc(
-      30px +
-      env(safe-area-inset-top)
-    )
-    24px
-    calc(
-      30px +
-      env(safe-area-inset-bottom)
-    );
-
-  opacity:0;
-  visibility:hidden;
-  pointer-events:none;
-
-  transition:
-    opacity 1.3s ease,
-    visibility 1.3s ease;
+    45px 20px 80px;
 }
 
-.screen.active{
-  opacity:1;
-  visibility:visible;
-  pointer-events:auto;
-}
-
-
-/* =========================================================
-   LANDING
-========================================================= */
-
-.landing-inner{
-  width:min(90vw,700px);
-  text-align:center;
-
-  transform:translateY(10px);
-
-  transition:
-    transform 1.5s ease;
-}
-
-.screen.active .landing-inner{
-  transform:translateY(0);
-}
+/* =========================
+   BRAND
+========================= */
 
 .brand{
-  margin-bottom:24px;
-
-  font-family:
-    "Cormorant Garamond",
-    serif;
-
-  font-size:
-    clamp(
-      26px,
-      5vw,
-      40px
-    );
-
-  line-height:.9;
-  font-weight:300;
-
-  letter-spacing:.28em;
-  text-transform:uppercase;
-
-  color:
-    rgba(245,245,255,.92);
-
-  text-shadow:
-    0 0 35px
-    rgba(150,160,255,.16);
-}
-
-.brand-sub{
-  margin-bottom:28px;
-
-  font-family:
-    "Cormorant Garamond",
-    serif;
-
-  font-size:11px;
-  letter-spacing:.28em;
-  text-transform:uppercase;
-
-  color:
-    rgba(205,210,235,.40);
-}
-
-.landing-line{
-  margin:
-    0 auto 42px;
-
-  max-width:500px;
-
-  font-family:
-    "Anuphan",
-    sans-serif;
-
-  font-size:14px;
-  font-weight:300;
-  line-height:2;
-
-  color:
-    rgba(220,225,245,.68);
-}
-
-.enter-btn{
-  position:relative;
-
-  min-width:150px;
-
-  padding:
-    13px 34px;
-
-  border:
-    1px solid
-    rgba(220,225,255,.24);
-
-  border-radius:999px;
-
-  background:
-    rgba(30,24,70,.22);
-
-  color:
-    rgba(245,245,255,.88);
-
-  font-family:
-    "Cormorant Garamond",
-    serif;
-
-  font-size:18px;
-  font-weight:400;
-  letter-spacing:.18em;
-
-  cursor:pointer;
-
-  backdrop-filter:blur(12px);
-
-  transition:.5s ease;
-}
-
-.enter-btn:hover{
-  background:
-    rgba(60,45,110,.28);
-
-  border-color:
-    rgba(220,225,255,.42);
-
-  box-shadow:
-    0 0 35px
-    rgba(160,170,255,.12);
-}
-
-
-/* =========================================================
-   PORTAL
-========================================================= */
-
-.portal{
-  position:fixed;
-  inset:0;
-  z-index:100;
-  pointer-events:none;
-  opacity:0;
-
-  background:
-    radial-gradient(
-      circle at center,
-      rgba(220,225,255,.12) 0%,
-      rgba(100,90,190,.14) 15%,
-      rgba(20,15,60,.55) 42%,
-      rgba(0,0,0,.95) 100%
-    );
-
-  transition:
-    opacity .5s ease;
-}
-
-.portal.active{
-  opacity:1;
-
-  animation:
-    portalPulse 1.7s ease forwards;
-}
-
-@keyframes portalPulse{
-  0%{
-    transform:scale(.8);
-    opacity:0;
-  }
-
-  35%{
-    transform:scale(1.02);
-    opacity:1;
-  }
-
-  70%{
-    transform:scale(1.16);
-    opacity:.85;
-  }
-
-  100%{
-    transform:scale(1.35);
-    opacity:0;
-  }
-}
-
-
-/* =========================================================
-   QUESTION
-========================================================= */
-
-.question-inner{
-  width:min(100%,520px);
   text-align:center;
 
-  transform:translateY(15px);
+  font-family:"Cormorant Garamond",serif;
+  font-size:clamp(38px,8vw,68px);
+  font-weight:300;
 
-  transition:
-    transform 1.4s ease;
+  letter-spacing:.18em;
+  line-height:1;
 }
 
-.screen.active .question-inner{
-  transform:translateY(0);
-}
-
-.scene-stage{
-  position:relative;
-
-  width:min(100%,420px);
-
-  height:min(42vh,320px);
-
-  min-height:230px;
+.sub{
+  text-align:center;
 
   margin:
-    0 auto 16px;
+    12px 0 38px;
 
-  display:flex;
+  color:var(--muted);
 
-  align-items:center;
-  justify-content:center;
+  font-size:13px;
+  letter-spacing:.12em;
 }
 
+/* =========================
+   MAIN PANEL
+========================= */
 
-/* =========================================================
-   VERA
-   NO FACE
-========================================================= */
+.panel{
 
-.vera-figure{
-  position:relative;
-
-  width:170px;
-  height:250px;
-
-  opacity:0;
-
-  transform:
-    translateY(15px)
-    scale(.92);
-
-  transition:
-    opacity 2.2s ease,
-    transform 2.8s
-      cubic-bezier(.22,.61,.36,1);
-
-  filter:
-    drop-shadow(
-      0 0 22px
-      rgba(225,235,255,.28)
-    )
-    drop-shadow(
-      0 0 70px
-      rgba(150,170,255,.18)
-    );
-
-  animation:
-    veraFloat
-    7s
-    ease-in-out
-    infinite
-    alternate;
-}
-
-.vera-figure.visible{
-  opacity:.9;
-
-  transform:
-    translateY(0)
-    scale(1);
-}
-
-@keyframes veraFloat{
-  from{
-    margin-top:0;
-  }
-
-  to{
-    margin-top:-8px;
-  }
-}
-
-.vera-aura{
-  position:absolute;
-
-  inset:
-    -35px
-    -45px;
-
-  border-radius:50%;
+  border:
+    1px solid var(--line);
 
   background:
-    radial-gradient(
-      ellipse at center,
-      rgba(245,248,255,.24) 0%,
-      rgba(220,230,255,.12) 28%,
-      rgba(175,195,255,.07) 48%,
-      transparent 73%
-    );
+    var(--panel);
 
-  filter:blur(18px);
-
-  animation:
-    auraPulse
-    4.5s
-    ease-in-out
-    infinite
-    alternate;
-}
-
-@keyframes auraPulse{
-  from{
-    transform:scale(.88);
-    opacity:.45;
-  }
-
-  to{
-    transform:scale(1.08);
-    opacity:.9;
-  }
-}
-
-.vera-halo{
-  position:absolute;
-
-  width:145px;
-  height:145px;
-
-  top:10px;
-  left:50%;
-
-  transform:
-    translateX(-50%);
-
-  border-radius:50%;
-
-  background:
-    radial-gradient(
-      circle,
-      rgba(255,255,255,.18) 0%,
-      rgba(210,225,255,.08) 34%,
-      transparent 70%
-    );
-
-  filter:blur(12px);
-}
-
-.vera-body{
-  position:absolute;
-
-  left:50%;
-  top:52px;
-
-  width:92px;
-  height:170px;
-
-  transform:
-    translateX(-50%);
+  backdrop-filter:
+    blur(18px);
 
   border-radius:
-    48% 48% 42% 42% /
-    34% 34% 66% 66%;
+    24px;
 
-  background:
-    radial-gradient(
-      ellipse at 50% 25%,
-      rgba(255,255,255,.55) 0%,
-      rgba(245,248,255,.26) 28%,
-      rgba(210,225,255,.11) 55%,
-      rgba(170,190,255,.04) 75%,
-      transparent 100%
-    );
-
-  filter:blur(6px);
-  opacity:.68;
-}
-
-.vera-presence{
-  position:absolute;
-
-  left:50%;
-  top:4px;
-
-  width:72px;
-  height:82px;
-
-  transform:
-    translateX(-50%);
-
-  border-radius:50%;
-
-  background:
-    radial-gradient(
-      ellipse at center,
-      rgba(255,255,255,.50) 0%,
-      rgba(230,238,255,.24) 38%,
-      rgba(190,210,255,.08) 68%,
-      transparent 100%
-    );
-
-  filter:blur(8px);
-  opacity:.65;
-}
-
-.vera-light{
-  position:absolute;
-
-  left:50%;
-  bottom:15px;
-
-  width:155px;
-  height:80px;
-
-  transform:
-    translateX(-50%);
-
-  border-radius:50%;
-
-  background:
-    radial-gradient(
-      ellipse,
-      rgba(230,240,255,.20),
-      transparent 70%
-    );
-
-  filter:blur(18px);
-  opacity:.55;
-}
-
-.vera-reflection{
-  position:absolute;
-
-  left:50%;
-  bottom:4px;
-
-  width:130px;
-  height:45px;
-
-  transform:
-    translateX(-50%);
-
-  border-radius:50%;
-
-  background:
-    radial-gradient(
-      ellipse,
-      rgba(210,225,255,.13),
-      transparent 70%
-    );
-
-  filter:blur(8px);
-  opacity:.45;
-}
-
-.water-glow{
-  position:absolute;
-
-  left:50%;
-  bottom:16px;
-
-  width:250px;
-  height:70px;
-
-  transform:
-    translateX(-50%);
-
-  border-radius:50%;
-
-  background:
-    radial-gradient(
-      ellipse,
-      rgba(150,175,255,.15),
-      transparent 70%
-    );
-
-  filter:blur(16px);
-}
-
-
-/* =========================================================
-   QUESTION LIGHT
-========================================================= */
-
-.question-light{
-  position:absolute;
-
-  left:50%;
-  top:30%;
-
-  width:10px;
-  height:10px;
-
-  margin-left:-5px;
-
-  border-radius:50%;
-
-  background:#fff;
+  padding:
+    25px;
 
   box-shadow:
-    0 0 12px
-    rgba(255,255,255,.9),
-
-    0 0 30px
-    rgba(190,205,255,.75),
-
-    0 0 65px
-    rgba(150,170,255,.55);
-
-  opacity:0;
-  pointer-events:none;
+    0 20px 80px rgba(0,0,0,.28);
 }
 
-.question-light.travel{
-  opacity:1;
+label{
 
-  animation:
-    lightIntoWater
-    1.7s
-    cubic-bezier(.55,.06,.68,.19)
-    forwards;
-}
-
-@keyframes lightIntoWater{
-  0%{
-    top:32%;
-    transform:scale(.7);
-    opacity:0;
-  }
-
-  15%{
-    opacity:1;
-  }
-
-  80%{
-    top:77%;
-    transform:scale(1.15);
-    opacity:.95;
-  }
-
-  100%{
-    top:84%;
-    transform:scale(.2);
-    opacity:0;
-  }
-}
-
-
-/* =========================================================
-   DIALOGUE
-========================================================= */
-
-.dialogue{
-  min-height:92px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  margin:
-    0 auto 18px;
-
-  max-width:430px;
-
-  text-align:center;
-
-  font-family:
-    "Anuphan",
-    sans-serif;
-
-  font-size:
-    clamp(
-      18px,
-      4.5vw,
-      22px
-    );
-
-  font-weight:300;
-  line-height:1.8;
-
-  color:
-    rgba(242,244,255,.90);
-
-  text-shadow:
-    0 0 20px
-    rgba(160,180,255,.10);
-}
-
-.dialogue-line{
-  opacity:0;
-
-  transition:
-    opacity 1s ease,
-    transform 1s ease;
-
-  transform:
-    translateY(8px);
-}
-
-.dialogue-line.show{
-  opacity:1;
-  transform:
-    translateY(0);
-}
-
-
-/* =========================================================
-   QUESTION FORM
-========================================================= */
-
-.question-form{
-  width:100%;
-  max-width:460px;
-  margin:0 auto;
-
-  opacity:0;
-
-  transform:
-    translateY(12px);
-
-  pointer-events:none;
-
-  transition:
-    opacity 1.3s ease,
-    transform 1.3s ease;
-}
-
-.question-form.visible{
-  opacity:1;
-
-  transform:
-    translateY(0);
-
-  pointer-events:auto;
-}
-
-.question-label{
   display:block;
 
-  margin-bottom:10px;
+  color:var(--muted);
 
-  font-size:11px;
-  font-weight:300;
-  letter-spacing:.06em;
+  font-size:13px;
 
-  color:
-    rgba(205,210,235,.45);
+  margin-bottom:9px;
 }
 
-.question-input{
+textarea{
+
   width:100%;
 
-  min-height:104px;
+  min-height:135px;
 
-  padding:16px 18px;
-
-  resize:none;
-
-  border-radius:18px;
+  resize:vertical;
 
   border:
-    1px solid
-    rgba(220,225,255,.16);
+    1px solid var(--line);
+
+  border-radius:
+    17px;
 
   background:
-    linear-gradient(
-      180deg,
-      rgba(30,25,65,.24),
-      rgba(10,10,30,.35)
-    );
+    rgba(5,4,18,.68);
 
-  color:
-    rgba(242,244,255,.92);
+  color:var(--text);
 
-  font-family:
-    "Anuphan",
-    sans-serif;
+  padding:
+    17px;
 
-  font-size:14px;
-  font-weight:300;
-  line-height:1.8;
+  font-family:"Anuphan",sans-serif;
+
+  font-size:16px;
+
+  line-height:1.75;
 
   outline:none;
 
-  backdrop-filter:blur(14px);
-
-  transition:.5s ease;
+  transition:.25s;
 }
 
-.question-input::placeholder{
-  color:
-    rgba(205,210,235,.32);
-}
+textarea:focus{
 
-.question-input:focus{
   border-color:
-    rgba(215,225,255,.34);
+    rgba(217,200,255,.55);
 
   box-shadow:
-    0 0 35px
-    rgba(150,165,255,.08);
+    0 0 0 3px rgba(217,200,255,.05);
 }
 
-.question-submit{
-  margin-top:13px;
-
-  width:100%;
-
-  min-height:50px;
-
-  border-radius:999px;
-
-  border:
-    1px solid
-    rgba(220,225,255,.20);
-
-  background:
-    rgba(40,32,85,.28);
-
-  color:
-    rgba(245,245,255,.88);
-
-  font-family:
-    "Anuphan",
-    sans-serif;
-
-  font-size:15px;
-  font-weight:300;
-
-  cursor:pointer;
-  transition:.5s ease;
+textarea::placeholder{
+  color:#77718c;
 }
 
-.question-submit:hover{
-  background:
-    rgba(60,45,110,.34);
+/* =========================
+   BUTTON
+========================= */
 
-  border-color:
-    rgba(220,225,255,.38);
-}
-
-
-/* =========================================================
-   READING
-========================================================= */
-
-.reading-screen{
-  align-items:flex-start;
-
-  overflow-y:auto;
-  overflow-x:hidden;
-
-  scrollbar-width:none;
-}
-
-.reading-screen::-webkit-scrollbar{
-  display:none;
-}
-
-.reading-wrap{
-  width:min(100%,600px);
-  min-height:100%;
-
-  padding:
-    34px 0
-    calc(
-      45px +
-      env(safe-area-inset-bottom)
-    );
+.actions{
 
   display:flex;
-  flex-direction:column;
+
+  gap:12px;
+
   align-items:center;
 
-  text-align:center;
+  flex-wrap:wrap;
+
+  margin-top:15px;
 }
 
-.reading-eyebrow{
-  margin-top:8px;
-  margin-bottom:10px;
+button{
 
-  font-family:
-    "Cormorant Garamond",
-    serif;
+  border:
+    1px solid rgba(230,220,255,.3);
+
+  border-radius:
+    999px;
+
+  padding:
+    12px 24px;
+
+  color:
+    #161126;
+
+  background:
+    var(--accent2);
+
+  font-family:"Anuphan",sans-serif;
+
+  font-size:15px;
+
+  font-weight:500;
+
+  cursor:pointer;
+
+  transition:.2s;
+}
+
+button:hover{
+
+  transform:
+    translateY(-1px);
+
+  box-shadow:
+    0 8px 25px rgba(200,180,255,.15);
+}
+
+button:disabled{
+
+  opacity:.45;
+
+  cursor:wait;
+
+  transform:none;
+}
+
+.hint{
 
   font-size:12px;
-  letter-spacing:.22em;
-  text-transform:uppercase;
 
-  color:
-    rgba(205,215,245,.44);
+  color:var(--muted);
 }
 
-.reading-title{
-  margin-bottom:22px;
+/* =========================
+   STATUS
+========================= */
 
-  font-family:
-    "Anuphan",
-    sans-serif;
+.status{
 
-  font-size:20px;
-  font-weight:300;
+  margin-top:16px;
 
-  color:
-    rgba(245,245,255,.88);
-}
-
-
-/* =========================================================
-   CARD
-========================================================= */
-
-.card-shell{
-  position:relative;
-
-  width:220px;
-
-  aspect-ratio:2 / 3;
-
-  margin-bottom:26px;
+  padding:12px 14px;
 
   border-radius:14px;
 
-  padding:4px;
+  background:
+    rgba(255,255,255,.035);
+
+  color:var(--muted);
+
+  font-size:13px;
+
+  line-height:1.6;
+}
+
+.error{
+
+  color:#ffb8c7;
+}
+
+/* =========================
+   RESULT
+========================= */
+
+.hidden{
+  display:none !important;
+}
+
+.result{
+
+  margin-top:20px;
+}
+
+.grid{
+
+  display:grid;
+
+  grid-template-columns:
+    300px 1fr;
+
+  gap:18px;
+}
+
+/* =========================
+   CARD
+========================= */
+
+.cardbox,
+.readbox{
+
+  border:
+    1px solid var(--line);
+
+  border-radius:
+    22px;
 
   background:
-    linear-gradient(
-      145deg,
-      rgba(255,255,255,.20),
-      rgba(130,120,200,.16),
-      rgba(255,255,255,.08)
-    );
+    var(--panel2);
 
-  box-shadow:
-    0 0 30px
-    rgba(100,110,190,.10),
-
-    0 20px 70px
-    rgba(0,0,0,.40);
-
-  transform:
-    scale(.94);
-
-  opacity:0;
-
-  transition:
-    opacity 1.2s ease,
-    transform 1.5s
-      cubic-bezier(.22,.61,.36,1);
+  padding:
+    18px;
 }
 
-.card-shell.revealed{
-  opacity:1;
+.cardbox{
 
-  transform:
-    scale(1);
+  align-self:start;
 }
 
-.card-shell::before{
-  content:"";
+.card-image-wrap{
 
-  position:absolute;
+  position:relative;
 
-  inset:-18px;
+  overflow:hidden;
 
-  border-radius:22px;
+  border-radius:16px;
 
-  background:
-    radial-gradient(
-      ellipse,
-      rgba(180,190,255,.15),
-      transparent 68%
-    );
-
-  filter:blur(15px);
-
-  z-index:-1;
+  background:#15112b;
 }
 
-.card-shell img{
+.cardbox img{
+
   display:block;
 
   width:100%;
-  height:100%;
+
+  aspect-ratio:2 / 3;
 
   object-fit:cover;
 
-  border-radius:11px;
-
-  background:
-    rgba(30,25,65,.4);
+  border-radius:16px;
 }
 
+.card-fallback{
 
-/* =========================================================
-   READING TEXT
-========================================================= */
+  display:none;
 
-.reading-content{
-  width:100%;
+  aspect-ratio:2 / 3;
 
-  opacity:0;
+  align-items:center;
 
-  transform:
-    translateY(15px);
-
-  transition:
-    opacity 1.3s ease,
-    transform 1.3s ease;
-}
-
-.reading-content.visible{
-  opacity:1;
-
-  transform:
-    translateY(0);
-}
-
-.reading-text{
-  width:100%;
-
-  margin:0 auto;
-
-  padding:
-    0 4px;
-
-  font-family:
-    "Anuphan",
-    sans-serif;
-
-  font-size:14px;
-  font-weight:300;
-  line-height:2.05;
-
-  color:
-    rgba(225,230,245,.78);
-
-  white-space:pre-line;
-}
-
-
-/* =========================================================
-   DEEP READING
-========================================================= */
-
-.deep-reading{
-  width:100%;
-
-  margin-top:34px;
-  padding-top:30px;
-
-  border-top:
-    1px solid
-    rgba(220,225,255,.10);
-
-  opacity:0;
-
-  transform:
-    translateY(15px);
-
-  transition:
-    opacity 1.3s ease,
-    transform 1.3s ease;
-}
-
-.deep-reading.visible{
-  opacity:1;
-
-  transform:
-    translateY(0);
-}
-
-.deep-reading-copy{
-  margin:
-    0 auto 22px;
-
-  max-width:510px;
-
-  font-family:
-    "Anuphan",
-    sans-serif;
-
-  font-size:13px;
-  font-weight:300;
-  line-height:2;
-
-  color:
-    rgba(220,225,245,.72);
-
-  white-space:pre-line;
-}
-
-
-/* =========================================================
-   SECOND CARD BUTTON
-========================================================= */
-
-.deep-reading-btn{
-  position:relative;
-
-  width:100%;
-
-  max-width:390px;
-
-  min-height:54px;
-
-  padding:
-    12px 22px;
-
-  border-radius:999px;
-
-  border:
-    1px solid
-    rgba(220,225,255,.24);
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(60,48,110,.35),
-      rgba(30,24,65,.30)
-    );
-
-  color:
-    rgba(248,248,255,.94);
-
-  font-family:
-    "Anuphan",
-    sans-serif;
-
-  font-size:15px;
-  font-weight:300;
-
-  font-variant-numeric:normal;
-
-  cursor:pointer;
-
-  transition:.5s ease;
-}
-
-.deep-reading-btn:hover{
-  background:
-    linear-gradient(
-      180deg,
-      rgba(75,60,130,.40),
-      rgba(35,28,75,.35)
-    );
-
-  border-color:
-    rgba(225,230,255,.42);
-
-  box-shadow:
-    0 0 40px
-    rgba(150,165,255,.13);
-}
-
-.deep-reading-btn:disabled{
-  cursor:default;
-}
-
-
-/* =========================================================
-   COMING SOON
-========================================================= */
-
-.second-gate{
-  width:100%;
-
-  max-width:480px;
-
-  margin-top:22px;
-
-  padding:
-    24px 20px;
-
-  border-radius:18px;
-
-  border:
-    1px solid
-    rgba(220,225,255,.12);
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(30,25,65,.30),
-      rgba(10,10,30,.38)
-    );
-
-  backdrop-filter:blur(14px);
-
-  opacity:0;
-
-  transform:
-    translateY(10px);
-
-  pointer-events:none;
-
-  transition:.8s;
-}
-
-.second-gate.visible{
-  opacity:1;
-
-  transform:
-    translateY(0);
-
-  pointer-events:auto;
-}
-
-.second-gate-title{
-  margin-bottom:10px;
-
-  font-family:
-    "Cormorant Garamond",
-    serif;
-
-  font-size:28px;
-  font-weight:300;
-  letter-spacing:.10em;
-
-  text-transform:uppercase;
-
-  color:
-    rgba(245,245,255,.90);
-}
-
-.second-gate-text{
-  margin:0;
-
-  font-family:
-    "Anuphan",
-    sans-serif;
-
-  font-size:13px;
-  font-weight:300;
-  line-height:1.9;
-
-  color:
-    rgba(210,218,240,.66);
-
-  white-space:pre-line;
-}
-
-
-/* =========================================================
-   STATS
-========================================================= */
-
-.stats-screen{
-  z-index:200;
-
-  background:
-    rgba(5,5,16,.96);
-
-  overflow:auto;
-}
-
-.stats-box{
-  width:min(92vw,520px);
-
-  padding:28px;
-
-  border:
-    1px solid
-    rgba(220,225,255,.14);
-
-  border-radius:22px;
-
-  background:
-    rgba(20,16,50,.55);
+  justify-content:center;
 
   text-align:center;
+
+  padding:30px;
+
+  color:var(--muted);
+
+  font-size:13px;
 }
 
-.stats-title{
+.cardname{
+
+  text-align:center;
+
+  margin-top:14px;
+
   font-family:
-    "Cormorant Garamond",
-    serif;
+    "Cormorant Garamond",serif;
 
   font-size:30px;
-  font-weight:300;
-  letter-spacing:.12em;
 
-  text-transform:uppercase;
-
-  margin-bottom:20px;
-}
-
-.stat-row{
-  display:flex;
-
-  justify-content:space-between;
-
-  gap:20px;
-
-  padding:14px 0;
-
-  border-bottom:
-    1px solid
-    rgba(220,225,255,.08);
-
-  font-family:
-    "Anuphan",
-    sans-serif;
-
-  font-size:14px;
-  font-weight:300;
-}
-
-.stat-value{
-  font-family:
-    "Cormorant Garamond",
-    serif;
-
-  font-size:24px;
   font-weight:400;
 }
 
-.stats-note{
-  margin-top:20px;
+.section-title{
 
-  font-family:
-    "Anuphan",
-    sans-serif;
+  margin-bottom:13px;
+
+  color:var(--accent);
 
   font-size:11px;
-  font-weight:300;
-  line-height:1.8;
 
-  color:
-    rgba(205,215,240,.50);
+  letter-spacing:.16em;
 }
 
-.stats-refresh{
-  margin-top:20px;
+/* =========================
+   ANALYSIS
+========================= */
 
-  padding:
-    10px 22px;
+.analysis{
 
-  border-radius:999px;
+  display:grid;
+
+  grid-template-columns:
+    repeat(2,minmax(0,1fr));
+
+  gap:10px;
+}
+
+.kv{
 
   border:
-    1px solid
-    rgba(220,225,255,.18);
+    1px solid var(--line);
 
-  background:transparent;
+  border-radius:
+    14px;
 
-  color:#eee;
+  padding:
+    12px;
 
-  cursor:pointer;
-
-  font-family:
-    "Anuphan",
-    sans-serif;
-
-  font-weight:300;
+  background:
+    rgba(255,255,255,.025);
 }
 
+.k{
 
-/* =========================================================
+  margin-bottom:4px;
+
+  color:var(--muted);
+
+  font-size:11px;
+}
+
+.v{
+
+  color:var(--text);
+
+  font-size:14px;
+
+  line-height:1.55;
+}
+
+.signal{
+
+  margin-top:11px;
+
+  color:#dcd5ec;
+
+  font-size:13px;
+
+  line-height:1.7;
+}
+
+/* =========================
+   READING
+========================= */
+
+.reading{
+
+  white-space:pre-wrap;
+
+  color:#f5f1ff;
+
+  font-size:16px;
+
+  line-height:1.95;
+}
+
+/* =========================
+   COST
+========================= */
+
+.cost{
+
+  margin-top:25px;
+
+  padding-top:15px;
+
+  border-top:
+    1px solid var(--line);
+
+  color:var(--muted);
+
+  font-size:12px;
+
+  line-height:1.8;
+}
+
+.cost strong{
+
+  color:var(--accent);
+}
+
+/* =========================
+   FOOTER NOTE
+========================= */
+
+.lab-note{
+
+  margin-top:22px;
+
+  text-align:center;
+
+  color:#706a83;
+
+  font-size:11px;
+
+  line-height:1.7;
+}
+
+/* =========================
    MOBILE
-========================================================= */
+========================= */
 
-@media(max-width:600px){
+@media(max-width:760px){
 
-  .sound-toggle{
-    top:
-      calc(
-        12px +
-        env(safe-area-inset-top)
-      );
-
-    right:12px;
+  .wrap{
+    padding:
+      35px 15px 60px;
   }
 
-  .screen{
-    padding-left:18px;
-    padding-right:18px;
+  .panel{
+    padding:18px;
+    border-radius:20px;
   }
 
-  .brand{
-    font-size:
-      clamp(
-        26px,
-        6vw,
-        36px
-      );
-
-    letter-spacing:.22em;
+  .grid{
+    grid-template-columns:1fr;
   }
 
-  .brand-sub{
-    font-size:9px;
+  .cardbox{
+    max-width:285px;
+    width:100%;
+    margin:auto;
   }
 
-  .landing-line{
-    font-size:13px;
+  .analysis{
+    grid-template-columns:1fr;
   }
 
-  .scene-stage{
-    height:34vh;
-    min-height:215px;
-  }
-
-  .vera-figure{
-    transform:
-      translateY(15px)
-      scale(.82);
-  }
-
-  .vera-figure.visible{
-    transform:
-      translateY(0)
-      scale(.82);
-  }
-
-  .dialogue{
-    font-size:17px;
-    min-height:82px;
-  }
-
-  .question-input{
-    min-height:112px;
-  }
-
-  .reading-wrap{
-    padding-top:28px;
-  }
-
-  .card-shell{
-    width:195px;
-  }
-
-  .reading-text{
-    font-size:13px;
-  }
-
-  .deep-reading-copy{
-    font-size:12px;
-  }
-
-  .deep-reading-btn{
-    font-size:14px;
+  .reading{
+    font-size:15.5px;
+    line-height:1.9;
   }
 
 }
@@ -1593,248 +558,134 @@ body::after{
 </style>
 </head>
 
-
 <body>
 
-<canvas id="cosmos"></canvas>
-<canvas id="water"></canvas>
+<div class="wrap">
 
-<div class="fog-band"></div>
+  <div class="brand">
+    STILLWATER
+  </div>
 
-
-<button
-  id="soundToggle"
-  class="sound-toggle"
-  type="button"
-  aria-label="เปิดหรือปิดเสียง"
->
-  <span
-    id="soundIcon"
-    class="sound-icon"
-  >
-    ◒
-  </span>
-</button>
+  <div class="sub">
+    UNIVERSE · AI READING LAB
+  </div>
 
 
-<div
-  id="portal"
-  class="portal"
-></div>
+  <!-- =========================
+       QUESTION
+  ========================== -->
 
+  <div class="panel">
 
-<!-- =======================================================
-     LANDING
-======================================================== -->
+    <label for="question">
+      คำถามของคุณ
+    </label>
 
-<section
-  id="landing"
-  class="screen active"
->
+    <textarea
+      id="question"
+      maxlength="1200"
+      placeholder="เขียนคำถามที่คุณอยากรู้จริง ๆ ได้เลย...&#10;&#10;เช่น เขาไม่ตอบฉันมา 4 วันแล้ว แต่ยังดูสตอรี่ทุกวัน ฉันควรรอเขาไหม"
+    ></textarea>
 
-  <div class="landing-inner">
+    <div class="actions">
 
-    <div class="brand">
-      STILLWATER
+      <button id="askBtn">
+        ✦ ASK VERA
+      </button>
+
+      <span class="hint">
+        AI Reading Prototype · Internal Test
+      </span>
+
     </div>
 
-    <div class="brand-sub">
-      A QUIET PLACE BETWEEN QUESTIONS AND ANSWERS
+    <div
+      id="status"
+      class="status hidden">
     </div>
-
-    <p class="landing-line">
-      บางคำตอบไม่ได้หายไปไหน<br>
-      เราแค่ยังไม่ได้หยุดฟัง
-    </p>
-
-    <button
-      id="enterBtn"
-      class="enter-btn"
-      type="button"
-    >
-      ENTER
-    </button>
 
   </div>
 
-</section>
+
+  <!-- =========================
+       RESULT
+  ========================== -->
+
+  <div
+    id="result"
+    class="result hidden">
+
+    <div class="grid">
 
 
-<!-- =======================================================
-     QUESTION
-======================================================== -->
+      <!-- CARD -->
 
-<section
-  id="questionScreen"
-  class="screen"
->
+      <div class="cardbox">
 
-  <div class="question-inner">
+        <div class="section-title">
+          CARD DRAW
+        </div>
 
-    <div class="scene-stage">
+        <div class="card-image-wrap">
 
-      <div
-        id="veraFigure"
-        class="vera-figure"
-      >
+          <img
+            id="cardImg"
+            alt="Tarot card"
+          >
 
-        <div class="vera-aura"></div>
+          <div
+            id="cardFallback"
+            class="card-fallback">
+            ไม่พบรูปไพ่<br>
+            แต่ระบบยังสามารถอ่านไพ่ได้
+          </div>
 
-        <div class="vera-halo"></div>
+        </div>
 
-        <div class="vera-presence"></div>
-
-        <div class="vera-body"></div>
-
-        <div class="vera-light"></div>
-
-        <div class="vera-reflection"></div>
+        <div
+          id="cardName"
+          class="cardname">
+        </div>
 
       </div>
 
 
-      <div class="water-glow"></div>
+      <!-- READING -->
 
-      <div
-        id="questionLight"
-        class="question-light"
-      ></div>
+      <div class="readbox">
 
-    </div>
+        <div class="section-title">
+          AI QUESTION ANALYSIS
+        </div>
 
+        <div
+          id="analysis"
+          class="analysis">
+        </div>
 
-    <div class="dialogue">
-
-      <div
-        id="dialogueLine"
-        class="dialogue-line"
-      ></div>
-
-    </div>
-
-
-    <form
-      id="questionForm"
-      class="question-form"
-    >
-
-      <label
-        class="question-label"
-        for="questionInput"
-      >
-        ส่งคำถามหนึ่งข้อให้พี่เวรา
-      </label>
-
-
-      <textarea
-        id="questionInput"
-        class="question-input"
-        maxlength="500"
-        autocomplete="off"
-        placeholder="พิมพ์คำถามที่อยู่ในใจคุณ..."
-      ></textarea>
-
-
-      <button
-        id="questionSubmit"
-        class="question-submit"
-        type="submit"
-      >
-        ส่งคำถาม
-      </button>
-
-    </form>
-
-  </div>
-
-</section>
-
-
-<!-- =======================================================
-     READING
-======================================================== -->
-
-<section
-  id="readingScreen"
-  class="screen reading-screen"
->
-
-  <div class="reading-wrap">
-
-    <div class="reading-eyebrow">
-      STILLWATER
-    </div>
-
-
-    <div class="reading-title">
-      ไพ่ที่ปรากฏขึ้นสำหรับคุณ
-    </div>
-
-
-    <div
-      id="cardShell"
-      class="card-shell"
-    >
-
-      <img
-        id="cardImage"
-        src=""
-        alt="ไพ่ Major Arcana"
-      >
-
-    </div>
-
-
-    <div
-      id="readingContent"
-      class="reading-content"
-    >
-
-      <div
-        id="readingText"
-        class="reading-text"
-        aria-live="polite"
-      ></div>
-
-
-      <div
-        id="deepReading"
-        class="deep-reading"
-      >
-
-        <div class="deep-reading-copy">ไพ่ใบนี้ได้บอกสิ่งที่จักรวาลอยากให้คุณรู้ในตอนนี้แล้ว
-
-แต่ถ้าคุณยังรู้สึกว่า
-มีบางอย่างที่อยากรู้มากกว่านี้...
-
-พี่เวราจะลองถามจักรวาลให้อีกครั้ง
-เพื่อขอคำตอบเพิ่มเติมสำหรับคุณ
-
-บางคำตอบอาจไม่ได้ปรากฏขึ้นในไพ่ใบแรก</div>
-
-
-        <button
-          id="btnDeeper"
-          class="deep-reading-btn"
-          type="button"
-        >
-          ✦ เปิดไพ่ใบที่ 2 · 19 บาท
-        </button>
+        <div
+          id="signals"
+          class="signal">
+        </div>
 
 
         <div
-          id="secondGate"
-          class="second-gate"
-        >
+          style="margin-top:27px"
+          class="section-title">
 
-          <div class="second-gate-title">
-            coming soon
-          </div>
+          VERA'S READING
 
-          <p class="second-gate-text">
-            พี่เวราจะกลับมาพร้อมการเปิดไพ่ใบที่ 2 ในเร็ว ๆ นี้
-          </p>
+        </div>
 
+        <div
+          id="reading"
+          class="reading">
+        </div>
+
+
+        <div
+          id="cost"
+          class="cost">
         </div>
 
       </div>
@@ -1843,2377 +694,422 @@ body::after{
 
   </div>
 
-</section>
 
+  <div class="lab-note">
 
-<!-- =======================================================
-     STATS
-======================================================== -->
-
-<section
-  id="statsScreen"
-  class="screen stats-screen"
->
-
-  <div class="stats-box">
-
-    <div class="stats-title">
-      STILLWATER STATS
-    </div>
-
-
-    <div class="stat-row">
-
-      <span>
-        เปิดไพ่ใบที่ 2
-      </span>
-
-      <strong
-        id="statDeep"
-        class="stat-value"
-      >
-        —
-      </strong>
-
-    </div>
-
-
-    <div class="stat-row">
-
-      <span>
-        อ่านไพ่ใบแรกจบ
-      </span>
-
-      <strong
-        id="statComplete"
-        class="stat-value"
-      >
-        —
-      </strong>
-
-    </div>
-
-
-    <div class="stat-row">
-
-      <span>
-        Conversion
-      </span>
-
-      <strong
-        id="statRate"
-        class="stat-value"
-      >
-        —
-      </strong>
-
-    </div>
-
-
-    <div
-      id="statsNote"
-      class="stats-note"
-    >
-      กำลังโหลดข้อมูล...
-    </div>
-
-
-    <button
-      id="statsRefresh"
-      class="stats-refresh"
-      type="button"
-    >
-      รีเฟรช
-    </button>
+    Stillwater Universe AI Lab · Prototype only<br>
+    ไม่มีการชำระเงิน · ไม่มีการเก็บข้อมูลลูกค้า · ยังไม่ใช่ระบบขายจริง
 
   </div>
 
-</section>
+</div>
 
 
 <script>
 
-(() => {
+/* =========================================
+   BASIC HELPERS
+========================================= */
 
-"use strict";
+const $ = (id) =>
+  document.getElementById(id);
 
 
-/* =========================================================
-   SETTINGS
-========================================================= */
+const askBtn =
+  $("askBtn");
 
-const COUNTER_BASE =
-  "https://countapi.mileshilliard.com/api/v1";
 
-const COUNTER_PREFIX =
-  "stillwater-vera-2026";
+/* =========================================
+   ASK VERA
+========================================= */
 
-const DEBUG_STATS =
-  new URLSearchParams(
-    location.search
-  ).get("stats") === "1";
-
-
-/* =========================================================
-   ELEMENTS
-========================================================= */
-
-const landing =
-  document.getElementById("landing");
-
-const questionScreen =
-  document.getElementById("questionScreen");
-
-const readingScreen =
-  document.getElementById("readingScreen");
-
-const statsScreen =
-  document.getElementById("statsScreen");
-
-const enterBtn =
-  document.getElementById("enterBtn");
-
-const questionForm =
-  document.getElementById("questionForm");
-
-const questionInput =
-  document.getElementById("questionInput");
-
-const questionSubmit =
-  document.getElementById("questionSubmit");
-
-const veraFigure =
-  document.getElementById("veraFigure");
-
-const dialogueLine =
-  document.getElementById("dialogueLine");
-
-const questionLight =
-  document.getElementById("questionLight");
-
-const cardShell =
-  document.getElementById("cardShell");
-
-const cardImage =
-  document.getElementById("cardImage");
-
-const readingContent =
-  document.getElementById("readingContent");
-
-const readingText =
-  document.getElementById("readingText");
-
-const deepReading =
-  document.getElementById("deepReading");
-
-const btnDeeper =
-  document.getElementById("btnDeeper");
-
-const secondGate =
-  document.getElementById("secondGate");
-
-const portal =
-  document.getElementById("portal");
-
-const soundToggle =
-  document.getElementById("soundToggle");
-
-const soundIcon =
-  document.getElementById("soundIcon");
-
-const statDeep =
-  document.getElementById("statDeep");
-
-const statComplete =
-  document.getElementById("statComplete");
-
-const statRate =
-  document.getElementById("statRate");
-
-const statsNote =
-  document.getElementById("statsNote");
-
-const statsRefresh =
-  document.getElementById("statsRefresh");
-
-
-/* =========================================================
-   STATE
-========================================================= */
-
-let currentScreen =
-  "landing";
-
-let currentCard =
-  null;
-
-let lastQuestion =
-  "";
-
-let soundEnabled =
-  true;
-
-let audioContext =
-  null;
-
-let masterGain =
-  null;
-
-let questionSequenceRunning =
-  false;
-
-
-/* =========================================================
-   ANALYTICS
-========================================================= */
-
-function trackLocal(name){
-
-  try{
-
-    const key =
-      "stillwater_event_" +
-      name;
-
-    const oldValue =
-      Number(
-        localStorage.getItem(key) || 0
-      );
-
-    localStorage.setItem(
-      key,
-      String(oldValue + 1)
-    );
-
-  }catch(error){}
-
-}
-
-
-function trackEvent(
-  name,
-  params = {}
-){
-
-  trackLocal(name);
-
-  try{
-
-    if(
-      typeof window.gtag ===
-      "function"
-    ){
-
-      window.gtag(
-        "event",
-        name,
-        params
-      );
-
-    }
-
-    if(
-      Array.isArray(
-        window.dataLayer
-      )
-    ){
-
-      window.dataLayer.push({
-        event:name,
-        ...params
-      });
-
-    }
-
-  }catch(error){}
-
-}
-
-
-async function countHit(key){
-
-  try{
-
-    const response =
-      await fetch(
-        `${COUNTER_BASE}/hit/${encodeURIComponent(
-          COUNTER_PREFIX +
-          "-" +
-          key
-        )}`,
-        {
-          cache:"no-store"
-        }
-      );
-
-    if(
-      !response.ok
-    ){
-
-      throw new Error(
-        "Counter unavailable"
-      );
-
-    }
-
-    return await response.json();
-
-  }catch(error){
-
-    console.warn(
-      "Online counter unavailable",
-      error
-    );
-
-    return null;
-
-  }
-
-}
-
-
-async function getCount(key){
-
-  try{
-
-    const response =
-      await fetch(
-        `${COUNTER_BASE}/get/${encodeURIComponent(
-          COUNTER_PREFIX +
-          "-" +
-          key
-        )}`,
-        {
-          cache:"no-store"
-        }
-      );
-
-    if(
-      !response.ok
-    ){
-
-      throw new Error(
-        "Counter unavailable"
-      );
-
-    }
-
-    const data =
-      await response.json();
-
-    return Number(
-      data.value || 0
-    );
-
-  }catch(error){
-
-    return null;
-
-  }
-
-}
-
-
-/* =========================================================
-   MAJOR ARCANA
-========================================================= */
-
-const READINGS = [
-
-`มีบางอย่างกำลังเรียกให้คุณก้าวออกจากจุดที่คุ้นเคยค่ะ
-
-ไพ่ใบนี้มีพลังของการเริ่มต้นที่ยังไม่มีคำตอบครบทุกอย่าง สิ่งที่กำลังเกิดขึ้นมีความเป็นไปได้ที่จะเปิดประตูใหม่ให้คุณ และอาจพาคุณออกจากรูปแบบเดิมที่คุณอยู่มานาน
-
-ช่วงนี้คุณอาจรู้สึกเหมือนยังมองไม่เห็นปลายทางทั้งหมด แต่ไม่ได้แปลว่าทางข้างหน้าไม่มีอยู่จริง เพียงแต่คุณอาจต้องก้าวก่อน แล้วค่อยเห็นสิ่งที่จะเกิดขึ้นทีละช่วง
-
-มีเรื่องหนึ่งที่ไพ่เตือนเบา ๆ คือ อย่าเอาความผิดพลาดในอดีตไปใช้เป็นคำตอบของอนาคตทั้งหมดค่ะ และอย่ารีบเชื่อทุกสิ่งเพียงเพราะมันดูน่าตื่นเต้น
-
-บางครั้งสิ่งที่ชีวิตต้องการจากคุณ ไม่ใช่คำตอบที่สมบูรณ์แบบ แต่คือความกล้าที่จะก้าวหนึ่งก้าวก่อน`,
-
-`สิ่งที่คุณกำลังมีอยู่ในมือ อาจมากกว่าที่คุณคิดค่ะ
-
-ความสามารถ เครื่องมือ หรือช่องทางบางอย่างที่คุณมีอยู่แล้ว กำลังมีโอกาสถูกนำมาใช้ให้เกิดผลจริง
-
-สิ่งที่เด่นมากกับไพ่ใบนี้คือการสื่อสาร การเจรจา การเรียนรู้เร็ว และการรู้จักใช้จังหวะที่เข้ามาให้เป็นประโยชน์ บางอย่างอาจเริ่มขยับทันทีเมื่อคุณเป็นฝ่ายลงมือก่อน
-
-แต่ไพ่ก็เตือนเรื่องคำพูดเช่นกันค่ะ คนที่พูดเก่งอาจไม่ได้หมายความว่าทำเก่งเสมอไป และคุณเองก็ไม่จำเป็นต้องเชื่อคำสัญญาทั้งหมดจนกว่าจะเห็นการกระทำ
-
-ตอนนี้ให้ดูว่าความคิด คำพูด และการกระทำของคุณกำลังไปในทิศทางเดียวกันหรือไม่
-
-ถ้าใช่ คุณมีพลังมากพอที่จะเริ่มสร้างผลลัพธ์บางอย่างให้เกิดขึ้นจริงแล้วค่ะ`,
-
-`ตอนนี้อาจมีบางอย่างที่คุณยังไม่รู้ทั้งหมดค่ะ
-
-ความรู้สึกของใครบางคน ข้อมูลที่ยังไม่ถูกพูด ความจริงที่ยังเปิดไม่หมด หรือเหตุผลบางอย่างที่ยังถูกเก็บไว้ข้างใน
-
-ความเงียบก็คือข้อมูลอย่างหนึ่งนะคะ
-
-ถ้าช่วงนี้คุณกำลังรอคำตอบ อย่าเพิ่งเติมช่องว่างด้วยสิ่งที่คุณอยากให้เป็น เพราะสิ่งที่คุณรู้สึกกับสิ่งที่เกิดขึ้นจริงอาจยังไม่ใช่เรื่องเดียวกันทั้งหมด
-
-คุณอาจรู้อยู่แล้วว่ามีบางอย่างไม่เหมือนที่เห็น เพียงแต่ยังไม่มีหลักฐานมากพอ
-
-ไพ่ใบนี้จึงไม่ได้เร่งให้คุณทำอะไรค่ะ กลับกัน มันกำลังบอกให้คุณนิ่งอีกนิด สังเกตอีกหน่อย และปล่อยให้สิ่งที่ซ่อนอยู่ค่อย ๆ เปิดตัวมันเอง
-
-บางคำตอบยังไม่ควรถูกบังคับให้ออกมาตอนนี้`,
-
-`สิ่งที่คุณกำลังดูแลอยู่มีโอกาสเติบโตค่ะ
-
-ไพ่ใบนี้มีพลังของการสร้างสิ่งหนึ่งให้ค่อย ๆ มีชีวิตขึ้นมา ไม่ว่าจะเป็นสิ่งที่คุณกำลังเริ่มทำ สิ่งที่กำลังดูแล หรือบางอย่างที่คุณลงทุนทั้งเวลาและความรู้สึกลงไป
-
-ผลลัพธ์อาจไม่ได้มาแบบฉับพลัน แต่มีแนวโน้มของการงอกเงยและเพิ่มพูน
-
-สิ่งที่ต้องระวังคือการให้มากเกินไปค่ะ คุณอาจกำลังดูแลบางอย่างจนลืมดูว่าตัวเองเหลือพลังอยู่เท่าไร
-
-บางสิ่งต้องการ "พื้นที่" มากกว่าการบังคับ
-
-ให้มันโต แต่ต้องรู้ด้วยว่าอะไรควรได้รับน้ำ และอะไรควรถูกตัดออก
-
-เมื่อคุณดูแลสิ่งที่มีคุณค่าอย่างพอดี สิ่งนั้นมีโอกาสตอบกลับคุณด้วยผลลัพธ์ที่จับต้องได้มากขึ้นค่ะ`,
-
-`ถึงเวลาที่บางอย่างในชีวิตต้องมีคนตัดสินใจแล้วค่ะ
-
-ไพ่ใบนี้พูดถึงการกำหนดทิศทาง วางกฎ และรับผิดชอบผลของสิ่งที่เลือก
-
-ช่วงนี้สิ่งที่ไม่มีโครงสร้างอาจเริ่มสร้างปัญหาให้คุณ ไม่ว่าจะเป็นเรื่องเวลา ขอบเขต เงิน งาน หรือการจัดการกับคนอื่น
-
-บางครั้งคุณอาจกำลังรอให้คนอื่นเป็นฝ่ายกำหนดสถานการณ์ ทั้งที่จริง ๆ แล้วคุณมีสิทธิ์เลือกทิศทางของตัวเองมากกว่าที่คิด
-
-แต่การเป็นคนถือพวงมาลัยไม่ได้หมายความว่าต้องควบคุมถนนทั้งสายค่ะ
-
-ตั้งหลักให้ดี กำหนดสิ่งที่ยอมรับได้และไม่ได้ แล้วเดินหน้าอย่างมีแผน
-
-ความมั่นคงของคุณจะเกิดขึ้นเมื่อคุณหยุดปล่อยให้สถานการณ์เป็นคนตัดสินใจแทนคุณ`,
-
-`บางเรื่องในชีวิตกำลังสอนคุณผ่าน "กฎของมันเอง" ค่ะ
-
-สิ่งที่กำลังเกิดขึ้นอาจต้องอาศัยความรู้ ประสบการณ์ ผู้เชี่ยวชาญ หรือระบบบางอย่างมากกว่าการลองผิดลองถูกเพียงอย่างเดียว
-
-ถ้าตอนนี้ทุกอย่างดูช้า อย่าเพิ่งคิดว่ามันไม่เดินหน้า เพราะบางครั้งความช้าคือช่วงที่กำลังสร้างโครงสร้างให้สิ่งหนึ่งมั่นคงขึ้น
-
-แต่ไพ่ใบนี้มีอีกด้านหนึ่งที่อยากให้คุณระวัง
-
-อย่าทำตามกฎเพียงเพราะ "ทุกคนทำแบบนี้"
-
-เรียนรู้จากสิ่งที่มีอยู่ รับคำแนะนำที่เป็นประโยชน์ แล้วเลือกด้วยตัวเองว่าจะรับอะไรไว้และจะวางอะไรลง
-
-สิ่งที่กำลังเกิดขึ้นอาจไม่ได้ต้องการให้คุณรีบค่ะ แต่มันกำลังสอนให้คุณเข้าใจวิธีเดินบนเส้นทางนี้ให้ดีขึ้น`,
-
-`มีบางอย่างกำลังขอให้คุณ "เลือก" ค่ะ
-
-อาจเป็นสองทาง สองความต้องการ สองความรู้สึก หรือสองสิ่งที่คุณกำลังพยายามถือไว้พร้อมกัน
-
-สิ่งที่กำลังเกิดขึ้นมีแนวโน้มพาคุณเข้าใกล้จุดที่ต้องชัดเจนขึ้น
-
-แรงดึงดูดอย่างเดียวไม่ได้สร้างสิ่งที่มั่นคง และความรู้สึกที่แรงมากก็ไม่ได้แปลว่าทางนั้นถูกเสมอไป
-
-ลองถามตัวเองตรง ๆ ว่า สิ่งที่คุณกำลังเลือก สอดคล้องกับสิ่งที่คุณต้องการจริง ๆ หรือไม่
-
-อย่าเลือกเพียงเพราะกลัวเสียบางอย่างไปค่ะ
-
-การตัดสินใจที่ดีในตอนนี้อาจไม่ใช่สิ่งที่ทำให้คุณสบายใจที่สุดในทันที แต่เป็นสิ่งที่ทำให้คุณรู้สึกว่า "นี่คือสิ่งที่ฉันเลือกด้วยตัวเอง" ในภายหลัง`,
-
-`สิ่งที่เคยติดอยู่กำลังมีแรงให้เคลื่อนค่ะ
-
-ไพ่ใบนี้มีพลังของการเดินหน้า การเคลื่อนไหว การเดินทาง การติดต่อกับคนไกล หรือสถานการณ์ที่เริ่มหลุดออกจากจุดเดิม
-
-บางอย่างอาจไม่ได้เกิดขึ้นง่าย แต่กำลังมีแรงส่งมากขึ้น
-
-อย่าหยุดเพียงเพราะมีอุปสรรค เพราะสิ่งที่ไพ่ใบนี้ต้องการจากคุณคือการรักษาทิศทางเอาไว้
-
-ชัยชนะไม่ได้เกิดจากแรงอย่างเดียว แต่มาจากการควบคุมแรงนั้นให้ไปในทิศเดียวกัน
-
-ถ้าช่วงนี้มีหลายอย่างดึงคุณคนละทาง ให้เลือกก่อนว่าอะไรคือปลายทางที่คุณต้องการจริง ๆ
-
-เมื่อทิศชัด การเคลื่อนไหวจะชัดตามค่ะ`,
-
-`สิ่งที่คุณกำลังเจออาจต้องใช้เวลา มากกว่าการใช้แรงค่ะ
-
-ไพ่ใบนี้ไม่ได้บอกว่าคุณอ่อนแอ ตรงกันข้าม มันกำลังบอกว่าคุณมีความสามารถในการผ่านเรื่องยากได้ เพียงแต่คุณไม่จำเป็นต้องชนะทุกอย่างด้วยการฝืน
-
-สิ่งที่คุณรออาจไม่ได้เร็ว แต่ไม่ได้หมายความว่าไม่มีความคืบหน้า
-
-มีบางอย่างกำลังค่อย ๆ เปลี่ยนจากข้างใน
-
-ลองถามตัวเองด้วยว่า คุณกำลังควบคุมสถานการณ์ หรือกำลังพยายามควบคุมคนอื่นอยู่
-
-เพราะสองอย่างนี้ไม่เหมือนกันเลยค่ะ
-
-ความนุ่มนวลในเวลานี้อาจมีพลังมากกว่าการบังคับ และความมั่นใจที่แท้จริงคือการรู้ว่าเมื่อไหร่ควรเดินหน้า และเมื่อไหร่ควรปล่อยให้เวลาเป็นคนทำงาน`,
-
-`ตอนนี้บางคำตอบอาจไม่ได้อยู่กับคนอื่นค่ะ
-
-บางคนอาจกำลังเว้นระยะ บางสถานการณ์อาจเงียบ หรือสิ่งที่คุณกำลังรออาจไม่ได้เคลื่อนเร็วอย่างที่ใจต้องการ
-
-แต่ความเงียบไม่ได้แปลว่า "จบ"
-
-บางครั้งมันคือช่วงที่บางสิ่งกำลังถูกคิดทบทวนอยู่
-
-ไพ่ใบนี้อยากให้คุณระวังการเอาความเงียบมาตีความจนกลายเป็นคำตอบที่ไม่มีหลักฐาน
-
-และในขณะเดียวกัน อย่าใช้คำว่า "รอ" เป็นข้ออ้างเพื่อหยุดชีวิตของตัวเอง
-
-กลับมาอยู่กับตัวเองก่อนค่ะ
-
-เมื่อคุณไม่ต้องวิ่งตามคำตอบตลอดเวลา คุณอาจเริ่มเห็นคำตอบบางส่วนที่จริง ๆ แล้วอยู่กับคุณมาตลอด`,
-
-`สิ่งที่กำลังเกิดขึ้นไม่ได้อยู่ในจุดเดิมตลอดไปค่ะ
-
-จังหวะกำลังเปลี่ยน
-
-ข่าว การติดต่อ เงิน โอกาส หรือเหตุการณ์บางอย่างอาจเปลี่ยนทิศทางเร็วกว่าที่คุณคาด และบางเรื่องที่คิดว่าเงียบอาจกลับมาขยับขึ้นอย่างกะทันหัน
-
-ถ้าช่วงนี้กำลังมีโชค อย่าประมาท
-
-แต่ถ้ากำลังติดขัด ก็อย่าเพิ่งคิดว่าทุกอย่างจะเป็นแบบนี้ตลอดไป
-
-ไพ่ใบนี้เตือนว่าคุณไม่สามารถควบคุมทุกอย่างได้ แต่คุณสามารถเตรียมตัวให้พร้อมกับจังหวะที่กำลังจะเปลี่ยน
-
-เมื่อประตูเปิด คุณจะพร้อมเดินเข้าไปหรือยัง
-
-เพราะบางโอกาสไม่ได้เคาะประตูซ้ำหลายครั้งค่ะ`,
-
-`ถึงเวลาที่บางอย่างต้องถูกมองตามความจริงค่ะ
-
-ไพ่ใบนี้เกี่ยวข้องกับผลของการเลือกในอดีต และสิ่งที่กำลังเกิดขึ้นอาจเป็นผลที่ค่อย ๆ เดินทางมาถึงคุณ
-
-บางเรื่องอาจเกี่ยวข้องกับเอกสาร ข้อตกลง เงินที่ต้องเคลียร์ หรือสถานการณ์ที่ต้องใช้หลักฐานมากกว่าความรู้สึก
-
-อย่าตัดสินใจเพียงเพราะกลัวผลลัพธ์
-
-และอย่าพยายามบิดความจริงเพื่อให้มันตรงกับสิ่งที่คุณอยากได้ยิน
-
-ในตอนนี้สิ่งที่แฟร์กับตัวคุณที่สุด อาจเป็นการยอมรับสิ่งที่เกิดขึ้นตามจริง แล้วตัดสินใจจากตรงนั้น
-
-เลือกสิ่งที่คุณสามารถยืนอยู่ข้างมันได้ แม้วันที่ไม่มีใครเข้าข้างคุณค่ะ`,
-
-`สิ่งที่คุณกำลังพยายามผลัก อาจยังไม่ใช่เวลาที่มันจะเคลื่อนค่ะ
-
-สถานการณ์อาจเหมือนแขวนอยู่ตรงกลาง การรอคอยยืดเยื้อ การตอบกลับล่าช้า หรือบางอย่างที่คุณคิดว่าควรเกิดขึ้นแล้วกลับยังไม่เกิด
-
-มันอาจทำให้รู้สึกว่าเสียเวลา เสียโอกาส เสียเงิน หรือเสียความสัมพันธ์
-
-แต่ไพ่ใบนี้ไม่ได้บอกให้คุณรีบแก้ความไม่แน่นอนด้วยการตัดสินใจทันที
-
-บางครั้งการหยุดครั้งนี้มีเหตุผล
-
-ลองเปลี่ยนวิธีมองสิ่งเดิมดูค่ะ
-
-สิ่งที่คุณคิดว่าเป็น "การติดอยู่" อาจกำลังบังคับให้คุณเห็นบางอย่างที่ก่อนหน้านี้คุณไม่เคยมอง
-
-ยังไม่ต้องรีบขยับเพียงเพราะคุณไม่ชอบความรู้สึกของการรอ`,
-
-`มีบางอย่างกำลังหมดอายุในชีวิตค่ะ
-
-สิ่งหนึ่งอาจไม่สามารถอยู่ในรูปเดิมต่อไปได้อีกแล้ว และการเปลี่ยนครั้งนี้อาจรู้สึกหนักในตอนแรก เพราะมันกำลังพาคุณออกจากสิ่งที่คุ้นเคย
-
-ความสัมพันธ์หนึ่งอาจเปลี่ยนรูป งานหนึ่งอาจจบ หรือความคิดหนึ่งอาจไม่ใช่ตัวคุณอีกต่อไป
-
-สิ่งที่ไพ่เตือนมากที่สุดคือการพยายามรักษาสิ่งที่หมดเวลาแล้ว
-
-บางประตูไม่ได้ปิดเพื่อทำร้ายคุณค่ะ
-
-มันปิดเพื่อหยุดวงจรเดิม
-
-การจบในครั้งนี้อาจเป็นวิธีที่ชีวิตกำลังเปิดพื้นที่ให้สิ่งใหม่เข้ามา
-
-อย่ากลัวการเปลี่ยนรูปของสิ่งหนึ่งมากเกินไป เพราะบางครั้งสิ่งที่คุณต้องเสีย คือสิ่งที่กำลังขวางสิ่งที่คุณต้องการได้มา`,
-
-`สิ่งที่กำลังเกิดขึ้นไม่จำเป็นต้องเลือกสุดทางค่ะ
-
-มีพลังของการผสมสิ่งที่แตกต่าง การปรับตัว และการนำบางอย่างกลับมาอยู่ในจังหวะที่พอดี
-
-บางเรื่องอาจเกี่ยวข้องกับการเดินทาง การโยกย้าย การติดต่อระหว่างสองพื้นที่ หรือการนำสิ่งสองอย่างกลับมาเชื่อมกัน
-
-อย่าเร่งผลลัพธ์
-
-สิ่งที่กำลังดีขึ้นอาจดีขึ้นแบบเงียบ ๆ และช้าเกินกว่าที่คุณจะรู้สึกได้ในแต่ละวัน
-
-ไม่มากเกินไป
-ไม่น้อยเกินไป
-ไม่เร็วเกินไป
-และไม่ช้าเกินไป
-
-ไพ่ใบนี้กำลังบอกว่าความพอดีไม่ได้แปลว่าไม่มีความก้าวหน้า
-
-บางครั้งความพอดีนั่นแหละ คือวิธีที่ทำให้สิ่งหนึ่งไปได้ไกลที่สุด`,
-
-`มีบางอย่างกำลังดึงคุณแรงมากค่ะ
-
-อาจเป็นความอยาก ความกลัว นิสัย ความสัมพันธ์ หรือความคิดบางอย่างที่บอกคุณว่า "ไม่มีทางเลือกอื่นแล้ว"
-
-แต่ไพ่ใบนี้อยากให้คุณหยุดตรงนั้นสักนิด
-
-แรงดึงดูดไม่ได้แปลว่าสิ่งนั้นดีสำหรับคุณ
-
-ความอยากได้เงินไม่ได้แปลว่าโอกาสนั้นคุ้ม
-ความคิดถึงไม่ได้แปลว่าคุณต้องกลับไป
-และความผูกพันไม่ได้แปลว่าคุณไม่มีสิทธิ์เดินออกมา
-
-ลองถามตัวเองว่า
-
-ฉันกำลังเลือกสิ่งนี้อยู่
-หรือสิ่งนี้กำลังเลือกฉัน?
-
-คุณมีอิสระมากกว่าที่เสียงในหัวกำลังบอกค่ะ
-
-บางครั้งการเห็นโซ่ของตัวเองชัด ๆ คือจุดเริ่มต้นของการปลดมัน`,
-
-`มีบางอย่างกำลังจะไม่เหมือนเดิมค่ะ
-
-ข่าวบางอย่างอาจมาเร็ว ความจริงบางอย่างอาจถูกเปิดเผย หรือแผนที่คุณคิดว่าชัวร์อาจต้องเปลี่ยน
-
-สิ่งที่เกิดขึ้นอาจทำให้รู้สึกเหมือนทุกอย่างพังลงพร้อมกัน แต่ไพ่ใบนี้ไม่ได้พังสิ่งที่มั่นคงจริง ๆ
-
-มันกำลังเปิดให้เห็นว่าสิ่งไหนสร้างอยู่บนพื้นฐานที่ไม่แข็งแรง
-
-หลังฝุ่นตก คุณจะเห็นชัดขึ้นว่าตรงไหนควรเก็บ ตรงไหนควรปล่อย และตรงไหนควรสร้างใหม่
-
-ถ้าช่วงนี้มีบางอย่างเปลี่ยนแบบกะทันหัน อย่าเพิ่งรีบตัดสินว่ามันคือความเสียหายทั้งหมด
-
-บางการพัง คือการเปิดพื้นที่ให้คุณสร้างสิ่งที่ตรงกับความจริงมากกว่าเดิมค่ะ`,
-
-`หลังจากช่วงเวลาที่หนัก ไพ่ใบนี้บอกว่ามีบางอย่างกำลังกลับมามีแสงค่ะ
-
-สิ่งที่เคยทำให้คุณเหนื่อยอาจเริ่มเบาลง ความสัมพันธ์บางอย่างอาจกลับมามีพื้นที่ของความจริงใจ งานหรือความฝันที่เคยดูไกลอาจเริ่มเห็นทาง และโอกาสบางอย่างอาจค่อย ๆ กลับมา
-
-สิ่งสำคัญคือ อย่าคาดหวังให้การฟื้นตัวเกิดขึ้นพร้อมกันทุกอย่าง
-
-บางอย่างจะกลับมาก่อน
-บางอย่างจะตามมาทีหลัง
-
-ยังมีเหตุผลให้เดินต่อค่ะ
-
-และการฟื้นตัวบางอย่างไม่ได้เสียงดัง
-
-บางครั้งมันคือวันที่คุณตื่นขึ้นมาแล้วรู้สึกว่า "ฉันไม่ต้องกลัวเรื่องนี้เท่าเดิมแล้ว"
-
-แค่นั้นก็ถือเป็นการเปลี่ยนแปลงที่สำคัญมากแล้ว`,
-
-`ตอนนี้คุณอาจกำลังเห็นเพียงบางส่วนของเรื่องทั้งหมดค่ะ
-
-ความรู้สึกที่เกิดขึ้นอาจจริง แต่ความหมายที่คุณตีความจากมันอาจยังไม่ใช่ความจริงทั้งหมด
-
-ช่องว่างกำลังทำให้คุณเติมเรื่องราวเอง
-
-โดยเฉพาะในช่วงที่ไม่มีคำตอบ ไม่มีการติดต่อ หรือข้อมูลบางอย่างหายไป คุณอาจเผลอใช้ความกลัวมาสร้างคำอธิบายแทนสิ่งที่ยังไม่รู้
-
-ไพ่ใบนี้ไม่ได้บอกว่าความรู้สึกของคุณผิดค่ะ
-
-แต่มันกำลังบอกว่า อย่าเอาความรู้สึกไปตัดสินทุกอย่างทันที
-
-เก็บมันไว้เป็นสัญญาณ
-
-แล้วรอให้ความจริงมีโอกาสเดินเข้ามา
-
-บางสิ่งที่ดูน่ากลัวในตอนกลางคืน อาจไม่ได้เหมือนเดิมเมื่อแสงสว่างมาถึง`,
-
-`สิ่งที่เคยมืดกำลังมีโอกาสถูกเปิดให้เห็นค่ะ
-
-ไพ่ใบนี้นำพลังของความชัดเจน ข่าว การได้รับการยอมรับ และการกลับมามองเห็นสิ่งหนึ่งอย่างตรงไปตรงมา
-
-เรื่องที่กำลังรอคำตอบมีแนวโน้มได้รับความกระจ่างมากขึ้น
-
-สิ่งที่คุณพยายามมานานอาจเริ่มได้รับการมองเห็น หรือสิ่งที่เคยคลุมเครืออาจเริ่มพูดได้ชัดขึ้น
-
-ถ้ามีบางอย่างกำลังดีขึ้น ให้ยอมรับความสุขนั้นโดยไม่ต้องระแวงว่ามันจะหายไปทันทีค่ะ
-
-แต่ไพ่ก็เตือนว่า ความสำเร็จที่เกิดขึ้นแล้วก็ต้องได้รับการดูแล
-
-อย่ารีบกลับไปใช้ชีวิตแบบเดิมเพียงเพราะตอนนี้ทุกอย่างเริ่มสว่าง
-
-รักษาสิ่งที่กำลังดีไว้ แล้วให้มันเติบโตต่อไป`,
-
-`มีบางอย่างจากอดีตหรือสิ่งที่ยังค้างอยู่กำลังกลับมาให้คุณจัดการค่ะ
-
-คนหนึ่งอาจกลับมาติดต่อ
-ข่าวหนึ่งอาจย้อนกลับมา
-หรือโอกาสหนึ่งอาจเปิดขึ้นอีกครั้ง
-
-แต่การกลับมาไม่ใช่จุดสำคัญที่สุด
-
-สิ่งสำคัญคือคุณในวันนี้ไม่ใช่คนเดิมกับตอนที่เรื่องนั้นเกิดขึ้น
-
-ไพ่ใบนี้กำลังพูดถึงการตื่นขึ้น การมองสิ่งเดิมด้วยสายตาใหม่ และการตัดสินใจครั้งใหญ่ที่ไม่จำเป็นต้องเกิดจากความรู้สึกผิด
-
-บางอย่างอาจกลับมาเพื่อให้คุณรับไว้
-
-บางอย่างอาจกลับมาเพื่อให้คุณปิดมันอย่างสมบูรณ์
-
-คุณไม่จำเป็นต้องกลับไปเป็นคนเดิม เพียงเพราะเรื่องเดิมกลับมาค่ะ`,
-
-`สิ่งหนึ่งกำลังเดินทางมาถึงจุดที่มันควรจะเป็นค่ะ
-
-ไพ่ใบนี้มีพลังของการปิดวงจร การทำสิ่งหนึ่งให้ครบ และการเดินทางไปยังบทถัดไป
-
-งานหนึ่งอาจสำเร็จ
-เงินอาจมาจากสิ่งที่สะสมมานาน
-หรือสถานการณ์หนึ่งอาจเดินทางมาถึงจุดที่ต้องนิยามใหม่
-
-ยังมีพลังของระยะทาง ต่างประเทศ การเดินทาง และการขยายโลกของตัวเอง
-
-สิ่งที่สำคัญคือ อย่าพยายามลากบทที่จบแล้วให้ยาวออกไปเพียงเพราะคุณคุ้นเคยกับมัน
-
-บทหนึ่งจบลงไม่ได้หมายความว่าคุณเสียอะไรเสมอไป
-
-บางครั้งมันจบเพราะคุณพร้อมสำหรับโลกที่ใหญ่กว่าเดิมแล้วค่ะ`
-
-];
-
-
-/* =========================================================
-   CARD DATA
-   ชื่อไฟล์ตรงกับ GitHub cards/web/
-========================================================= */
-
-const CARDS = [
-
-  {
-    id:0,
-    name:"THE FOOL",
-    file:"fool.jpg",
-    reading:READINGS[0]
-  },
-
-  {
-    id:1,
-    name:"THE MAGICIAN",
-    file:"magician.jpg",
-    reading:READINGS[1]
-  },
-
-  {
-    id:2,
-    name:"THE HIGH PRIESTESS",
-    file:"high-priestess.jpg",
-    reading:READINGS[2]
-  },
-
-  {
-    id:3,
-    name:"THE EMPRESS",
-    file:"empress.jpg",
-    reading:READINGS[3]
-  },
-
-  {
-    id:4,
-    name:"THE EMPEROR",
-    file:"emperor.jpg",
-    reading:READINGS[4]
-  },
-
-  {
-    id:5,
-    name:"THE HIEROPHANT",
-    file:"hierophant.jpg",
-    reading:READINGS[5]
-  },
-
-  {
-    id:6,
-    name:"THE LOVERS",
-    file:"lovers.jpg",
-    reading:READINGS[6]
-  },
-
-  {
-    id:7,
-    name:"THE CHARIOT",
-    file:"chariot.jpg",
-    reading:READINGS[7]
-  },
-
-  {
-    id:8,
-    name:"STRENGTH",
-    file:"strength.jpg",
-    reading:READINGS[8]
-  },
-
-  {
-    id:9,
-    name:"THE HERMIT",
-    file:"hermit.jpg",
-    reading:READINGS[9]
-  },
-
-  {
-    id:10,
-    name:"WHEEL OF FORTUNE",
-    file:"wheel.jpg",
-    reading:READINGS[10]
-  },
-
-  {
-    id:11,
-    name:"JUSTICE",
-    file:"justice.jpg",
-    reading:READINGS[11]
-  },
-
-  {
-    id:12,
-    name:"THE HANGED MAN",
-    file:"hanged.jpg",
-    reading:READINGS[12]
-  },
-
-  {
-    id:13,
-    name:"DEATH",
-    file:"death.jpg",
-    reading:READINGS[13]
-  },
-
-  {
-    id:14,
-    name:"TEMPERANCE",
-    file:"temperance.jpg",
-    reading:READINGS[14]
-  },
-
-  {
-    id:15,
-    name:"THE DEVIL",
-    file:"devil.jpg",
-    reading:READINGS[15]
-  },
-
-  {
-    id:16,
-    name:"THE TOWER",
-    file:"tower.jpg",
-    reading:READINGS[16]
-  },
-
-  {
-    id:17,
-    name:"THE STAR",
-    file:"star.jpg",
-    reading:READINGS[17]
-  },
-
-  {
-    id:18,
-    name:"THE MOON",
-    file:"moon.jpg",
-    reading:READINGS[18]
-  },
-
-  {
-    id:19,
-    name:"THE SUN",
-    file:"sun.jpg",
-    reading:READINGS[19]
-  },
-
-  {
-    id:20,
-    name:"JUDGEMENT",
-    file:"judgement.jpg",
-    reading:READINGS[20]
-  },
-
-  {
-    id:21,
-    name:"THE WORLD",
-    file:"world.jpg",
-    reading:READINGS[21]
-  }
-
-];
-
-
-/* =========================================================
-   SCREEN CONTROL
-========================================================= */
-
-function showScreen(screen){
-
-  [
-    landing,
-    questionScreen,
-    readingScreen,
-    statsScreen
-  ].forEach(
-    item =>
-      item.classList.remove("active")
-  );
-
-  screen.classList.add("active");
-
-  currentScreen =
-    screen.id;
-}
-
-
-/* =========================================================
-   UTILITY
-========================================================= */
-
-function wait(ms){
-
-  return new Promise(
-    resolve =>
-      setTimeout(
-        resolve,
-        ms
-      )
-  );
-
-}
-
-
-function showDialogue(text){
-
-  dialogueLine.classList.remove(
-    "show"
-  );
-
-  setTimeout(
-    () => {
-
-      dialogueLine.textContent =
-        text;
-
-      dialogueLine.classList.add(
-        "show"
-      );
-
-    },
-    250
-  );
-
-}
-
-
-/* =========================================================
-   AUDIO
-========================================================= */
-
-function createAudio(){
-
-  if(audioContext){
-    return;
-  }
-
-  try{
-
-    audioContext =
-      new (
-        window.AudioContext ||
-        window.webkitAudioContext
-      )();
-
-    masterGain =
-      audioContext.createGain();
-
-    masterGain.gain.value =
-      soundEnabled
-        ? .055
-        : 0;
-
-    masterGain.connect(
-      audioContext.destination
-    );
-
-    const oscillator1 =
-      audioContext.createOscillator();
-
-    const gain1 =
-      audioContext.createGain();
-
-    oscillator1.type =
-      "sine";
-
-    oscillator1.frequency.value =
-      55;
-
-    gain1.gain.value =
-      .32;
-
-    oscillator1.connect(
-      gain1
-    );
-
-    gain1.connect(
-      masterGain
-    );
-
-    oscillator1.start();
-
-    const oscillator2 =
-      audioContext.createOscillator();
-
-    const gain2 =
-      audioContext.createGain();
-
-    oscillator2.type =
-      "sine";
-
-    oscillator2.frequency.value =
-      82.4;
-
-    gain2.gain.value =
-      .055;
-
-    oscillator2.connect(
-      gain2
-    );
-
-    gain2.connect(
-      masterGain
-    );
-
-    oscillator2.start();
-
-  }catch(error){
-
-    console.warn(
-      "Audio unavailable",
-      error
-    );
-
-  }
-
-}
-
-
-function resumeAudio(){
-
-  if(
-    audioContext &&
-    audioContext.state ===
-      "suspended"
-  ){
-
-    audioContext
-      .resume()
-      .catch(
-        () => {}
-      );
-
-  }
-
-}
-
-
-function playTone(
-  frequency = 440,
-  duration = .45,
-  volume = .05
-){
-
-  if(
-    !soundEnabled ||
-    !audioContext ||
-    !masterGain
-  ){
-
-    return;
-  }
-
-  try{
-
-    const oscillator =
-      audioContext.createOscillator();
-
-    const gain =
-      audioContext.createGain();
-
-    oscillator.type =
-      "sine";
-
-    oscillator.frequency.setValueAtTime(
-      frequency,
-      audioContext.currentTime
-    );
-
-    gain.gain.setValueAtTime(
-      0,
-      audioContext.currentTime
-    );
-
-    gain.gain.linearRampToValueAtTime(
-      volume,
-      audioContext.currentTime + .04
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-      .001,
-      audioContext.currentTime +
-        duration
-    );
-
-    oscillator.connect(
-      gain
-    );
-
-    gain.connect(
-      masterGain
-    );
-
-    oscillator.start();
-
-    oscillator.stop(
-      audioContext.currentTime +
-      duration +
-      .03
-    );
-
-  }catch(error){}
-
-}
-
-
-soundToggle.addEventListener(
-  "click",
-  () => {
-
-    soundEnabled =
-      !soundEnabled;
-
-    soundIcon.textContent =
-      soundEnabled
-        ? "◒"
-        : "◌";
-
-    if(soundEnabled){
-
-      createAudio();
-      resumeAudio();
-
-    }
-
-    if(
-      audioContext &&
-      masterGain
-    ){
-
-      masterGain.gain.setTargetAtTime(
-        soundEnabled
-          ? .055
-          : 0,
-
-        audioContext.currentTime,
-
-        .08
-      );
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   ENTER
-========================================================= */
-
-enterBtn.addEventListener(
+askBtn.addEventListener(
   "click",
   async () => {
 
-    createAudio();
-    resumeAudio();
-
-    playTone(
-      220,
-      .8,
-      .035
-    );
-
-    trackEvent(
-      "stillwater_enter"
-    );
-
-    portal.classList.add(
-      "active"
-    );
-
-    await wait(850);
-
-    portal.classList.remove(
-      "active"
-    );
-
-    showScreen(
-      questionScreen
-    );
-
-    await wait(500);
-
-    veraFigure.classList.add(
-      "visible"
-    );
-
-    showDialogue(
-      "มาถึงแล้วนะคะ"
-    );
-
-    await wait(2400);
-
-    showDialogue(
-      "ถ้าคุณมีคำถามหนึ่งข้อ ลองส่งมันมาให้พี่เวรา"
-    );
-
-    await wait(2300);
-
-    questionForm.classList.add(
-      "visible"
-    );
-
-    questionInput.focus();
-
-  }
-);
-
-
-/* =========================================================
-   QUESTION SUBMIT
-========================================================= */
-
-questionForm.addEventListener(
-  "submit",
-  async event => {
-
-    event.preventDefault();
-
-    if(
-      questionSequenceRunning
-    ){
-
-      return;
-
-    }
-
     const question =
-      questionInput.value.trim();
+      $("question")
+      .value
+      .trim();
 
-    if(
-      question.length < 3
-    ){
 
-      questionInput.focus();
+    if(!question){
+
+      $("question").focus();
 
       return;
-
     }
 
-    questionSequenceRunning =
+
+    askBtn.disabled =
       true;
 
-    lastQuestion =
-      question;
 
-    questionSubmit.disabled =
-      true;
-
-    questionInput.disabled =
-      true;
-
-    trackEvent(
-      "free_question_submitted",
-      {
-        question_length:
-          question.length
-      }
-    );
-
-    showDialogue(
-      "พี่เวราจะลองขอคำตอบจากจักรวาลให้คุณนะคะ…"
-    );
-
-    questionLight.classList.remove(
-      "travel"
-    );
-
-    void questionLight.offsetWidth;
-
-    questionLight.classList.add(
-      "travel"
-    );
-
-    playTone(
-      330,
-      .7,
-      .04
-    );
-
-    await wait(1750);
-
-    portal.classList.add(
-      "active"
-    );
-
-    playTone(
-      110,
-      1.1,
-      .035
-    );
-
-    await wait(900);
-
-    portal.classList.remove(
-      "active"
-    );
-
-    showScreen(
-      readingScreen
-    );
-
-    await wait(500);
-
-    revealCard();
-
-  }
-);
+    $("result")
+      .classList
+      .add("hidden");
 
 
-/* =========================================================
-   CARD IMAGE
-   ใช้ชื่อไฟล์จริงใน cards/web/
-========================================================= */
-
-function setCardImage(card){
-
-  /*
-    ไฟล์หลักของปาล์มอยู่ที่:
-
-    cards/web/fool.jpg
-    cards/web/magician.jpg
-    cards/web/high-priestess.jpg
-    ...
-
-    ใช้ไฟล์จริงก่อนเสมอ
-  */
-
-  const candidates = [
-
-    `cards/web/${card.file}`,
-
-    /*
-      fallback สำหรับบางชื่อที่อาจตั้งต่างกัน
-    */
-
-    ...(card.id === 2
-      ? [
-          "cards/web/priestess.jpg",
-          "cards/web/high_priestess.jpg",
-          "cards/web/highpriestess.jpg"
-        ]
-      : []),
-
-    ...(card.id === 10
-      ? [
-          "cards/web/wheel-of-fortune.jpg",
-          "cards/web/wheeloffortune.jpg"
-        ]
-      : []),
-
-    ...(card.id === 16
-      ? [
-          "cards/web/the-tower.jpg"
-        ]
-      : []),
-
-    ...(card.id === 17
-      ? [
-          "cards/web/the-star.jpg"
-        ]
-      : []),
-
-    ...(card.id === 18
-      ? [
-          "cards/web/the-moon.jpg"
-        ]
-      : []),
-
-    ...(card.id === 19
-      ? [
-          "cards/web/the-sun.jpg"
-        ]
-      : []),
-
-    ...(card.id === 21
-      ? [
-          "cards/web/the-world.jpg"
-        ]
-      : [])
-
-  ];
+    $("status")
+      .classList
+      .remove("hidden");
 
 
-  let index = 0;
+    $("status")
+      .textContent =
+      "พี่เวรากำลังฟังคำถามของคุณ…";
 
 
-  cardImage.onerror =
-    () => {
+    try{
 
-      index++;
+      const response =
+        await fetch(
+          "/api/read",
+          {
+            method:"POST",
 
-      if(
-        index <
-        candidates.length
-      ){
+            headers:{
+              "Content-Type":
+                "application/json"
+            },
 
-        cardImage.src =
-          candidates[index];
+            body:
+              JSON.stringify({
+                question
+              })
+          }
+        );
 
-      }else{
 
-        /*
-          ถ้าไม่พบรูปจริง
-          ซ่อนเฉพาะรูป ไม่ทำให้หน้าเว็บพัง
-        */
+      const data =
+        await response.json();
 
-        cardImage.style.display =
-          "none";
 
-        console.warn(
-          "ไม่พบภาพไพ่:",
-          card.name,
-          candidates
+      if(!response.ok){
+
+        throw new Error(
+          data.error ||
+          "ระบบไม่สามารถอ่านคำถามได้"
         );
 
       }
 
-    };
+
+      /* =========================
+         STATUS
+      ========================== */
+
+      $("status")
+        .textContent =
+        "พี่เวราอ่านคำถามเสร็จแล้ว";
 
 
-  cardImage.onload =
-    () => {
+      /* =========================
+         ANALYSIS
+      ========================== */
 
-      cardImage.style.display =
+      const analysis =
+        data.analysis;
+
+
+      $("analysis")
+        .innerHTML = `
+
+          <div class="kv">
+
+            <div class="k">
+              เจตนาหลัก
+            </div>
+
+            <div class="v">
+              ${escapeHtml(
+                analysis.intent
+              )}
+            </div>
+
+          </div>
+
+
+          <div class="kv">
+
+            <div class="k">
+              อารมณ์
+            </div>
+
+            <div class="v">
+              ${escapeHtml(
+                analysis.emotional_state
+              )}
+            </div>
+
+          </div>
+
+
+          <div class="kv">
+
+            <div class="k">
+              ระดับอารมณ์
+            </div>
+
+            <div class="v">
+              ${escapeHtml(
+                analysis.emotional_intensity
+              )}
+            </div>
+
+          </div>
+
+
+          <div class="kv">
+
+            <div class="k">
+              สถานการณ์
+            </div>
+
+            <div class="v">
+              ${escapeHtml(
+                analysis.situation
+              )}
+            </div>
+
+          </div>
+
+
+          <div class="kv">
+
+            <div class="k">
+              ความต้องการลึก ๆ
+            </div>
+
+            <div class="v">
+              ${escapeHtml(
+                analysis.core_need
+              )}
+            </div>
+
+          </div>
+
+
+          <div class="kv">
+
+            <div class="k">
+              มุมที่ควรอ่าน
+            </div>
+
+            <div class="v">
+              ${escapeHtml(
+                analysis.reading_angle
+              )}
+            </div>
+
+          </div>
+
+        `;
+
+
+      const signals =
+        Array.isArray(
+          analysis.key_signals
+        )
+        ? analysis.key_signals.join(" · ")
+        : "";
+
+
+      $("signals")
+        .innerHTML =
+        "<strong>สัญญาณที่จับได้:</strong> "
+        +
+        escapeHtml(signals);
+
+
+      /* =========================
+         CARD
+      ========================== */
+
+      $("cardName")
+        .textContent =
+        data.card.name;
+
+
+      const image =
+        $("cardImg");
+
+
+      const fallback =
+        $("cardFallback");
+
+
+      image.style.display =
         "block";
 
-    };
 
+      fallback.style.display =
+        "none";
 
-  cardImage.style.display =
-    "block";
 
-  cardImage.src =
-    candidates[0];
+      image.src =
+        data.card.image;
 
-}
 
+      image.onload =
+        () => {
 
-/* =========================================================
-   REVEAL CARD
-========================================================= */
+          image.style.display =
+            "block";
 
-function revealCard(){
+          fallback.style.display =
+            "none";
 
-  currentCard =
-    CARDS[
-      Math.floor(
-        Math.random() *
-        CARDS.length
-      )
-    ];
+        };
 
 
-  cardShell.classList.remove(
-    "revealed"
-  );
+      image.onerror =
+        () => {
 
-  readingContent.classList.remove(
-    "visible"
-  );
+          image.style.display =
+            "none";
 
-  deepReading.classList.remove(
-    "visible"
-  );
+          fallback.style.display =
+            "flex";
 
-  secondGate.classList.remove(
-    "visible"
-  );
+        };
 
-  readingText.textContent =
-    "";
 
-  btnDeeper.disabled =
-    false;
+      /* =========================
+         READING
+      ========================== */
 
-  btnDeeper.textContent =
-    "✦ เปิดไพ่ใบที่ 2 · 19 บาท";
+      $("reading")
+        .textContent =
+        data.reading;
 
 
-  setCardImage(
-    currentCard
-  );
+      /* =========================
+         COST
+      ========================== */
 
+      const usage =
+        data.usage || {};
 
-  setTimeout(
-    () => {
 
-      cardShell.classList.add(
-        "revealed"
-      );
+      const estimated =
+        Number(
+          usage.estimated_usd || 0
+        );
 
-      playTone(
-        523.25,
-        .8,
-        .055
-      );
 
-    },
-    250
-  );
+      $("cost")
+        .innerHTML = `
 
+          <strong>
+            AI TEST COST
+          </strong>
 
-  setTimeout(
-    () => {
+          <br>
 
-      readingText.textContent =
-        currentCard.reading;
+          วิเคราะห์คำถาม:
+          ${usage.analysis_input_tokens ?? "-"}
+          input +
+          ${usage.analysis_output_tokens ?? "-"}
+          output tokens
 
-      readingContent.classList.add(
-        "visible"
-      );
+          <br>
 
-    },
-    1450
-  );
+          อ่านไพ่:
+          ${usage.reading_input_tokens ?? "-"}
+          input +
+          ${usage.reading_output_tokens ?? "-"}
+          output tokens
 
+          <br>
 
-  setTimeout(
-    async () => {
+          รวม:
+          ${usage.total_tokens ?? "-"}
+          tokens
 
-      deepReading.classList.add(
-        "visible"
-      );
+          <br>
 
-      trackEvent(
-        "free_reading_completed",
-        {
-          card_id:
-            currentCard.id,
+          ค่า AI โดยประมาณ:
+          $${estimated.toFixed(6)}
 
-          card_name:
-            currentCard.name
-        }
-      );
+          <br><br>
 
-      trackEvent(
-        "deep_reading_offer_viewed",
-        {
-          card_id:
-            currentCard.id,
+          <span>
+            เพดานตอนนี้:
+            Analysis 300 tokens ·
+            Free Reading 500 tokens
+          </span>
 
-          card_name:
-            currentCard.name
-        }
-      );
+        `;
 
-      await countHit(
-        "free-reading-completed"
-      );
 
-    },
-    2600
-  );
+      /* =========================
+         SHOW
+      ========================== */
 
-}
+      $("result")
+        .classList
+        .remove("hidden");
 
 
-/* =========================================================
-   SECOND CARD
-========================================================= */
+      window.scrollTo({
+        top:
+          $("result")
+          .offsetTop - 20,
 
-btnDeeper.addEventListener(
-  "click",
-  async () => {
+        behavior:
+          "smooth"
+      });
 
-    if(
-      !currentCard
-    ){
 
-      return;
+    }catch(error){
 
-    }
-
-    btnDeeper.disabled =
-      true;
-
-    btnDeeper.textContent =
-      "รับคำขอแล้ว";
-
-    secondGate.classList.add(
-      "visible"
-    );
-
-    playTone(
-      659.25,
-      .65,
-      .045
-    );
-
-    trackEvent(
-      "deep_reading_interest",
-      {
-        card_id:
-          currentCard.id,
-
-        card_name:
-          currentCard.name,
-
-        price_thb:
-          19
-      }
-    );
-
-    const result =
-      await countHit(
-        "deep-reading-clicks"
-      );
-
-    if(result){
-
-      console.log(
-        "Stillwater deep reading clicks:",
-        result.value
-      );
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   STATS
-========================================================= */
-
-async function loadStats(){
-
-  statDeep.textContent =
-    "…";
-
-  statComplete.textContent =
-    "…";
-
-  statRate.textContent =
-    "…";
-
-
-  const results =
-    await Promise.all([
-
-      getCount(
-        "deep-reading-clicks"
-      ),
-
-      getCount(
-        "free-reading-completed"
-      )
-
-    ]);
-
-
-  const deep =
-    results[0];
-
-  const complete =
-    results[1];
-
-
-  statDeep.textContent =
-    deep === null
-      ? "—"
-      : deep;
-
-
-  statComplete.textContent =
-    complete === null
-      ? "—"
-      : complete;
-
-
-  if(
-    deep !== null &&
-    complete !== null &&
-    complete > 0
-  ){
-
-    statRate.textContent =
-      (
-        deep /
-        complete *
-        100
-      ).toFixed(1) +
-      "%";
-
-  }else{
-
-    statRate.textContent =
-      "—";
-
-  }
-
-
-  if(
-    deep === null
-  ){
-
-    statsNote.textContent =
-      "ยังเชื่อมตัวนับออนไลน์ไม่ได้";
-
-  }else{
-
-    statsNote.textContent =
-      "ข้อมูลจากตัวนับออนไลน์ของ Stillwater";
-
-  }
-
-}
-
-
-statsRefresh.addEventListener(
-  "click",
-  loadStats
-);
-
-
-/* =========================================================
-   COSMOS
-========================================================= */
-
-const cosmos =
-  document.getElementById(
-    "cosmos"
-  );
-
-const ctx =
-  cosmos.getContext(
-    "2d"
-  );
-
-let cw = 0;
-let ch = 0;
-
-let stars = [];
-let particles = [];
-
-
-function resizeCosmos(){
-
-  cw =
-    window.innerWidth;
-
-  ch =
-    window.innerHeight;
-
-  const dpr =
-    Math.min(
-      window.devicePixelRatio || 1,
-      2
-    );
-
-  cosmos.width =
-    cw * dpr;
-
-  cosmos.height =
-    ch * dpr;
-
-  cosmos.style.width =
-    cw + "px";
-
-  cosmos.style.height =
-    ch + "px";
-
-  ctx.setTransform(
-    dpr,
-    0,
-    0,
-    dpr,
-    0,
-    0
-  );
-
-  stars = [];
-  particles = [];
-
-
-  const starCount =
-    Math.min(
-      180,
-      Math.floor(
-        cw * ch / 6500
-      )
-    );
-
-
-  for(
-    let i = 0;
-    i < starCount;
-    i++
-  ){
-
-    stars.push({
-
-      x:
-        Math.random() * cw,
-
-      y:
-        Math.random() * ch,
-
-      r:
-        Math.random() * 1.2 + .15,
-
-      a:
-        Math.random() * .65 + .1,
-
-      speed:
-        Math.random() * .008 + .002,
-
-      phase:
-        Math.random() *
-        Math.PI *
-        2
-
-    });
-
-  }
-
-
-  const particleCount =
-    Math.min(
-      55,
-      Math.floor(
-        cw * ch / 20000
-      )
-    );
-
-
-  for(
-    let i = 0;
-    i < particleCount;
-    i++
-  ){
-
-    particles.push({
-
-      x:
-        Math.random() * cw,
-
-      y:
-        Math.random() * ch,
-
-      r:
-        Math.random() * 1.8 + .3,
-
-      vx:
-        (Math.random() - .5) *
-        .12,
-
-      vy:
-        (Math.random() - .5) *
-        .10,
-
-      a:
-        Math.random() * .20 + .05
-
-    });
-
-  }
-
-}
-
-
-function drawCosmos(time){
-
-  ctx.clearRect(
-    0,
-    0,
-    cw,
-    ch
-  );
-
-
-  const base =
-    ctx.createRadialGradient(
-      cw * .5,
-      ch * .45,
-      0,
-      cw * .5,
-      ch * .45,
-      Math.max(
-        cw,
-        ch
-      ) * .75
-    );
-
-
-  base.addColorStop(
-    0,
-    "#15102d"
-  );
-
-  base.addColorStop(
-    .35,
-    "#0c0a20"
-  );
-
-  base.addColorStop(
-    1,
-    "#050510"
-  );
-
-
-  ctx.fillStyle =
-    base;
-
-  ctx.fillRect(
-    0,
-    0,
-    cw,
-    ch
-  );
-
-
-  const nebula1 =
-    ctx.createRadialGradient(
-      cw * .22,
-      ch * .30,
-      0,
-      cw * .22,
-      ch * .30,
-      cw * .45
-    );
-
-
-  nebula1.addColorStop(
-    0,
-    "rgba(80,60,150,.13)"
-  );
-
-  nebula1.addColorStop(
-    1,
-    "rgba(20,15,50,0)"
-  );
-
-
-  ctx.fillStyle =
-    nebula1;
-
-  ctx.fillRect(
-    0,
-    0,
-    cw,
-    ch
-  );
-
-
-  const nebula2 =
-    ctx.createRadialGradient(
-      cw * .78,
-      ch * .55,
-      0,
-      cw * .78,
-      ch * .55,
-      cw * .50
-    );
-
-
-  nebula2.addColorStop(
-    0,
-    "rgba(70,80,160,.10)"
-  );
-
-  nebula2.addColorStop(
-    1,
-    "rgba(20,15,50,0)"
-  );
-
-
-  ctx.fillStyle =
-    nebula2;
-
-  ctx.fillRect(
-    0,
-    0,
-    cw,
-    ch
-  );
-
-
-  stars.forEach(
-    star => {
-
-      const alpha =
-        star.a +
-        Math.sin(
-          time *
-          star.speed +
-          star.phase
-        ) *
-        .18;
-
-
-      ctx.beginPath();
-
-      ctx.arc(
-        star.x,
-        star.y,
-        star.r,
-        0,
-        Math.PI * 2
-      );
-
-
-      ctx.fillStyle =
-        `rgba(
-          220,
-          225,
-          255,
-          ${Math.max(
-            .03,
-            alpha
+      $("status")
+        .innerHTML =
+        `<span class="error">
+          ${escapeHtml(
+            error.message
           )}
-        )`;
+        </span>`;
 
-      ctx.fill();
+    }finally{
 
-    }
-  );
-
-
-  particles.forEach(
-    particle => {
-
-      particle.x +=
-        particle.vx;
-
-      particle.y +=
-        particle.vy;
-
-
-      if(
-        particle.x < -10
-      ){
-
-        particle.x =
-          cw + 10;
-
-      }
-
-      if(
-        particle.x >
-        cw + 10
-      ){
-
-        particle.x =
-          -10;
-
-      }
-
-      if(
-        particle.y < -10
-      ){
-
-        particle.y =
-          ch + 10;
-
-      }
-
-      if(
-        particle.y >
-        ch + 10
-      ){
-
-        particle.y =
-          -10;
-
-      }
-
-
-      ctx.beginPath();
-
-      ctx.arc(
-        particle.x,
-        particle.y,
-        particle.r,
-        0,
-        Math.PI * 2
-      );
-
-
-      ctx.fillStyle =
-        `rgba(
-          185,
-          200,
-          255,
-          ${particle.a}
-        )`;
-
-      ctx.fill();
+      askBtn.disabled =
+        false;
 
     }
-  );
 
-
-  requestAnimationFrame(
-    drawCosmos
-  );
-
-}
-
-
-/* =========================================================
-   WATER
-========================================================= */
-
-const water =
-  document.getElementById(
-    "water"
-  );
-
-const wctx =
-  water.getContext(
-    "2d"
-  );
-
-let ww = 0;
-let wh = 0;
-
-
-function resizeWater(){
-
-  ww =
-    window.innerWidth;
-
-  wh =
-    window.innerHeight;
-
-  const dpr =
-    Math.min(
-      window.devicePixelRatio || 1,
-      2
-    );
-
-  water.width =
-    ww * dpr;
-
-  water.height =
-    wh * dpr;
-
-  water.style.width =
-    ww + "px";
-
-  water.style.height =
-    wh + "px";
-
-  wctx.setTransform(
-    dpr,
-    0,
-    0,
-    dpr,
-    0,
-    0
-  );
-
-}
-
-
-function drawWater(time){
-
-  wctx.clearRect(
-    0,
-    0,
-    ww,
-    wh
-  );
-
-
-  const horizon =
-    wh * .70;
-
-
-  const waterGradient =
-    wctx.createLinearGradient(
-      0,
-      horizon,
-      0,
-      wh
-    );
-
-
-  waterGradient.addColorStop(
-    0,
-    "rgba(45,45,100,.09)"
-  );
-
-  waterGradient.addColorStop(
-    .35,
-    "rgba(25,30,75,.15)"
-  );
-
-  waterGradient.addColorStop(
-    1,
-    "rgba(4,6,20,.32)"
-  );
-
-
-  wctx.fillStyle =
-    waterGradient;
-
-  wctx.fillRect(
-    0,
-    horizon,
-    ww,
-    wh - horizon
-  );
-
-
-  const glow =
-    wctx.createRadialGradient(
-      ww * .5,
-      horizon,
-      0,
-      ww * .5,
-      horizon,
-      ww * .6
-    );
-
-
-  glow.addColorStop(
-    0,
-    "rgba(170,185,255,.10)"
-  );
-
-  glow.addColorStop(
-    1,
-    "rgba(120,140,220,0)"
-  );
-
-
-  wctx.fillStyle =
-    glow;
-
-  wctx.fillRect(
-    0,
-    horizon - 100,
-    ww,
-    200
-  );
-
-
-  for(
-    let i = 0;
-    i < 22;
-    i++
-  ){
-
-    const y =
-      horizon +
-      i * 11;
-
-
-    wctx.beginPath();
-
-    wctx.moveTo(
-      0,
-      y
-    );
-
-
-    for(
-      let x = 0;
-      x <= ww;
-      x += 16
-    ){
-
-      const yy =
-        y +
-        Math.sin(
-          x * .018 +
-          time * .0007 +
-          i * .4
-        ) *
-        1.5;
-
-
-      wctx.lineTo(
-        x,
-        yy
-      );
-
-    }
-
-
-    wctx.strokeStyle =
-      `rgba(
-        180,
-        195,
-        245,
-        ${.018 + i * .0012}
-      )`;
-
-    wctx.lineWidth =
-      .7;
-
-    wctx.stroke();
-
-  }
-
-
-  requestAnimationFrame(
-    drawWater
-  );
-
-}
-
-
-/* =========================================================
-   RESIZE
-========================================================= */
-
-window.addEventListener(
-  "resize",
-  () => {
-
-    resizeCosmos();
-    resizeWater();
-
-  },
-  {
-    passive:true
   }
 );
 
 
-resizeCosmos();
-resizeWater();
+/* =========================================
+   ESCAPE HTML
+========================================= */
 
+function escapeHtml(value){
 
-requestAnimationFrame(
-  drawCosmos
-);
+  return String(
+    value ?? ""
+  )
+  .replace(
+    /[&<>"']/g,
+    (character) => {
 
-requestAnimationFrame(
-  drawWater
-);
+      return {
 
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#039;"
 
-/* =========================================================
-   STATS ROUTE
-========================================================= */
+      }[character];
 
-if(
-  DEBUG_STATS
-){
-
-  showScreen(
-    statsScreen
+    }
   );
 
-  loadStats();
-
 }
-
-})();
 
 </script>
 
