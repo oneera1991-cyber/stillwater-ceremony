@@ -9,13 +9,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<!--
-  English:
-  Cormorant Garamond
-
-  Thai:
-  Anuphan = loopless Thai
--->
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@300;400;500&family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
@@ -97,12 +90,9 @@ button{
 
 body::before{
   content:"";
-
   position:fixed;
   inset:0;
-
   z-index:2;
-
   pointer-events:none;
 
   background:
@@ -116,14 +106,10 @@ body::before{
 
 body::after{
   content:"";
-
   position:fixed;
   inset:0;
-
   z-index:3;
-
   pointer-events:none;
-
   opacity:.16;
 
   background-image:
@@ -133,21 +119,16 @@ body::after{
     );
 
   background-size:4px 4px;
-
   mix-blend-mode:screen;
 }
 
 .fog-band{
   position:fixed;
-
   left:-10%;
   right:-10%;
   bottom:17%;
-
   height:28%;
-
   z-index:4;
-
   pointer-events:none;
 
   background:
@@ -159,7 +140,6 @@ body::after{
     );
 
   filter:blur(25px);
-
   opacity:.75;
 
   animation:
@@ -167,7 +147,6 @@ body::after{
 }
 
 @keyframes fogFloat{
-
   from{
     transform:translate3d(-1%,0,0);
   }
@@ -175,7 +154,6 @@ body::after{
   to{
     transform:translate3d(1%,2%,0) scale(1.04);
   }
-
 }
 
 
@@ -184,7 +162,6 @@ body::after{
 ========================================================= */
 
 .sound-toggle{
-
   position:fixed;
 
   top:
@@ -194,7 +171,6 @@ body::after{
     );
 
   right:18px;
-
   z-index:50;
 
   width:42px;
@@ -219,12 +195,10 @@ body::after{
   -webkit-backdrop-filter:blur(10px);
 
   cursor:pointer;
-
   transition:.4s ease;
 }
 
 .sound-toggle:hover{
-
   background:
     rgba(50,40,100,.28);
 
@@ -242,14 +216,11 @@ body::after{
 ========================================================= */
 
 .screen{
-
   position:fixed;
   inset:0;
-
   z-index:10;
 
   display:flex;
-
   align-items:center;
   justify-content:center;
 
@@ -265,9 +236,7 @@ body::after{
     );
 
   opacity:0;
-
   visibility:hidden;
-
   pointer-events:none;
 
   transition:
@@ -276,11 +245,8 @@ body::after{
 }
 
 .screen.active{
-
   opacity:1;
-
   visibility:visible;
-
   pointer-events:auto;
 }
 
@@ -290,9 +256,7 @@ body::after{
 ========================================================= */
 
 .landing-inner{
-
   width:min(90vw,700px);
-
   text-align:center;
 
   transform:translateY(10px);
@@ -305,17 +269,7 @@ body::after{
   transform:translateY(0);
 }
 
-
-/*
-  STILLWATER
-  - uppercase
-  - much smaller
-  - thinner
-  - more breathing space
-*/
-
 .brand{
-
   margin-bottom:24px;
 
   font-family:
@@ -324,17 +278,15 @@ body::after{
 
   font-size:
     clamp(
-      32px,
-      7vw,
-      50px
+      26px,
+      5vw,
+      40px
     );
 
   line-height:.9;
-
   font-weight:300;
 
   letter-spacing:.28em;
-
   text-transform:uppercase;
 
   color:
@@ -345,9 +297,7 @@ body::after{
     rgba(150,160,255,.16);
 }
 
-
 .brand-sub{
-
   margin-bottom:28px;
 
   font-family:
@@ -355,18 +305,14 @@ body::after{
     serif;
 
   font-size:11px;
-
   letter-spacing:.28em;
-
   text-transform:uppercase;
 
   color:
     rgba(205,210,235,.40);
 }
 
-
 .landing-line{
-
   margin:
     0 auto 42px;
 
@@ -377,18 +323,14 @@ body::after{
     sans-serif;
 
   font-size:14px;
-
   font-weight:300;
-
   line-height:2;
 
   color:
     rgba(220,225,245,.68);
 }
 
-
 .enter-btn{
-
   position:relative;
 
   min-width:150px;
@@ -413,9 +355,7 @@ body::after{
     serif;
 
   font-size:18px;
-
   font-weight:400;
-
   letter-spacing:.18em;
 
   cursor:pointer;
@@ -426,7 +366,6 @@ body::after{
 }
 
 .enter-btn:hover{
-
   background:
     rgba(60,45,110,.28);
 
@@ -444,14 +383,10 @@ body::after{
 ========================================================= */
 
 .portal{
-
   position:fixed;
   inset:0;
-
   z-index:100;
-
   pointer-events:none;
-
   opacity:0;
 
   background:
@@ -468,7 +403,6 @@ body::after{
 }
 
 .portal.active{
-
   opacity:1;
 
   animation:
@@ -476,7 +410,6 @@ body::after{
 }
 
 @keyframes portalPulse{
-
   0%{
     transform:scale(.8);
     opacity:0;
@@ -496,7 +429,6 @@ body::after{
     transform:scale(1.35);
     opacity:0;
   }
-
 }
 
 
@@ -505,9 +437,7 @@ body::after{
 ========================================================= */
 
 .question-inner{
-
   width:min(100%,520px);
-
   text-align:center;
 
   transform:translateY(15px);
@@ -520,9 +450,7 @@ body::after{
   transform:translateY(0);
 }
 
-
 .scene-stage{
-
   position:relative;
 
   width:min(100%,420px);
@@ -547,7 +475,6 @@ body::after{
 ========================================================= */
 
 .vera-figure{
-
   position:relative;
 
   width:170px;
@@ -583,7 +510,6 @@ body::after{
 }
 
 .vera-figure.visible{
-
   opacity:.9;
 
   transform:
@@ -592,7 +518,6 @@ body::after{
 }
 
 @keyframes veraFloat{
-
   from{
     margin-top:0;
   }
@@ -600,12 +525,9 @@ body::after{
   to{
     margin-top:-8px;
   }
-
 }
 
-
 .vera-aura{
-
   position:absolute;
 
   inset:
@@ -634,7 +556,6 @@ body::after{
 }
 
 @keyframes auraPulse{
-
   from{
     transform:scale(.88);
     opacity:.45;
@@ -644,12 +565,9 @@ body::after{
     transform:scale(1.08);
     opacity:.9;
   }
-
 }
 
-
 .vera-halo{
-
   position:absolute;
 
   width:145px;
@@ -674,9 +592,7 @@ body::after{
   filter:blur(12px);
 }
 
-
 .vera-body{
-
   position:absolute;
 
   left:50%;
@@ -703,13 +619,10 @@ body::after{
     );
 
   filter:blur(6px);
-
   opacity:.68;
 }
 
-
 .vera-presence{
-
   position:absolute;
 
   left:50%;
@@ -733,13 +646,10 @@ body::after{
     );
 
   filter:blur(8px);
-
   opacity:.65;
 }
 
-
 .vera-light{
-
   position:absolute;
 
   left:50%;
@@ -761,13 +671,10 @@ body::after{
     );
 
   filter:blur(18px);
-
   opacity:.55;
 }
 
-
 .vera-reflection{
-
   position:absolute;
 
   left:50%;
@@ -789,13 +696,10 @@ body::after{
     );
 
   filter:blur(8px);
-
   opacity:.45;
 }
 
-
 .water-glow{
-
   position:absolute;
 
   left:50%;
@@ -825,7 +729,6 @@ body::after{
 ========================================================= */
 
 .question-light{
-
   position:absolute;
 
   left:50%;
@@ -851,12 +754,10 @@ body::after{
     rgba(150,170,255,.55);
 
   opacity:0;
-
   pointer-events:none;
 }
 
 .question-light.travel{
-
   opacity:1;
 
   animation:
@@ -867,7 +768,6 @@ body::after{
 }
 
 @keyframes lightIntoWater{
-
   0%{
     top:32%;
     transform:scale(.7);
@@ -889,7 +789,6 @@ body::after{
     transform:scale(.2);
     opacity:0;
   }
-
 }
 
 
@@ -898,11 +797,9 @@ body::after{
 ========================================================= */
 
 .dialogue{
-
   min-height:92px;
 
   display:flex;
-
   align-items:center;
   justify-content:center;
 
@@ -925,7 +822,6 @@ body::after{
     );
 
   font-weight:300;
-
   line-height:1.8;
 
   color:
@@ -937,7 +833,6 @@ body::after{
 }
 
 .dialogue-line{
-
   opacity:0;
 
   transition:
@@ -949,9 +844,7 @@ body::after{
 }
 
 .dialogue-line.show{
-
   opacity:1;
-
   transform:
     translateY(0);
 }
@@ -962,11 +855,8 @@ body::after{
 ========================================================= */
 
 .question-form{
-
   width:100%;
-
   max-width:460px;
-
   margin:0 auto;
 
   opacity:0;
@@ -982,7 +872,6 @@ body::after{
 }
 
 .question-form.visible{
-
   opacity:1;
 
   transform:
@@ -991,26 +880,20 @@ body::after{
   pointer-events:auto;
 }
 
-
 .question-label{
-
   display:block;
 
   margin-bottom:10px;
 
   font-size:11px;
-
   font-weight:300;
-
   letter-spacing:.06em;
 
   color:
     rgba(205,210,235,.45);
 }
 
-
 .question-input{
-
   width:100%;
 
   min-height:104px;
@@ -1040,9 +923,7 @@ body::after{
     sans-serif;
 
   font-size:14px;
-
   font-weight:300;
-
   line-height:1.8;
 
   outline:none;
@@ -1053,13 +934,11 @@ body::after{
 }
 
 .question-input::placeholder{
-
   color:
     rgba(205,210,235,.32);
 }
 
 .question-input:focus{
-
   border-color:
     rgba(215,225,255,.34);
 
@@ -1068,9 +947,7 @@ body::after{
     rgba(150,165,255,.08);
 }
 
-
 .question-submit{
-
   margin-top:13px;
 
   width:100%;
@@ -1094,16 +971,13 @@ body::after{
     sans-serif;
 
   font-size:15px;
-
   font-weight:300;
 
   cursor:pointer;
-
   transition:.5s ease;
 }
 
 .question-submit:hover{
-
   background:
     rgba(60,45,110,.34);
 
@@ -1117,11 +991,9 @@ body::after{
 ========================================================= */
 
 .reading-screen{
-
   align-items:flex-start;
 
   overflow-y:auto;
-
   overflow-x:hidden;
 
   scrollbar-width:none;
@@ -1131,11 +1003,8 @@ body::after{
   display:none;
 }
 
-
 .reading-wrap{
-
   width:min(100%,600px);
-
   min-height:100%;
 
   padding:
@@ -1146,19 +1015,14 @@ body::after{
     );
 
   display:flex;
-
   flex-direction:column;
-
   align-items:center;
 
   text-align:center;
 }
 
-
 .reading-eyebrow{
-
   margin-top:8px;
-
   margin-bottom:10px;
 
   font-family:
@@ -1166,18 +1030,14 @@ body::after{
     serif;
 
   font-size:12px;
-
   letter-spacing:.22em;
-
   text-transform:uppercase;
 
   color:
     rgba(205,215,245,.44);
 }
 
-
 .reading-title{
-
   margin-bottom:22px;
 
   font-family:
@@ -1185,7 +1045,6 @@ body::after{
     sans-serif;
 
   font-size:20px;
-
   font-weight:300;
 
   color:
@@ -1198,7 +1057,6 @@ body::after{
 ========================================================= */
 
 .card-shell{
-
   position:relative;
 
   width:220px;
@@ -1238,16 +1096,13 @@ body::after{
 }
 
 .card-shell.revealed{
-
   opacity:1;
 
   transform:
     scale(1);
 }
 
-
 .card-shell::before{
-
   content:"";
 
   position:absolute;
@@ -1268,9 +1123,7 @@ body::after{
   z-index:-1;
 }
 
-
 .card-shell img{
-
   display:block;
 
   width:100%;
@@ -1290,7 +1143,6 @@ body::after{
 ========================================================= */
 
 .reading-content{
-
   width:100%;
 
   opacity:0;
@@ -1304,16 +1156,13 @@ body::after{
 }
 
 .reading-content.visible{
-
   opacity:1;
 
   transform:
     translateY(0);
 }
 
-
 .reading-text{
-
   width:100%;
 
   margin:0 auto;
@@ -1326,9 +1175,7 @@ body::after{
     sans-serif;
 
   font-size:14px;
-
   font-weight:300;
-
   line-height:2.05;
 
   color:
@@ -1343,11 +1190,9 @@ body::after{
 ========================================================= */
 
 .deep-reading{
-
   width:100%;
 
   margin-top:34px;
-
   padding-top:30px;
 
   border-top:
@@ -1365,16 +1210,13 @@ body::after{
 }
 
 .deep-reading.visible{
-
   opacity:1;
 
   transform:
     translateY(0);
 }
 
-
 .deep-reading-copy{
-
   margin:
     0 auto 22px;
 
@@ -1385,9 +1227,7 @@ body::after{
     sans-serif;
 
   font-size:13px;
-
   font-weight:300;
-
   line-height:2;
 
   color:
@@ -1402,7 +1242,6 @@ body::after{
 ========================================================= */
 
 .deep-reading-btn{
-
   position:relative;
 
   width:100%;
@@ -1430,17 +1269,11 @@ body::after{
   color:
     rgba(248,248,255,.94);
 
-  /*
-    ใช้ Anuphan
-    เพื่อให้เลข 2 / 19 เป็นตัวเลขธรรมดา
-  */
-
   font-family:
     "Anuphan",
     sans-serif;
 
   font-size:15px;
-
   font-weight:300;
 
   font-variant-numeric:normal;
@@ -1451,7 +1284,6 @@ body::after{
 }
 
 .deep-reading-btn:hover{
-
   background:
     linear-gradient(
       180deg,
@@ -1477,7 +1309,6 @@ body::after{
 ========================================================= */
 
 .second-gate{
-
   width:100%;
 
   max-width:480px;
@@ -1513,7 +1344,6 @@ body::after{
 }
 
 .second-gate.visible{
-
   opacity:1;
 
   transform:
@@ -1522,9 +1352,7 @@ body::after{
   pointer-events:auto;
 }
 
-
 .second-gate-title{
-
   margin-bottom:10px;
 
   font-family:
@@ -1532,9 +1360,7 @@ body::after{
     serif;
 
   font-size:28px;
-
   font-weight:300;
-
   letter-spacing:.10em;
 
   text-transform:uppercase;
@@ -1543,9 +1369,7 @@ body::after{
     rgba(245,245,255,.90);
 }
 
-
 .second-gate-text{
-
   margin:0;
 
   font-family:
@@ -1553,9 +1377,7 @@ body::after{
     sans-serif;
 
   font-size:13px;
-
   font-weight:300;
-
   line-height:1.9;
 
   color:
@@ -1566,11 +1388,10 @@ body::after{
 
 
 /* =========================================================
-   STATS SCREEN
+   STATS
 ========================================================= */
 
 .stats-screen{
-
   z-index:200;
 
   background:
@@ -1579,9 +1400,7 @@ body::after{
   overflow:auto;
 }
 
-
 .stats-box{
-
   width:min(92vw,520px);
 
   padding:28px;
@@ -1598,17 +1417,13 @@ body::after{
   text-align:center;
 }
 
-
 .stats-title{
-
   font-family:
     "Cormorant Garamond",
     serif;
 
   font-size:30px;
-
   font-weight:300;
-
   letter-spacing:.12em;
 
   text-transform:uppercase;
@@ -1616,9 +1431,7 @@ body::after{
   margin-bottom:20px;
 }
 
-
 .stat-row{
-
   display:flex;
 
   justify-content:space-between;
@@ -1636,25 +1449,19 @@ body::after{
     sans-serif;
 
   font-size:14px;
-
   font-weight:300;
 }
 
-
 .stat-value{
-
   font-family:
     "Cormorant Garamond",
     serif;
 
   font-size:24px;
-
   font-weight:400;
 }
 
-
 .stats-note{
-
   margin-top:20px;
 
   font-family:
@@ -1662,18 +1469,14 @@ body::after{
     sans-serif;
 
   font-size:11px;
-
   font-weight:300;
-
   line-height:1.8;
 
   color:
     rgba(205,215,240,.50);
 }
 
-
 .stats-refresh{
-
   margin-top:20px;
 
   padding:
@@ -1706,7 +1509,6 @@ body::after{
 @media(max-width:600px){
 
   .sound-toggle{
-
     top:
       calc(
         12px +
@@ -1716,93 +1518,71 @@ body::after{
     right:12px;
   }
 
-
   .screen{
-
     padding-left:18px;
     padding-right:18px;
   }
 
-
   .brand{
-
     font-size:
       clamp(
-        30px,
-        7vw,
-        40px
+        26px,
+        6vw,
+        36px
       );
 
     letter-spacing:.22em;
   }
 
-
   .brand-sub{
     font-size:9px;
   }
-
 
   .landing-line{
     font-size:13px;
   }
 
-
   .scene-stage{
-
     height:34vh;
-
     min-height:215px;
   }
 
-
   .vera-figure{
-
     transform:
       translateY(15px)
       scale(.82);
   }
 
-
   .vera-figure.visible{
-
     transform:
       translateY(0)
       scale(.82);
   }
 
-
   .dialogue{
-
     font-size:17px;
-
     min-height:82px;
   }
-
 
   .question-input{
     min-height:112px;
   }
 
-
   .reading-wrap{
     padding-top:28px;
   }
-
 
   .card-shell{
     width:195px;
   }
 
-
   .reading-text{
     font-size:13px;
   }
 
-
   .deep-reading-copy{
     font-size:12px;
   }
-
 
   .deep-reading-btn{
     font-size:14px;
@@ -2067,13 +1847,7 @@ body::after{
 
 
 <!-- =======================================================
-     PRIVATE STATS PAGE
-     
-     เปิดด้วย:
-     ?stats=1
-
-     ตัวอย่าง:
-     /stillwater-ceremony/?stats=1
+     STATS
 ======================================================== -->
 
 <section
@@ -2168,27 +1942,11 @@ body::after{
    SETTINGS
 ========================================================= */
 
-
-/*
-  Online counter
-
-  ใช้สำหรับ MVP เพื่อเก็บยอดรวมจากคนที่เข้ามาใช้จริง
-*/
-
 const COUNTER_BASE =
   "https://countapi.mileshilliard.com/api/v1";
 
-
 const COUNTER_PREFIX =
   "stillwater-vera-2026";
-
-
-/*
-  หน้า Stats
-
-  เปิด:
-  ?stats=1
-*/
 
 const DEBUG_STATS =
   new URLSearchParams(
@@ -2196,160 +1954,87 @@ const DEBUG_STATS =
   ).get("stats") === "1";
 
 
-/*
-  fallback ไพ่
-
-  ถ้ามีรูปของเราเองใน GitHub
-  ระบบจะใช้รูปของเราก่อน
-
-  ถ้าไม่มี
-  จะ fallback ไปที่ Major Arcana
-*/
-
-const CARD_CDN =
-  "https://cdn.jsdelivr.net/gh/reginanka/tarot-cards@main/cards/";
-
-
 /* =========================================================
    ELEMENTS
 ========================================================= */
 
 const landing =
-  document.getElementById(
-    "landing"
-  );
+  document.getElementById("landing");
 
 const questionScreen =
-  document.getElementById(
-    "questionScreen"
-  );
+  document.getElementById("questionScreen");
 
 const readingScreen =
-  document.getElementById(
-    "readingScreen"
-  );
+  document.getElementById("readingScreen");
 
 const statsScreen =
-  document.getElementById(
-    "statsScreen"
-  );
-
+  document.getElementById("statsScreen");
 
 const enterBtn =
-  document.getElementById(
-    "enterBtn"
-  );
+  document.getElementById("enterBtn");
 
 const questionForm =
-  document.getElementById(
-    "questionForm"
-  );
+  document.getElementById("questionForm");
 
 const questionInput =
-  document.getElementById(
-    "questionInput"
-  );
+  document.getElementById("questionInput");
 
 const questionSubmit =
-  document.getElementById(
-    "questionSubmit"
-  );
-
+  document.getElementById("questionSubmit");
 
 const veraFigure =
-  document.getElementById(
-    "veraFigure"
-  );
+  document.getElementById("veraFigure");
 
 const dialogueLine =
-  document.getElementById(
-    "dialogueLine"
-  );
+  document.getElementById("dialogueLine");
 
 const questionLight =
-  document.getElementById(
-    "questionLight"
-  );
-
+  document.getElementById("questionLight");
 
 const cardShell =
-  document.getElementById(
-    "cardShell"
-  );
+  document.getElementById("cardShell");
 
 const cardImage =
-  document.getElementById(
-    "cardImage"
-  );
+  document.getElementById("cardImage");
 
 const readingContent =
-  document.getElementById(
-    "readingContent"
-  );
+  document.getElementById("readingContent");
 
 const readingText =
-  document.getElementById(
-    "readingText"
-  );
-
+  document.getElementById("readingText");
 
 const deepReading =
-  document.getElementById(
-    "deepReading"
-  );
+  document.getElementById("deepReading");
 
 const btnDeeper =
-  document.getElementById(
-    "btnDeeper"
-  );
+  document.getElementById("btnDeeper");
 
 const secondGate =
-  document.getElementById(
-    "secondGate"
-  );
-
+  document.getElementById("secondGate");
 
 const portal =
-  document.getElementById(
-    "portal"
-  );
-
+  document.getElementById("portal");
 
 const soundToggle =
-  document.getElementById(
-    "soundToggle"
-  );
+  document.getElementById("soundToggle");
 
 const soundIcon =
-  document.getElementById(
-    "soundIcon"
-  );
-
+  document.getElementById("soundIcon");
 
 const statDeep =
-  document.getElementById(
-    "statDeep"
-  );
+  document.getElementById("statDeep");
 
 const statComplete =
-  document.getElementById(
-    "statComplete"
-  );
+  document.getElementById("statComplete");
 
 const statRate =
-  document.getElementById(
-    "statRate"
-  );
+  document.getElementById("statRate");
 
 const statsNote =
-  document.getElementById(
-    "statsNote"
-  );
+  document.getElementById("statsNote");
 
 const statsRefresh =
-  document.getElementById(
-    "statsRefresh"
-  );
+  document.getElementById("statsRefresh");
 
 
 /* =========================================================
@@ -2382,17 +2067,7 @@ let questionSequenceRunning =
    ANALYTICS
 ========================================================= */
 
-
-/*
-  เก็บ local event ด้วย
-  เผื่อ debug ในเครื่อง
-
-  และส่งให้ GA4/GTM ถ้าเราติดตั้งภายหลัง
-*/
-
-function trackLocal(
-  name
-){
+function trackLocal(name){
 
   try{
 
@@ -2402,16 +2077,12 @@ function trackLocal(
 
     const oldValue =
       Number(
-        localStorage.getItem(
-          key
-        ) || 0
+        localStorage.getItem(key) || 0
       );
 
     localStorage.setItem(
       key,
-      String(
-        oldValue + 1
-      )
+      String(oldValue + 1)
     );
 
   }catch(error){}
@@ -2424,10 +2095,7 @@ function trackEvent(
   params = {}
 ){
 
-  trackLocal(
-    name
-  );
-
+  trackLocal(name);
 
   try{
 
@@ -2443,7 +2111,6 @@ function trackEvent(
       );
 
     }
-
 
     if(
       Array.isArray(
@@ -2463,19 +2130,7 @@ function trackEvent(
 }
 
 
-/*
-  นับยอดออนไลน์
-
-  key:
-  deep-reading-clicks
-
-  หรือ
-  free-reading-completed
-*/
-
-async function countHit(
-  key
-){
+async function countHit(key){
 
   try{
 
@@ -2491,7 +2146,6 @@ async function countHit(
         }
       );
 
-
     if(
       !response.ok
     ){
@@ -2501,7 +2155,6 @@ async function countHit(
       );
 
     }
-
 
     return await response.json();
 
@@ -2519,13 +2172,7 @@ async function countHit(
 }
 
 
-/*
-  ดึงยอดปัจจุบัน
-*/
-
-async function getCount(
-  key
-){
+async function getCount(key){
 
   try{
 
@@ -2541,7 +2188,6 @@ async function getCount(
         }
       );
 
-
     if(
       !response.ok
     ){
@@ -2552,10 +2198,8 @@ async function getCount(
 
     }
 
-
     const data =
       await response.json();
-
 
     return Number(
       data.value || 0
@@ -2916,54 +2560,175 @@ const READINGS = [
 ];
 
 
-const CARD_NAMES = [
+/* =========================================================
+   CARD DATA
+   ชื่อไฟล์ตรงกับ GitHub cards/web/
+========================================================= */
 
-  "THE FOOL",
-  "THE MAGICIAN",
-  "THE HIGH PRIESTESS",
-  "THE EMPRESS",
-  "THE EMPEROR",
-  "THE HIEROPHANT",
-  "THE LOVERS",
-  "THE CHARIOT",
-  "STRENGTH",
-  "THE HERMIT",
-  "WHEEL OF FORTUNE",
-  "JUSTICE",
-  "THE HANGED MAN",
-  "DEATH",
-  "TEMPERANCE",
-  "THE DEVIL",
-  "THE TOWER",
-  "THE STAR",
-  "THE MOON",
-  "THE SUN",
-  "JUDGEMENT",
-  "THE WORLD"
+const CARDS = [
+
+  {
+    id:0,
+    name:"THE FOOL",
+    file:"fool.jpg",
+    reading:READINGS[0]
+  },
+
+  {
+    id:1,
+    name:"THE MAGICIAN",
+    file:"magician.jpg",
+    reading:READINGS[1]
+  },
+
+  {
+    id:2,
+    name:"THE HIGH PRIESTESS",
+    file:"high-priestess.jpg",
+    reading:READINGS[2]
+  },
+
+  {
+    id:3,
+    name:"THE EMPRESS",
+    file:"empress.jpg",
+    reading:READINGS[3]
+  },
+
+  {
+    id:4,
+    name:"THE EMPEROR",
+    file:"emperor.jpg",
+    reading:READINGS[4]
+  },
+
+  {
+    id:5,
+    name:"THE HIEROPHANT",
+    file:"hierophant.jpg",
+    reading:READINGS[5]
+  },
+
+  {
+    id:6,
+    name:"THE LOVERS",
+    file:"lovers.jpg",
+    reading:READINGS[6]
+  },
+
+  {
+    id:7,
+    name:"THE CHARIOT",
+    file:"chariot.jpg",
+    reading:READINGS[7]
+  },
+
+  {
+    id:8,
+    name:"STRENGTH",
+    file:"strength.jpg",
+    reading:READINGS[8]
+  },
+
+  {
+    id:9,
+    name:"THE HERMIT",
+    file:"hermit.jpg",
+    reading:READINGS[9]
+  },
+
+  {
+    id:10,
+    name:"WHEEL OF FORTUNE",
+    file:"wheel.jpg",
+    reading:READINGS[10]
+  },
+
+  {
+    id:11,
+    name:"JUSTICE",
+    file:"justice.jpg",
+    reading:READINGS[11]
+  },
+
+  {
+    id:12,
+    name:"THE HANGED MAN",
+    file:"hanged.jpg",
+    reading:READINGS[12]
+  },
+
+  {
+    id:13,
+    name:"DEATH",
+    file:"death.jpg",
+    reading:READINGS[13]
+  },
+
+  {
+    id:14,
+    name:"TEMPERANCE",
+    file:"temperance.jpg",
+    reading:READINGS[14]
+  },
+
+  {
+    id:15,
+    name:"THE DEVIL",
+    file:"devil.jpg",
+    reading:READINGS[15]
+  },
+
+  {
+    id:16,
+    name:"THE TOWER",
+    file:"tower.jpg",
+    reading:READINGS[16]
+  },
+
+  {
+    id:17,
+    name:"THE STAR",
+    file:"star.jpg",
+    reading:READINGS[17]
+  },
+
+  {
+    id:18,
+    name:"THE MOON",
+    file:"moon.jpg",
+    reading:READINGS[18]
+  },
+
+  {
+    id:19,
+    name:"THE SUN",
+    file:"sun.jpg",
+    reading:READINGS[19]
+  },
+
+  {
+    id:20,
+    name:"JUDGEMENT",
+    file:"judgement.jpg",
+    reading:READINGS[20]
+  },
+
+  {
+    id:21,
+    name:"THE WORLD",
+    file:"world.jpg",
+    reading:READINGS[21]
+  }
 
 ];
-
-
-const CARDS =
-  CARD_NAMES.map(
-    (
-      name,
-      index
-    ) => ({
-      id:index,
-      name:name,
-      reading:READINGS[index]
-    })
-  );
 
 
 /* =========================================================
    SCREEN CONTROL
 ========================================================= */
 
-function showScreen(
-  screen
-){
+function showScreen(screen){
 
   [
     landing,
@@ -2972,20 +2737,13 @@ function showScreen(
     statsScreen
   ].forEach(
     item =>
-      item.classList.remove(
-        "active"
-      )
+      item.classList.remove("active")
   );
 
-
-  screen.classList.add(
-    "active"
-  );
-
+  screen.classList.add("active");
 
   currentScreen =
     screen.id;
-
 }
 
 
@@ -2993,9 +2751,7 @@ function showScreen(
    UTILITY
 ========================================================= */
 
-function wait(
-  ms
-){
+function wait(ms){
 
   return new Promise(
     resolve =>
@@ -3008,14 +2764,11 @@ function wait(
 }
 
 
-function showDialogue(
-  text
-){
+function showDialogue(text){
 
   dialogueLine.classList.remove(
     "show"
   );
-
 
   setTimeout(
     () => {
@@ -3040,12 +2793,9 @@ function showDialogue(
 
 function createAudio(){
 
-  if(
-    audioContext
-  ){
+  if(audioContext){
     return;
   }
-
 
   try{
 
@@ -3055,84 +2805,65 @@ function createAudio(){
         window.webkitAudioContext
       )();
 
-
     masterGain =
       audioContext.createGain();
-
 
     masterGain.gain.value =
       soundEnabled
         ? .055
         : 0;
 
-
     masterGain.connect(
       audioContext.destination
     );
 
-
     const oscillator1 =
       audioContext.createOscillator();
-
 
     const gain1 =
       audioContext.createGain();
 
-
     oscillator1.type =
       "sine";
-
 
     oscillator1.frequency.value =
       55;
 
-
     gain1.gain.value =
       .32;
-
 
     oscillator1.connect(
       gain1
     );
 
-
     gain1.connect(
       masterGain
     );
 
-
     oscillator1.start();
-
 
     const oscillator2 =
       audioContext.createOscillator();
 
-
     const gain2 =
       audioContext.createGain();
-
 
     oscillator2.type =
       "sine";
 
-
     oscillator2.frequency.value =
       82.4;
 
-
     gain2.gain.value =
       .055;
-
 
     oscillator2.connect(
       gain2
     );
 
-
     gain2.connect(
       masterGain
     );
-
 
     oscillator2.start();
 
@@ -3180,41 +2911,33 @@ function playTone(
   ){
 
     return;
-
   }
-
 
   try{
 
     const oscillator =
       audioContext.createOscillator();
 
-
     const gain =
       audioContext.createGain();
 
-
     oscillator.type =
       "sine";
-
 
     oscillator.frequency.setValueAtTime(
       frequency,
       audioContext.currentTime
     );
 
-
     gain.gain.setValueAtTime(
       0,
       audioContext.currentTime
     );
 
-
     gain.gain.linearRampToValueAtTime(
       volume,
       audioContext.currentTime + .04
     );
-
 
     gain.gain.exponentialRampToValueAtTime(
       .001,
@@ -3222,19 +2945,15 @@ function playTone(
         duration
     );
 
-
     oscillator.connect(
       gain
     );
-
 
     gain.connect(
       masterGain
     );
 
-
     oscillator.start();
-
 
     oscillator.stop(
       audioContext.currentTime +
@@ -3254,23 +2973,17 @@ soundToggle.addEventListener(
     soundEnabled =
       !soundEnabled;
 
-
     soundIcon.textContent =
       soundEnabled
         ? "◒"
         : "◌";
 
-
-    if(
-      soundEnabled
-    ){
+    if(soundEnabled){
 
       createAudio();
-
       resumeAudio();
 
     }
-
 
     if(
       audioContext &&
@@ -3302,9 +3015,7 @@ enterBtn.addEventListener(
   async () => {
 
     createAudio();
-
     resumeAudio();
-
 
     playTone(
       220,
@@ -3312,66 +3023,45 @@ enterBtn.addEventListener(
       .035
     );
 
-
     trackEvent(
       "stillwater_enter"
     );
-
 
     portal.classList.add(
       "active"
     );
 
-
-    await wait(
-      850
-    );
-
+    await wait(850);
 
     portal.classList.remove(
       "active"
     );
 
-
     showScreen(
       questionScreen
     );
 
-
-    await wait(
-      500
-    );
-
+    await wait(500);
 
     veraFigure.classList.add(
       "visible"
     );
 
-
     showDialogue(
       "มาถึงแล้วนะคะ"
     );
 
-
-    await wait(
-      2400
-    );
-
+    await wait(2400);
 
     showDialogue(
       "ถ้าคุณมีคำถามหนึ่งข้อ ลองส่งมันมาให้พี่เวรา"
     );
 
-
-    await wait(
-      2300
-    );
-
+    await wait(2300);
 
     questionForm.classList.add(
       "visible"
     );
-
 
     questionInput.focus();
 
@@ -3389,7 +3079,6 @@ questionForm.addEventListener(
 
     event.preventDefault();
 
-
     if(
       questionSequenceRunning
     ){
@@ -3398,10 +3087,8 @@ questionForm.addEventListener(
 
     }
 
-
     const question =
       questionInput.value.trim();
-
 
     if(
       question.length < 3
@@ -3413,22 +3100,17 @@ questionForm.addEventListener(
 
     }
 
-
     questionSequenceRunning =
       true;
-
 
     lastQuestion =
       question;
 
-
     questionSubmit.disabled =
       true;
 
-
     questionInput.disabled =
       true;
-
 
     trackEvent(
       "free_question_submitted",
@@ -3438,24 +3120,19 @@ questionForm.addEventListener(
       }
     );
 
-
     showDialogue(
       "พี่เวราจะลองขอคำตอบจากจักรวาลให้คุณนะคะ…"
     );
-
 
     questionLight.classList.remove(
       "travel"
     );
 
-
     void questionLight.offsetWidth;
-
 
     questionLight.classList.add(
       "travel"
     );
-
 
     playTone(
       330,
@@ -3463,16 +3140,11 @@ questionForm.addEventListener(
       .04
     );
 
-
-    await wait(
-      1750
-    );
-
+    await wait(1750);
 
     portal.classList.add(
       "active"
     );
-
 
     playTone(
       110,
@@ -3480,26 +3152,17 @@ questionForm.addEventListener(
       .035
     );
 
-
-    await wait(
-      900
-    );
-
+    await wait(900);
 
     portal.classList.remove(
       "active"
     );
 
-
     showScreen(
       readingScreen
     );
 
-
-    await wait(
-      500
-    );
-
+    await wait(500);
 
     revealCard();
 
@@ -3509,37 +3172,74 @@ questionForm.addEventListener(
 
 /* =========================================================
    CARD IMAGE
+   ใช้ชื่อไฟล์จริงใน cards/web/
 ========================================================= */
 
+function setCardImage(card){
 
-/*
-  ลำดับการหาไฟล์:
+  /*
+    ไฟล์หลักของปาล์มอยู่ที่:
 
-  1. cards/web/0.jpg
-  2. cards/web/0.png
-  3. cards/0.jpg
-  4. cards/0.png
-  5. CDN m00.webp
+    cards/web/fool.jpg
+    cards/web/magician.jpg
+    cards/web/high-priestess.jpg
+    ...
 
-  ดังนั้นถ้าปาล์มมีรูปไพ่ของตัวเอง
-  ระบบจะพยายามใช้ของเราเองก่อน
-*/
-
-function setCardImage(
-  card
-){
+    ใช้ไฟล์จริงก่อนเสมอ
+  */
 
   const candidates = [
 
-    `cards/web/${card.id}.jpg`,
+    `cards/web/${card.file}`,
 
-    `cards/web/${card.id}.png`,
+    /*
+      fallback สำหรับบางชื่อที่อาจตั้งต่างกัน
+    */
 
-    `cards/${card.id}.jpg`,
+    ...(card.id === 2
+      ? [
+          "cards/web/priestess.jpg",
+          "cards/web/high_priestess.jpg",
+          "cards/web/highpriestess.jpg"
+        ]
+      : []),
 
-    `cards/${card.id}.png`,
+    ...(card.id === 10
+      ? [
+          "cards/web/wheel-of-fortune.jpg",
+          "cards/web/wheeloffortune.jpg"
+        ]
+      : []),
 
-    `${CARD_CDN}m${String(card.id).padStart(2,"0")}.webp`
+    ...(card.id === 16
+      ? [
+          "cards/web/the-tower.jpg"
+        ]
+      : []),
+
+    ...(card.id === 17
+      ? [
+          "cards/web/the-star.jpg"
+        ]
+      : []),
+
+    ...(card.id === 18
+      ? [
+          "cards/web/the-moon.jpg"
+        ]
+      : []),
+
+    ...(card.id === 19
+      ? [
+          "cards/web/the-sun.jpg"
+        ]
+      : []),
+
+    ...(card.id === 21
+      ? [
+          "cards/web/the-world.jpg"
+        ]
+      : [])
 
   ];
 
@@ -3552,7 +3252,6 @@ function setCardImage(
 
       index++;
 
-
       if(
         index <
         candidates.length
@@ -3564,20 +3263,35 @@ function setCardImage(
       }else{
 
         /*
-          ไม่ให้กรอบรูปแตก
+          ถ้าไม่พบรูปจริง
+          ซ่อนเฉพาะรูป ไม่ทำให้หน้าเว็บพัง
         */
 
         cardImage.style.display =
           "none";
+
+        console.warn(
+          "ไม่พบภาพไพ่:",
+          card.name,
+          candidates
+        );
 
       }
 
     };
 
 
+  cardImage.onload =
+    () => {
+
+      cardImage.style.display =
+        "block";
+
+    };
+
+
   cardImage.style.display =
     "block";
-
 
   cardImage.src =
     candidates[0];
@@ -3604,29 +3318,23 @@ function revealCard(){
     "revealed"
   );
 
-
   readingContent.classList.remove(
     "visible"
   );
-
 
   deepReading.classList.remove(
     "visible"
   );
 
-
   secondGate.classList.remove(
     "visible"
   );
 
-
   readingText.textContent =
     "";
 
-
   btnDeeper.disabled =
     false;
-
 
   btnDeeper.textContent =
     "✦ เปิดไพ่ใบที่ 2 · 19 บาท";
@@ -3643,7 +3351,6 @@ function revealCard(){
       cardShell.classList.add(
         "revealed"
       );
-
 
       playTone(
         523.25,
@@ -3662,7 +3369,6 @@ function revealCard(){
       readingText.textContent =
         currentCard.reading;
 
-
       readingContent.classList.add(
         "visible"
       );
@@ -3679,7 +3385,6 @@ function revealCard(){
         "visible"
       );
 
-
       trackEvent(
         "free_reading_completed",
         {
@@ -3691,7 +3396,6 @@ function revealCard(){
         }
       );
 
-
       trackEvent(
         "deep_reading_offer_viewed",
         {
@@ -3702,11 +3406,6 @@ function revealCard(){
             currentCard.name
         }
       );
-
-
-      /*
-        เก็บยอดอ่านไพ่ใบแรกจบแบบออนไลน์
-      */
 
       await countHit(
         "free-reading-completed"
@@ -3735,42 +3434,21 @@ btnDeeper.addEventListener(
 
     }
 
-
-    /*
-      ป้องกันการกดซ้ำ
-    */
-
     btnDeeper.disabled =
       true;
-
-
-    /*
-      เปลี่ยนสถานะปุ่ม
-    */
 
     btnDeeper.textContent =
       "รับคำขอแล้ว";
 
-
-    /*
-      แสดง coming soon
-    */
-
     secondGate.classList.add(
       "visible"
     );
-
 
     playTone(
       659.25,
       .65,
       .045
     );
-
-
-    /*
-      Local + GA/GTM
-    */
 
     trackEvent(
       "deep_reading_interest",
@@ -3786,27 +3464,12 @@ btnDeeper.addEventListener(
       }
     );
 
-
-    /*
-      Online counter
-
-      นับ 1 ครั้งต่อการกด
-    */
-
     const result =
       await countHit(
         "deep-reading-clicks"
       );
 
-
-    /*
-      ไม่แสดงยอดให้ลูกค้าเห็น
-      เราเอาไว้ดูใน Stats เท่านั้น
-    */
-
-    if(
-      result
-    ){
+    if(result){
 
       console.log(
         "Stillwater deep reading clicks:",
@@ -3927,19 +3590,11 @@ const ctx =
     "2d"
   );
 
+let cw = 0;
+let ch = 0;
 
-let cw =
-  0;
-
-let ch =
-  0;
-
-
-let stars =
-  [];
-
-let particles =
-  [];
+let stars = [];
+let particles = [];
 
 
 function resizeCosmos(){
@@ -3950,13 +3605,11 @@ function resizeCosmos(){
   ch =
     window.innerHeight;
 
-
   const dpr =
     Math.min(
       window.devicePixelRatio || 1,
       2
     );
-
 
   cosmos.width =
     cw * dpr;
@@ -3964,13 +3617,11 @@ function resizeCosmos(){
   cosmos.height =
     ch * dpr;
 
-
   cosmos.style.width =
     cw + "px";
 
   cosmos.style.height =
     ch + "px";
-
 
   ctx.setTransform(
     dpr,
@@ -3981,9 +3632,7 @@ function resizeCosmos(){
     0
   );
 
-
   stars = [];
-
   particles = [];
 
 
@@ -4073,9 +3722,7 @@ function resizeCosmos(){
 }
 
 
-function drawCosmos(
-  time
-){
+function drawCosmos(time){
 
   ctx.clearRect(
     0,
@@ -4118,7 +3765,6 @@ function drawCosmos(
   ctx.fillStyle =
     base;
 
-
   ctx.fillRect(
     0,
     0,
@@ -4151,7 +3797,6 @@ function drawCosmos(
 
   ctx.fillStyle =
     nebula1;
-
 
   ctx.fillRect(
     0,
@@ -4186,7 +3831,6 @@ function drawCosmos(
   ctx.fillStyle =
     nebula2;
 
-
   ctx.fillRect(
     0,
     0,
@@ -4210,7 +3854,6 @@ function drawCosmos(
 
       ctx.beginPath();
 
-
       ctx.arc(
         star.x,
         star.y,
@@ -4230,7 +3873,6 @@ function drawCosmos(
             alpha
           )}
         )`;
-
 
       ctx.fill();
 
@@ -4257,7 +3899,6 @@ function drawCosmos(
 
       }
 
-
       if(
         particle.x >
         cw + 10
@@ -4268,7 +3909,6 @@ function drawCosmos(
 
       }
 
-
       if(
         particle.y < -10
       ){
@@ -4277,7 +3917,6 @@ function drawCosmos(
           ch + 10;
 
       }
-
 
       if(
         particle.y >
@@ -4291,7 +3930,6 @@ function drawCosmos(
 
 
       ctx.beginPath();
-
 
       ctx.arc(
         particle.x,
@@ -4309,7 +3947,6 @@ function drawCosmos(
           255,
           ${particle.a}
         )`;
-
 
       ctx.fill();
 
@@ -4338,12 +3975,8 @@ const wctx =
     "2d"
   );
 
-
-let ww =
-  0;
-
-let wh =
-  0;
+let ww = 0;
+let wh = 0;
 
 
 function resizeWater(){
@@ -4354,13 +3987,11 @@ function resizeWater(){
   wh =
     window.innerHeight;
 
-
   const dpr =
     Math.min(
       window.devicePixelRatio || 1,
       2
     );
-
 
   water.width =
     ww * dpr;
@@ -4368,13 +3999,11 @@ function resizeWater(){
   water.height =
     wh * dpr;
 
-
   water.style.width =
     ww + "px";
 
   water.style.height =
     wh + "px";
-
 
   wctx.setTransform(
     dpr,
@@ -4388,9 +4017,7 @@ function resizeWater(){
 }
 
 
-function drawWater(
-  time
-){
+function drawWater(time){
 
   wctx.clearRect(
     0,
@@ -4418,12 +4045,10 @@ function drawWater(
     "rgba(45,45,100,.09)"
   );
 
-
   waterGradient.addColorStop(
     .35,
     "rgba(25,30,75,.15)"
   );
-
 
   waterGradient.addColorStop(
     1,
@@ -4433,7 +4058,6 @@ function drawWater(
 
   wctx.fillStyle =
     waterGradient;
-
 
   wctx.fillRect(
     0,
@@ -4459,7 +4083,6 @@ function drawWater(
     "rgba(170,185,255,.10)"
   );
 
-
   glow.addColorStop(
     1,
     "rgba(120,140,220,0)"
@@ -4468,7 +4091,6 @@ function drawWater(
 
   wctx.fillStyle =
     glow;
-
 
   wctx.fillRect(
     0,
@@ -4490,7 +4112,6 @@ function drawWater(
 
 
     wctx.beginPath();
-
 
     wctx.moveTo(
       0,
@@ -4530,10 +4151,8 @@ function drawWater(
         ${.018 + i * .0012}
       )`;
 
-
     wctx.lineWidth =
       .7;
-
 
     wctx.stroke();
 
@@ -4556,7 +4175,6 @@ window.addEventListener(
   () => {
 
     resizeCosmos();
-
     resizeWater();
 
   },
@@ -4567,14 +4185,12 @@ window.addEventListener(
 
 
 resizeCosmos();
-
 resizeWater();
 
 
 requestAnimationFrame(
   drawCosmos
 );
-
 
 requestAnimationFrame(
   drawWater
@@ -4592,7 +4208,6 @@ if(
   showScreen(
     statsScreen
   );
-
 
   loadStats();
 
