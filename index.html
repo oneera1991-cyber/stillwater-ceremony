@@ -3,1130 +3,3455 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
 <title>Stillwater</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Sans+Thai:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans+Thai:wght@300;400;500&display=swap" rel="stylesheet">
+
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root{
+  --deep:#050510;
+  --space:#0a0a1a;
+  --indigo:#1a1040;
+  --violet:#2a1850;
 
-:root {
-  --deep: #050510;
-  --space: #0a0a1a;
-  --indigo: #1a1040;
-  --violet: #2a1850;
-  --mist: rgba(180, 200, 255, 0.08);
-  --cream: #f5f0e6;
-  --cream-dim: #c8c0b0;
-  --text: rgba(230, 235, 255, 0.92);
-  --text-soft: rgba(200, 210, 240, 0.7);
-  --accent: rgba(200, 180, 255, 0.9);
-  --glow: rgba(160, 180, 255, 0.35);
-  --font-serif: 'Cormorant Garamond', Georgia, serif;
-  --font-sans: 'Noto Sans Thai', system-ui, sans-serif;
+  --mist:rgba(210,220,255,.10);
+  --mist-strong:rgba(220,230,255,.18);
+
+  --cream:#f5f0e6;
+  --cream-dim:#c8c0b0;
+
+  --text:rgba(230,235,255,.92);
+  --text-soft:rgba(200,210,240,.70);
+
+  --accent:rgba(200,180,255,.90);
+  --glow:rgba(160,180,255,.35);
+
+  --white-aura:rgba(245,248,255,.82);
 }
 
-html, body {
-  height: 100%;
-  background: var(--deep);
-  color: var(--text);
-  font-family: var(--font-sans);
-  font-weight: 300;
-  overflow: hidden;
-  -webkit-font-smoothing: antialiased;
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
 }
 
-body { position: relative; }
-
-/* ——— Canvas layers ——— */
-#cosmos, #water-canvas {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
+html,
+body{
+  width:100%;
+  height:100%;
+  margin:0;
+  padding:0;
+  overflow:hidden;
+  background:var(--deep);
+  color:var(--text);
 }
-#water-canvas { z-index: 1; }
 
-.fog-band {
-  position: fixed;
-  left: 0; right: 0;
-  top: 42%;
-  height: 28%;
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    rgba(40, 50, 90, 0.15) 30%,
-    rgba(60, 80, 130, 0.22) 50%,
-    rgba(40, 50, 90, 0.12) 70%,
-    transparent 100%
+body{
+  font-family:"IBM Plex Sans Thai",sans-serif;
+  font-weight:300;
+  letter-spacing:.02em;
+}
+
+button,
+input,
+textarea{
+  font:inherit;
+}
+
+button{
+  border:0;
+  outline:0;
+}
+
+#cosmos,
+#water{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+}
+
+#cosmos{
+  z-index:0;
+}
+
+#water{
+  z-index:1;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  background:
+    radial-gradient(
+      ellipse at 50% 48%,
+      rgba(50,35,100,.22) 0%,
+      rgba(12,10,35,.10) 38%,
+      rgba(0,0,0,.42) 100%
+    );
+}
+
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:3;
+  pointer-events:none;
+  opacity:.16;
+  background-image:
+    radial-gradient(rgba(255,255,255,.20) 1px,transparent 1px);
+  background-size:4px 4px;
+  mix-blend-mode:screen;
+}
+
+.fog-band{
+  position:fixed;
+  left:-10%;
+  right:-10%;
+  bottom:17%;
+  height:28%;
+  z-index:4;
+  pointer-events:none;
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(190,205,255,.10) 0%,
+      rgba(130,150,220,.06) 32%,
+      transparent 72%
+    );
+  filter:blur(25px);
+  opacity:.75;
+  animation:fogFloat 12s ease-in-out infinite alternate;
+}
+
+@keyframes fogFloat{
+  from{
+    transform:translate3d(-1%,0,0) scale(1);
+  }
+  to{
+    transform:translate3d(1%,2%,0) scale(1.04);
+  }
+}
+
+/* =========================================================
+   SOUND
+========================================================= */
+
+.sound-toggle{
+  position:fixed;
+  top:calc(18px + env(safe-area-inset-top));
+  right:18px;
+  z-index:50;
+
+  width:42px;
+  height:42px;
+
+  border-radius:50%;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  color:rgba(235,240,255,.72);
+  background:rgba(10,10,28,.28);
+  border:1px solid rgba(220,225,255,.14);
+
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+
+  cursor:pointer;
+
+  transition:
+    background .4s ease,
+    border-color .4s ease,
+    transform .4s ease;
+}
+
+.sound-toggle:hover{
+  background:rgba(50,40,100,.28);
+  border-color:rgba(220,225,255,.28);
+}
+
+.sound-toggle:active{
+  transform:scale(.94);
+}
+
+.sound-icon{
+  font-size:15px;
+  opacity:.8;
+}
+
+/* =========================================================
+   SCREENS
+========================================================= */
+
+.screen{
+  position:fixed;
+  inset:0;
+  z-index:10;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:
+    calc(30px + env(safe-area-inset-top))
+    24px
+    calc(30px + env(safe-area-inset-bottom));
+
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+
+  transition:
+    opacity 1.3s ease,
+    visibility 1.3s ease;
+}
+
+.screen.active{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+}
+
+/* =========================================================
+   LANDING
+========================================================= */
+
+.landing-inner{
+  width:min(90vw,700px);
+  text-align:center;
+  transform:translateY(10px);
+  transition:transform 1.5s ease;
+}
+
+.screen.active .landing-inner{
+  transform:translateY(0);
+}
+
+.brand{
+  margin-bottom:28px;
+
+  font-family:"Cormorant Garamond",serif;
+  font-size:clamp(58px,14vw,100px);
+  line-height:.8;
+  font-weight:400;
+  letter-spacing:.08em;
+
+  color:rgba(245,245,255,.94);
+
+  text-shadow:
+    0 0 35px rgba(150,160,255,.18),
+    0 0 90px rgba(120,110,255,.12);
+}
+
+.brand-sub{
+  margin-bottom:28px;
+
+  font-family:"Cormorant Garamond",serif;
+  font-size:14px;
+  letter-spacing:.32em;
+  text-transform:uppercase;
+
+  color:rgba(205,210,235,.46);
+}
+
+.landing-line{
+  margin:0 auto 44px;
+  max-width:500px;
+
+  font-size:15px;
+  line-height:2;
+
+  color:rgba(220,225,245,.72);
+}
+
+.enter-btn{
+  position:relative;
+
+  min-width:150px;
+  padding:14px 34px;
+
+  border:1px solid rgba(220,225,255,.24);
+  border-radius:999px;
+
+  background:rgba(30,24,70,.22);
+
+  color:rgba(245,245,255,.88);
+
+  font-family:"Cormorant Garamond",serif;
+  font-size:19px;
+  letter-spacing:.18em;
+
+  cursor:pointer;
+
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+
+  transition:
+    background .5s ease,
+    border-color .5s ease,
+    box-shadow .5s ease,
+    transform .5s ease;
+}
+
+.enter-btn::before{
+  content:"";
+  position:absolute;
+  inset:-7px;
+  border-radius:inherit;
+
+  background:radial-gradient(
+    ellipse,
+    rgba(180,190,255,.16),
+    transparent 70%
   );
-  pointer-events: none;
-  z-index: 2;
-  filter: blur(12px);
+
+  opacity:.7;
+  z-index:-1;
+
+  animation:enterGlow 3s ease-in-out infinite alternate;
 }
 
-/* ——— Sound toggle ——— */
-.sound-toggle {
-  position: fixed;
-  top: max(1rem, env(safe-area-inset-top));
-  right: max(1rem, env(safe-area-inset-right));
-  z-index: 100;
-  background: rgba(20, 25, 50, 0.5);
-  border: 1px solid rgba(180, 190, 255, 0.2);
-  color: var(--text-soft);
-  font-family: var(--font-sans);
-  font-size: 0.7rem;
-  font-weight: 400;
-  letter-spacing: 0.08em;
-  padding: 0.55rem 0.9rem;
-  border-radius: 999px;
-  cursor: pointer;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: color 0.3s, border-color 0.3s, background 0.3s;
-  opacity: 0;
-  pointer-events: none;
-}
-.sound-toggle.visible {
-  opacity: 1;
-  pointer-events: auto;
-}
-.sound-toggle:hover, .sound-toggle:focus-visible {
-  color: var(--text);
-  border-color: rgba(180, 190, 255, 0.45);
-  outline: none;
-}
-.sound-toggle:focus-visible {
-  box-shadow: 0 0 0 2px rgba(160, 180, 255, 0.4);
+@keyframes enterGlow{
+  from{
+    transform:scale(.96);
+    opacity:.35;
+  }
+  to{
+    transform:scale(1.08);
+    opacity:.8;
+  }
 }
 
-/* ——— Screens ——— */
-.screen {
-  position: fixed;
-  inset: 0;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem 1.5rem;
-  padding-top: max(2rem, env(safe-area-inset-top));
-  padding-bottom: max(2rem, env(safe-area-inset-bottom));
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 1.4s ease, visibility 1.4s;
-}
-.screen.active {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-}
-.screen.leaving {
-  opacity: 0;
-  visibility: visible;
-  pointer-events: none;
+.enter-btn:hover{
+  background:rgba(60,45,110,.28);
+  border-color:rgba(220,225,255,.42);
+  box-shadow:0 0 35px rgba(160,170,255,.12);
+  transform:translateY(-2px);
 }
 
-/* ——— Portal overlay ——— */
-.portal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  pointer-events: none;
-  opacity: 0;
-  background: radial-gradient(ellipse at center,
-    rgba(100, 120, 200, 0.15) 0%,
-    rgba(30, 40, 90, 0.5) 40%,
-    rgba(5, 5, 16, 0.95) 70%,
-    #050510 100%);
-  transition: opacity 0.1s;
-}
-.portal-overlay.active {
-  animation: portalPulse 3.2s ease-in-out forwards;
-}
-@keyframes portalPulse {
-  0%   { opacity: 0; transform: scale(1.15); }
-  25%  { opacity: 0.85; transform: scale(1.05); }
-  55%  { opacity: 1; transform: scale(0.98); }
-  80%  { opacity: 0.6; transform: scale(1); }
-  100% { opacity: 0; transform: scale(1); }
+.enter-btn:active{
+  transform:scale(.97);
 }
 
-/* ——— Landing ——— */
-.landing-content {
-  text-align: center;
-  max-width: 28rem;
-}
-.title-stillwater {
-  font-family: var(--font-serif);
-  font-weight: 300;
-  font-size: clamp(1.35rem, 4vw, 1.7rem);
-  letter-spacing: 0.42em;
-  text-indent: 0.42em;
-  color: rgba(220, 225, 255, 0.85);
-  margin-bottom: 2.8rem;
-  text-transform: uppercase;
-}
-.landing-line {
-  font-size: clamp(0.95rem, 2.8vw, 1.1rem);
-  line-height: 2;
-  color: var(--text-soft);
-  font-weight: 300;
-  margin-bottom: 3.2rem;
-  white-space: pre-line;
-}
-.btn {
-  font-family: var(--font-sans);
-  font-weight: 400;
-  font-size: 0.85rem;
-  letter-spacing: 0.18em;
-  color: var(--text);
-  background: transparent;
-  border: 1px solid rgba(180, 190, 255, 0.28);
-  padding: 0.85rem 2.4rem;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: border-color 0.4s, background 0.4s, box-shadow 0.4s, color 0.4s;
-  backdrop-filter: blur(4px);
-}
-.btn:hover, .btn:focus-visible {
-  border-color: rgba(200, 210, 255, 0.55);
-  background: rgba(100, 120, 200, 0.12);
-  box-shadow: 0 0 24px rgba(120, 140, 220, 0.2);
-  outline: none;
-}
-.btn:focus-visible {
-  box-shadow: 0 0 0 2px rgba(160, 180, 255, 0.45), 0 0 24px rgba(120, 140, 220, 0.2);
-}
-.btn:active { transform: scale(0.98); }
-.btn-secondary {
-  margin-top: 2.5rem;
-  letter-spacing: 0.12em;
-  font-size: 0.8rem;
-  opacity: 0;
-  transition: opacity 1s ease 0.3s, border-color 0.4s, background 0.4s, box-shadow 0.4s;
-}
-.btn-secondary.visible { opacity: 1; }
+/* =========================================================
+   PORTAL
+========================================================= */
 
-/* ——— Scene with Vera ——— */
-.scene-stage {
-  position: relative;
-  width: 100%;
-  max-width: 420px;
-  height: min(42vh, 320px);
-  margin-bottom: 1.5rem;
-  flex-shrink: 0;
-}
-.vera-figure {
-  position: absolute;
-  left: 50%;
-  bottom: 18%;
-  transform: translateX(-50%);
-  width: 48px;
-  height: 110px;
-  opacity: 0;
-  transition: opacity 2s ease;
-}
-.vera-figure.visible { opacity: 0.85; }
-.vera-figure svg {
-  width: 100%;
-  height: 100%;
-  filter: drop-shadow(0 0 12px rgba(140, 160, 220, 0.35));
-}
-.water-glow {
-  position: absolute;
-  left: 50%;
-  bottom: 8%;
-  transform: translateX(-50%);
-  width: 120px;
-  height: 40px;
-  background: radial-gradient(ellipse, rgba(140, 170, 255, 0.2) 0%, transparent 70%);
-  filter: blur(8px);
-  opacity: 0;
-  transition: opacity 2s ease;
-}
-.water-glow.visible { opacity: 1; }
+.portal{
+  position:fixed;
+  inset:0;
+  z-index:100;
 
-/* Soft light into water */
-.question-light {
-  position: absolute;
-  left: 50%;
-  top: 30%;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 250, 240, 0.95), rgba(180, 200, 255, 0.4) 50%, transparent);
-  box-shadow: 0 0 20px 8px rgba(200, 220, 255, 0.5);
-  opacity: 0;
-  pointer-events: none;
-  transform: translateX(-50%);
-}
-.question-light.sending {
-  animation: lightIntoWater 2.2s ease-in forwards;
-}
-@keyframes lightIntoWater {
-  0%   { opacity: 0; top: 20%; transform: translateX(-50%) scale(0.5); }
-  15%  { opacity: 1; transform: translateX(-50%) scale(1.2); }
-  60%  { opacity: 0.9; top: 72%; transform: translateX(-50%) scale(0.8); }
-  85%  { opacity: 0.4; top: 82%; transform: translateX(-50%) scale(2.5); filter: blur(4px); }
-  100% { opacity: 0; top: 88%; transform: translateX(-50%) scale(4); filter: blur(10px); }
+  pointer-events:none;
+
+  opacity:0;
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(220,225,255,.12) 0%,
+      rgba(100,90,190,.14) 15%,
+      rgba(20,15,60,.55) 42%,
+      rgba(0,0,0,.95) 100%
+    );
+
+  transform:scale(1);
+
+  transition:opacity .5s ease;
 }
 
-/* ——— Dialogue / UI ——— */
-.dialogue-area {
-  text-align: center;
-  max-width: 26rem;
-  width: 100%;
-  min-height: 4rem;
-}
-.vera-line {
-  font-size: clamp(0.95rem, 2.6vw, 1.05rem);
-  line-height: 1.9;
-  color: var(--text-soft);
-  opacity: 0;
-  transition: opacity 1.2s ease;
-  margin-bottom: 0.6rem;
-}
-.vera-line.visible { opacity: 1; }
-
-.question-form {
-  width: 100%;
-  max-width: 26rem;
-  margin-top: 1.8rem;
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 1s ease, transform 1s ease;
-  pointer-events: none;
-}
-.question-form.visible {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-.question-label {
-  display: block;
-  font-size: 0.8rem;
-  color: var(--text-soft);
-  margin-bottom: 0.75rem;
-  letter-spacing: 0.04em;
-}
-.question-input {
-  width: 100%;
-  background: rgba(15, 20, 45, 0.55);
-  border: 1px solid rgba(160, 170, 230, 0.22);
-  border-radius: 12px;
-  padding: 1rem 1.1rem;
-  color: var(--text);
-  font-family: var(--font-sans);
-  font-size: 1rem;
-  font-weight: 300;
-  line-height: 1.6;
-  resize: none;
-  min-height: 5.5rem;
-  outline: none;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  backdrop-filter: blur(6px);
-}
-.question-input::placeholder {
-  color: rgba(160, 170, 200, 0.4);
-}
-.question-input:focus {
-  border-color: rgba(180, 190, 255, 0.45);
-  box-shadow: 0 0 0 2px rgba(140, 160, 230, 0.2);
-}
-.submit-btn {
-  display: block;
-  margin: 1.2rem auto 0;
+.portal.active{
+  opacity:1;
+  animation:portalPulse 1.7s ease forwards;
 }
 
-/* ——— Card reading ——— */
-.reading-wrap {
-  width: 100%;
-  max-width: 28rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow-y: auto;
-  max-height: 100%;
-  -webkit-overflow-scrolling: touch;
-  padding: 1rem 0 2rem;
+@keyframes portalPulse{
+  0%{
+    transform:scale(.8);
+    opacity:0;
+  }
+
+  35%{
+    transform:scale(1.02);
+    opacity:1;
+  }
+
+  70%{
+    transform:scale(1.16);
+    opacity:.85;
+  }
+
+  100%{
+    transform:scale(1.35);
+    opacity:0;
+  }
 }
-.card-shell {
-  width: min(220px, 58vw);
-  height: auto;
-  aspect-ratio: 2 / 3;
-  perspective: 800px;
-  margin: 1.2rem 0 1.8rem;
-  opacity: 0;
-  transform: translateY(20px) scale(0.92);
-  transition: opacity 1.4s ease, transform 1.4s ease;
+
+/* =========================================================
+   VERA QUESTION SCREEN
+========================================================= */
+
+.question-inner{
+  width:min(100%,520px);
+  text-align:center;
+
+  transform:translateY(15px);
+  transition:transform 1.4s ease;
 }
-.card-shell.revealed {
-  opacity: 1;
-  transform: translateY(0) scale(1);
+
+.screen.active .question-inner{
+  transform:translateY(0);
 }
-.card-face {
-  width: 100%;
-  height: 100%;
-  background: #0e0c22;
-  border: 1px solid var(--cream-dim);
-  border-radius: 10px;
+
+.scene-stage{
+  position:relative;
+
+  width:min(100%,420px);
+  height:min(42vh,320px);
+
+  min-height:230px;
+
+  margin:0 auto 16px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* ---------------------------------------------------------
+   VERA
+   ไม่มีหน้า ไม่มีรายละเอียดบุคคล
+   เป็นเพียงร่างขาวจาง ๆ + aura
+--------------------------------------------------------- */
+
+.vera-figure{
+  position:relative;
+
+  width:170px;
+  height:250px;
+
+  opacity:0;
+
+  transform:
+    translateY(15px)
+    scale(.92);
+
+  transition:
+    opacity:2.2s ease,
+    transform:2.8s cubic-bezier(.22,.61,.36,1);
+
+  filter:
+    drop-shadow(0 0 22px rgba(225,235,255,.28))
+    drop-shadow(0 0 70px rgba(150,170,255,.18));
+
+  animation:veraFloat 7s ease-in-out infinite alternate;
+}
+
+.vera-figure.visible{
+  opacity:.9;
+
+  transform:
+    translateY(0)
+    scale(1);
+}
+
+@keyframes veraFloat{
+  from{
+    margin-top:0;
+  }
+  to{
+    margin-top:-8px;
+  }
+}
+
+/* Aura ด้านนอก */
+
+.vera-aura{
+  position:absolute;
+  inset:-35px -45px;
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(245,248,255,.24) 0%,
+      rgba(220,230,255,.12) 28%,
+      rgba(175,195,255,.07) 48%,
+      transparent 73%
+    );
+
+  filter:blur(18px);
+
+  animation:
+    auraPulse 4.5s ease-in-out infinite alternate;
+}
+
+@keyframes auraPulse{
+  from{
+    transform:scale(.88);
+    opacity:.45;
+  }
+  to{
+    transform:scale(1.08);
+    opacity:.9;
+  }
+}
+
+/* วงแสงเหนือร่าง */
+
+.vera-halo{
+  position:absolute;
+
+  width:145px;
+  height:145px;
+
+  top:10px;
+  left:50%;
+
+  transform:translateX(-50%);
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,255,255,.18) 0%,
+      rgba(210,225,255,.08) 34%,
+      transparent 70%
+    );
+
+  filter:blur(12px);
+
+  opacity:.75;
+}
+
+/* ร่างแบบ abstract
+   ไม่มีหน้า ไม่มีตา ไม่มีจมูก ไม่มีรายละเอียด */
+
+.vera-body{
+  position:absolute;
+
+  left:50%;
+  top:52px;
+
+  width:92px;
+  height:170px;
+
+  transform:translateX(-50%);
+
+  border-radius:
+    48% 48% 42% 42% /
+    34% 34% 66% 66%;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 25%,
+      rgba(255,255,255,.55) 0%,
+      rgba(245,248,255,.26) 28%,
+      rgba(210,225,255,.11) 55%,
+      rgba(170,190,255,.04) 75%,
+      transparent 100%
+    );
+
+  filter:blur(6px);
+
+  opacity:.68;
+}
+
+/* แสงแทนศีรษะ
+   จงใจให้ไม่เป็นรูปหน้าคน */
+
+.vera-presence{
+  position:absolute;
+
+  left:50%;
+  top:4px;
+
+  width:72px;
+  height:82px;
+
+  transform:translateX(-50%);
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(255,255,255,.50) 0%,
+      rgba(230,238,255,.24) 38%,
+      rgba(190,210,255,.08) 68%,
+      transparent 100%
+    );
+
+  filter:blur(8px);
+
+  opacity:.65;
+}
+
+/* แสงตามลำตัว */
+
+.vera-light{
+  position:absolute;
+
+  left:50%;
+  bottom:15px;
+
+  width:155px;
+  height:80px;
+
+  transform:translateX(-50%);
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      ellipse,
+      rgba(230,240,255,.20),
+      transparent 70%
+    );
+
+  filter:blur(18px);
+
+  opacity:.55;
+}
+
+/* เงาสะท้อนของ Vera บนน้ำ */
+
+.vera-reflection{
+  position:absolute;
+
+  left:50%;
+  bottom:4px;
+
+  width:130px;
+  height:45px;
+
+  transform:translateX(-50%);
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      ellipse,
+      rgba(210,225,255,.13),
+      transparent 70%
+    );
+
+  filter:blur(8px);
+
+  opacity:.45;
+
+  animation:reflectionPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes reflectionPulse{
+  from{
+    transform:translateX(-50%) scaleX(.8);
+    opacity:.28;
+  }
+  to{
+    transform:translateX(-50%) scaleX(1.15);
+    opacity:.65;
+  }
+}
+
+.water-glow{
+  position:absolute;
+
+  left:50%;
+  bottom:16px;
+
+  width:250px;
+  height:70px;
+
+  transform:translateX(-50%);
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      ellipse,
+      rgba(150,175,255,.15),
+      transparent 70%
+    );
+
+  filter:blur(16px);
+
+  opacity:.7;
+}
+
+/* ---------------------------------------------------------
+   QUESTION LIGHT
+--------------------------------------------------------- */
+
+.question-light{
+  position:absolute;
+
+  left:50%;
+  top:30%;
+
+  width:10px;
+  height:10px;
+
+  margin-left:-5px;
+
+  border-radius:50%;
+
+  background:#fff;
+
   box-shadow:
-    0 0 0 1px rgba(245, 240, 230, 0.12),
-    0 12px 40px rgba(0, 0, 20, 0.55);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  position: relative;
-  overflow: hidden;
-}
-.card-image {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 9px;
-}
-.card-numeral,
-.card-name,
-.card-symbol {
-  /* Real card art already includes numeral + name; keep nodes for a11y fallbacks */
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-.reading-text {
-  font-size: clamp(0.9rem, 2.5vw, 1rem);
-  line-height: 1.95;
-  color: var(--text-soft);
-  text-align: center;
-  opacity: 0;
-  transition: opacity 1.5s ease 0.4s;
-  padding: 0 0.25rem;
-}
-.reading-text.visible { opacity: 1; }
+    0 0 12px rgba(255,255,255,.9),
+    0 0 30px rgba(190,205,255,.75),
+    0 0 65px rgba(150,170,255,.55);
 
-/* ——— Reduced motion ——— */
-@media (prefers-reduced-motion: reduce) {
-  .screen { transition-duration: 0.35s; }
-  .portal-overlay.active { animation-duration: 0.8s; }
-  .vera-line, .vera-figure, .water-glow, .question-form,
-  .card-shell, .reading-text, .btn-secondary {
-    transition-duration: 0.3s !important;
-  }
-  .question-light.sending { animation-duration: 0.6s; }
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-  }
-  .portal-overlay.active { animation: none; opacity: 0; }
-  .question-light.sending { animation: none; opacity: 0; }
+  opacity:0;
+
+  pointer-events:none;
 }
 
-/* Mobile tweaks */
-@media (max-height: 700px) {
-  .scene-stage { height: min(32vh, 220px); margin-bottom: 0.8rem; }
-  .vera-figure { height: 80px; width: 36px; }
-  .landing-line { margin-bottom: 2rem; }
-  .title-stillwater { margin-bottom: 1.8rem; }
+.question-light.travel{
+  opacity:1;
+
+  animation:lightIntoWater 1.7s cubic-bezier(.55,.06,.68,.19) forwards;
+}
+
+@keyframes lightIntoWater{
+  0%{
+    top:32%;
+    transform:scale(.7);
+    opacity:0;
+  }
+
+  15%{
+    opacity:1;
+  }
+
+  80%{
+    top:77%;
+    transform:scale(1.15);
+    opacity:.95;
+  }
+
+  100%{
+    top:84%;
+    transform:scale(.2);
+    opacity:0;
+  }
+}
+
+/* ---------------------------------------------------------
+   DIALOGUE
+--------------------------------------------------------- */
+
+.dialogue{
+  min-height:92px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  margin:0 auto 18px;
+
+  max-width:430px;
+
+  text-align:center;
+
+  font-family:"Cormorant Garamond",serif;
+  font-size:clamp(20px,5vw,25px);
+  line-height:1.65;
+
+  color:rgba(242,244,255,.90);
+
+  text-shadow:
+    0 0 20px rgba(160,180,255,.10);
+}
+
+.dialogue-line{
+  opacity:0;
+
+  transition:
+    opacity 1s ease,
+    transform 1s ease;
+
+  transform:translateY(8px);
+}
+
+.dialogue-line.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* ---------------------------------------------------------
+   QUESTION FORM
+--------------------------------------------------------- */
+
+.question-form{
+  width:100%;
+  max-width:460px;
+
+  margin:0 auto;
+
+  opacity:0;
+  transform:translateY(12px);
+
+  pointer-events:none;
+
+  transition:
+    opacity 1.3s ease,
+    transform 1.3s ease;
+}
+
+.question-form.visible{
+  opacity:1;
+  transform:translateY(0);
+  pointer-events:auto;
+}
+
+.question-label{
+  display:block;
+
+  margin-bottom:10px;
+
+  font-size:12px;
+  letter-spacing:.08em;
+
+  color:rgba(205,210,235,.48);
+}
+
+.question-input{
+  width:100%;
+
+  min-height:104px;
+
+  padding:16px 18px;
+
+  resize:none;
+
+  border-radius:18px;
+
+  border:1px solid rgba(220,225,255,.16);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(30,25,65,.24),
+      rgba(10,10,30,.35)
+    );
+
+  color:rgba(242,244,255,.92);
+
+  font-size:15px;
+  line-height:1.8;
+
+  outline:none;
+
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+
+  box-shadow:
+    inset 0 0 25px rgba(100,110,180,.04),
+    0 0 30px rgba(60,50,130,.04);
+
+  transition:
+    border-color .5s ease,
+    box-shadow .5s ease,
+    background .5s ease;
+}
+
+.question-input::placeholder{
+  color:rgba(205,210,235,.35);
+}
+
+.question-input:focus{
+  border-color:rgba(215,225,255,.34);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(40,32,80,.28),
+      rgba(10,10,30,.40)
+    );
+
+  box-shadow:
+    0 0 35px rgba(150,165,255,.08);
+}
+
+.question-submit{
+  margin-top:13px;
+
+  width:100%;
+
+  min-height:50px;
+
+  border-radius:999px;
+
+  border:1px solid rgba(220,225,255,.20);
+
+  background:rgba(40,32,85,.28);
+
+  color:rgba(245,245,255,.88);
+
+  font-family:"Cormorant Garamond",serif;
+  font-size:18px;
+  letter-spacing:.10em;
+
+  cursor:pointer;
+
+  transition:
+    background .5s ease,
+    border-color .5s ease,
+    box-shadow .5s ease,
+    transform .4s ease;
+}
+
+.question-submit:hover{
+  background:rgba(60,45,110,.34);
+  border-color:rgba(220,225,255,.38);
+
+  box-shadow:
+    0 0 35px rgba(150,165,255,.10);
+
+  transform:translateY(-1px);
+}
+
+.question-submit:active{
+  transform:scale(.985);
+}
+
+.question-submit:disabled{
+  opacity:.4;
+  cursor:default;
+}
+
+/* =========================================================
+   READING
+========================================================= */
+
+.reading-screen{
+  align-items:flex-start;
+
+  overflow-y:auto;
+  overflow-x:hidden;
+
+  scrollbar-width:none;
+}
+
+.reading-screen::-webkit-scrollbar{
+  display:none;
+}
+
+.reading-wrap{
+  width:min(100%,600px);
+
+  min-height:100%;
+
+  padding:
+    34px 0
+    calc(45px + env(safe-area-inset-bottom));
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+
+  text-align:center;
+}
+
+.reading-eyebrow{
+  margin-top:8px;
+  margin-bottom:10px;
+
+  font-family:"Cormorant Garamond",serif;
+  font-size:13px;
+
+  letter-spacing:.22em;
+  text-transform:uppercase;
+
+  color:rgba(205,215,245,.44);
+}
+
+.reading-title{
+  margin-bottom:22px;
+
+  font-family:"Cormorant Garamond",serif;
+  font-size:24px;
+  font-weight:400;
+
+  color:rgba(245,245,255,.88);
+}
+
+/* ---------------------------------------------------------
+   CARD
+--------------------------------------------------------- */
+
+.card-shell{
+  position:relative;
+
+  width:220px;
+  aspect-ratio:2 / 3;
+
+  margin-bottom:26px;
+
+  border-radius:14px;
+
+  padding:4px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.20),
+      rgba(130,120,200,.16),
+      rgba(255,255,255,.08)
+    );
+
+  box-shadow:
+    0 0 30px rgba(100,110,190,.10),
+    0 20px 70px rgba(0,0,0,.40);
+
+  transform:
+    perspective(800px)
+    rotateY(0deg)
+    scale(.94);
+
+  opacity:0;
+
+  transition:
+    opacity 1.2s ease,
+    transform 1.5s cubic-bezier(.22,.61,.36,1);
+}
+
+.card-shell.revealed{
+  opacity:1;
+
+  transform:
+    perspective(800px)
+    rotateY(0deg)
+    scale(1);
+}
+
+.card-shell::before{
+  content:"";
+
+  position:absolute;
+  inset:-18px;
+
+  border-radius:22px;
+
+  background:
+    radial-gradient(
+      ellipse,
+      rgba(180,190,255,.15),
+      transparent 68%
+    );
+
+  filter:blur(15px);
+
+  z-index:-1;
+}
+
+.card-shell img{
+  display:block;
+
+  width:100%;
+  height:100%;
+
+  object-fit:cover;
+
+  border-radius:11px;
+}
+
+/* ---------------------------------------------------------
+   READING TEXT
+--------------------------------------------------------- */
+
+.reading-content{
+  width:100%;
+
+  opacity:0;
+  transform:translateY(15px);
+
+  transition:
+    opacity 1.3s ease,
+    transform 1.3s ease;
+}
+
+.reading-content.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.reading-text{
+  width:100%;
+
+  margin:0 auto;
+
+  padding:0 4px;
+
+  font-size:15px;
+  line-height:2.05;
+
+  color:rgba(225,230,245,.78);
+
+  white-space:pre-line;
+}
+
+/* ---------------------------------------------------------
+   DEEP READING CTA
+--------------------------------------------------------- */
+
+.deep-reading{
+  width:100%;
+
+  margin-top:34px;
+  padding-top:30px;
+
+  border-top:1px solid rgba(220,225,255,.10);
+
+  opacity:0;
+  transform:translateY(15px);
+
+  transition:
+    opacity 1.3s ease,
+    transform 1.3s ease;
+}
+
+.deep-reading.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.deep-reading-copy{
+  margin:0 auto 22px;
+
+  max-width:510px;
+
+  font-size:14px;
+  line-height:2;
+
+  color:rgba(220,225,245,.72);
+
+  white-space:pre-line;
+}
+
+.deep-reading-btn{
+  position:relative;
+
+  width:100%;
+  max-width:390px;
+
+  min-height:54px;
+
+  padding:12px 22px;
+
+  border-radius:999px;
+
+  border:1px solid rgba(220,225,255,.24);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(60,48,110,.35),
+      rgba(30,24,65,.30)
+    );
+
+  color:rgba(248,248,255,.94);
+
+  font-family:"Cormorant Garamond",serif;
+  font-size:19px;
+  letter-spacing:.04em;
+
+  cursor:pointer;
+
+  box-shadow:
+    0 0 30px rgba(150,160,255,.06);
+
+  transition:
+    background .5s ease,
+    border-color .5s ease,
+    box-shadow .5s ease,
+    transform .4s ease;
+}
+
+.deep-reading-btn::before{
+  content:"";
+
+  position:absolute;
+  inset:-7px;
+
+  border-radius:inherit;
+
+  background:
+    radial-gradient(
+      ellipse,
+      rgba(180,190,255,.12),
+      transparent 70%
+    );
+
+  z-index:-1;
+
+  opacity:.65;
+
+  animation:deepGlow 3.5s ease-in-out infinite alternate;
+}
+
+@keyframes deepGlow{
+  from{
+    transform:scale(.96);
+    opacity:.3;
+  }
+
+  to{
+    transform:scale(1.06);
+    opacity:.75;
+  }
+}
+
+.deep-reading-btn:hover{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(75,60,130,.40),
+      rgba(35,28,75,.35)
+    );
+
+  border-color:rgba(225,230,255,.42);
+
+  box-shadow:
+    0 0 40px rgba(150,165,255,.13);
+
+  transform:translateY(-2px);
+}
+
+.deep-reading-btn:active{
+  transform:scale(.985);
+}
+
+.deep-reading-btn:disabled{
+  cursor:default;
+}
+
+/* ---------------------------------------------------------
+   SECOND CARD GATE
+--------------------------------------------------------- */
+
+.second-gate{
+  width:100%;
+  max-width:480px;
+
+  margin-top:22px;
+  padding:22px 20px;
+
+  border-radius:18px;
+
+  border:1px solid rgba(220,225,255,.12);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(30,25,65,.30),
+      rgba(10,10,30,.38)
+    );
+
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+
+  opacity:0;
+  transform:translateY(10px);
+
+  pointer-events:none;
+
+  transition:
+    opacity .8s ease,
+    transform .8s ease;
+}
+
+.second-gate.visible{
+  opacity:1;
+  transform:translateY(0);
+  pointer-events:auto;
+}
+
+.second-gate-title{
+  margin-bottom:8px;
+
+  font-family:"IBM Plex Sans Thai",sans-serif;
+  font-size:22px;
+
+  color:rgba(245,245,255,.88);
+}
+
+.second-gate-text{
+  margin:0;
+
+  font-size:13px;
+  line-height:1.9;
+
+  color:rgba(210,218,240,.66);
+
+  white-space:pre-line;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:600px){
+
+  .sound-toggle{
+    top:calc(12px + env(safe-area-inset-top));
+    right:12px;
+  }
+
+  .screen{
+    padding-left:18px;
+    padding-right:18px;
+  }
+
+  .brand{
+    font-size:clamp(54px,16vw,78px);
+  }
+
+  .landing-line{
+    font-size:14px;
+    max-width:330px;
+    margin-bottom:38px;
+  }
+
+  .scene-stage{
+    height:34vh;
+    min-height:215px;
+  }
+
+  .vera-figure{
+    transform:
+      translateY(15px)
+      scale(.82);
+  }
+
+  .vera-figure.visible{
+    transform:
+      translateY(0)
+      scale(.82);
+  }
+
+  .dialogue{
+    font-size:20px;
+    min-height:82px;
+  }
+
+  .question-input{
+    min-height:112px;
+  }
+
+  .reading-wrap{
+    padding-top:28px;
+  }
+
+  .card-shell{
+    width:195px;
+  }
+
+  .reading-text{
+    font-size:14px;
+    line-height:2;
+  }
+
+  .deep-reading-copy{
+    font-size:13px;
+    line-height:1.95;
+  }
+
+  .deep-reading-btn{
+    font-size:18px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media(prefers-reduced-motion:reduce){
+
+  *,
+  *::before,
+  *::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+  }
 }
 </style>
 </head>
-<body>
-<canvas id="cosmos" aria-hidden="true"></canvas>
-<canvas id="water-canvas" aria-hidden="true"></canvas>
-<div class="fog-band" aria-hidden="true"></div>
-<div class="portal-overlay" id="portal" aria-hidden="true"></div>
 
-<button type="button" class="sound-toggle" id="soundToggle" aria-pressed="false" aria-label="เปิดหรือปิดเสียง">
-  SOUND OFF
+<body>
+
+<canvas id="cosmos"></canvas>
+<canvas id="water"></canvas>
+
+<div class="fog-band"></div>
+
+<button
+  id="soundToggle"
+  class="sound-toggle"
+  type="button"
+  aria-label="เปิดหรือปิดเสียง"
+>
+  <span class="sound-icon">◒</span>
 </button>
 
-<!-- SCREEN 01: Landing -->
-<section class="screen active" id="screen-landing" aria-label="หน้าแรก Stillwater">
-  <div class="landing-content">
-    <h1 class="title-stillwater">Stillwater</h1>
-    <p class="landing-line">บางคำตอบไม่ได้หายไปไหน
-เราแค่ยังไม่ได้หยุดฟัง</p>
-    <button type="button" class="btn" id="btnEnter">ENTER</button>
-  </div>
-</section>
+<div id="portal" class="portal"></div>
 
-<!-- SCREEN 02: Meet Vera + Question -->
-<section class="screen" id="screen-vera" aria-label="พบพี่เวรา">
-  <div class="scene-stage" aria-hidden="true">
-    <div class="water-glow" id="waterGlow"></div>
-    <div class="vera-figure" id="veraFigure">
-      <svg viewBox="0 0 48 110" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- abstract elegant silhouette in water -->
-        <ellipse cx="24" cy="14" rx="7" ry="8" fill="rgba(190,200,235,0.55)"/>
-        <path d="M24 22 C18 28 14 40 15 55 C16 70 18 85 20 98 L28 98 C30 85 32 70 33 55 C34 40 30 28 24 22Z"
-              fill="rgba(170,185,230,0.35)"/>
-        <path d="M15 38 C8 42 5 50 6 58 C8 55 12 52 16 50" stroke="rgba(180,195,240,0.25)" stroke-width="1.5" fill="none"/>
-        <path d="M33 38 C40 42 43 50 42 58 C40 55 36 52 32 50" stroke="rgba(180,195,240,0.25)" stroke-width="1.5" fill="none"/>
-        <!-- soft dress/water blend -->
-        <path d="M16 70 Q24 78 32 70 Q34 88 28 100 Q24 104 20 100 Q14 88 16 70Z"
-              fill="rgba(140,160,220,0.2)"/>
-        <!-- reflection hint -->
-        <ellipse cx="24" cy="105" rx="14" ry="3" fill="rgba(140,170,255,0.12)"/>
-      </svg>
+<!-- =======================================================
+     LANDING
+======================================================== -->
+
+<section
+  id="landing"
+  class="screen active"
+  aria-label="Stillwater"
+>
+  <div class="landing-inner">
+
+    <div class="brand">
+      Stillwater
     </div>
-    <div class="question-light" id="questionLight"></div>
+
+    <div class="brand-sub">
+      A quiet place between questions and answers
+    </div>
+
+    <p class="landing-line">
+      บางคำตอบไม่ได้หายไปไหน<br>
+      เราแค่ยังไม่ได้หยุดฟัง
+    </p>
+
+    <button
+      id="enterBtn"
+      class="enter-btn"
+      type="button"
+    >
+      ENTER
+    </button>
+
   </div>
-  <div class="dialogue-area">
-    <p class="vera-line" id="line1">มาถึงแล้วนะคะ</p>
-    <p class="vera-line" id="line2">ถ้าคุณมีคำถามหนึ่งข้อ ลองส่งมันมาให้พี่เวรา</p>
-  </div>
-  <form class="question-form" id="questionForm" autocomplete="off">
-    <label class="question-label" for="questionInput">คุณอยากถามอะไร?</label>
-    <textarea class="question-input" id="questionInput" name="question" rows="3"
-      placeholder="เขียนคำถามของคุณที่นี่…" maxlength="500" required></textarea>
-    <button type="submit" class="btn submit-btn">ส่งคำถาม</button>
-  </form>
 </section>
 
-<!-- SCREEN 03: Reading -->
-<section class="screen" id="screen-reading" aria-label="การอ่านไพ่">
-  <div class="reading-wrap">
-    <p class="vera-line" id="readingIntro">พี่เวราจะลองขอคำตอบจากจักรวาลให้คุณนะคะ…</p>
-    <div class="card-shell" id="cardShell" aria-live="polite">
-      <div class="card-face">
-        <img class="card-image" id="cardImage" alt="" width="780" height="1170" decoding="async">
-        <span class="card-numeral" id="cardNumeral">0</span>
-        <div class="card-symbol" id="cardSymbol"></div>
-        <span class="card-name" id="cardName">THE FOOL</span>
+<!-- =======================================================
+     VERA / QUESTION
+======================================================== -->
+
+<section
+  id="questionScreen"
+  class="screen"
+  aria-label="ถามคำถาม"
+>
+
+  <div class="question-inner">
+
+    <div class="scene-stage">
+
+      <div id="veraFigure" class="vera-figure">
+
+        <div class="vera-aura"></div>
+
+        <div class="vera-halo"></div>
+
+        <div class="vera-presence"></div>
+
+        <div class="vera-body"></div>
+
+        <div class="vera-light"></div>
+
+        <div class="vera-reflection"></div>
+
       </div>
+
+      <div class="water-glow"></div>
+
+      <div id="questionLight" class="question-light"></div>
+
     </div>
-    <p class="reading-text" id="readingText"></p>
-    <button type="button" class="btn btn-secondary" id="btnDeeper">Go Deeper</button>
+
+    <div
+      id="dialogue"
+      class="dialogue"
+      aria-live="polite"
+    >
+      <div
+        id="dialogueLine"
+        class="dialogue-line"
+      ></div>
+    </div>
+
+    <form
+      id="questionForm"
+      class="question-form"
+    >
+
+      <label
+        class="question-label"
+        for="questionInput"
+      >
+        ส่งคำถามหนึ่งข้อให้พี่เวรา
+      </label>
+
+      <textarea
+        id="questionInput"
+        class="question-input"
+        maxlength="500"
+        autocomplete="off"
+        placeholder="พิมพ์คำถามที่อยู่ในใจคุณ..."
+      ></textarea>
+
+      <button
+        id="questionSubmit"
+        class="question-submit"
+        type="submit"
+      >
+        ส่งคำถาม
+      </button>
+
+    </form>
+
   </div>
+
+</section>
+
+<!-- =======================================================
+     READING
+======================================================== -->
+
+<section
+  id="readingScreen"
+  class="screen reading-screen"
+  aria-label="คำตอบจากไพ่"
+>
+
+  <div class="reading-wrap">
+
+    <div class="reading-eyebrow">
+      Stillwater
+    </div>
+
+    <div class="reading-title">
+      ไพ่ที่ปรากฏขึ้นสำหรับคุณ
+    </div>
+
+    <div
+      id="cardShell"
+      class="card-shell"
+    >
+      <img
+        id="cardImage"
+        src=""
+        alt="ไพ่ Major Arcana"
+      >
+    </div>
+
+    <div
+      id="readingContent"
+      class="reading-content"
+    >
+
+      <div
+        id="readingText"
+        class="reading-text"
+        aria-live="polite"
+      ></div>
+
+      <div
+        id="deepReading"
+        class="deep-reading"
+      >
+
+        <div
+          id="deepReadingCopy"
+          class="deep-reading-copy"
+        >ไพ่ใบนี้ได้บอกสิ่งที่จักรวาลอยากให้คุณรู้ในตอนนี้แล้ว
+
+แต่ถ้าคุณยังรู้สึกว่า
+มีบางอย่างที่อยากรู้มากกว่านี้...
+
+พี่เวราจะลองถามจักรวาลให้อีกครั้ง
+เพื่อขอคำตอบเพิ่มเติมสำหรับคุณ
+
+บางคำตอบอาจไม่ได้ปรากฏขึ้นในไพ่ใบแรก</div>
+
+        <button
+          id="btnDeeper"
+          class="deep-reading-btn"
+          type="button"
+        >
+          ✦ เปิดไพ่ใบที่ 2 · 19 บาท
+        </button>
+
+        <div
+          id="secondGate"
+          class="second-gate"
+          aria-live="polite"
+        >
+
+          <div class="second-gate-title">
+            พี่เวรารับคำขอของคุณแล้ว
+          </div>
+
+          <p class="second-gate-text">การเปิดไพ่ใบที่ 2 ราคา 19 บาท
+
+ตอนนี้ Stillwater ยังอยู่ในช่วงทดลอง
+จึงยังไม่มีการตัดเงินจริง
+
+คำขอของคุณถูกบันทึกไว้เป็นความสนใจ
+เพื่อใช้พัฒนาการอ่านครั้งต่อไป</p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
 </section>
 
 <script>
-(function () {
-  'use strict';
+/* =========================================================
+   STILLWATER
+   CORE LOGIC
+========================================================= */
 
-  /* ========== MAJOR ARCANA DATA ========== */
-  const CARDS = [
-    {
-      id: 'fool', roman: '0', name: 'THE FOOL',
-      reading: 'พี่เวรารู้สึกถึงลมหายใจที่เบาบางรอบตัวคุณค่ะ — เหมือนมีพื้นที่ว่างกำลังเปิดขึ้นต่อหน้า คุณอาจกำลังยืนอยู่ที่ขอบของอะไรสักอย่าง ที่ยังไม่ชัดเจน แต่หัวใจบอกว่าควรก้าว คำถามของคุณไม่ได้ต้องการแผนที่สมบูรณ์ในตอนนี้หรอกค่ะ มันต้องการความกล้าที่จะเชื่อในก้าวแรก พี่เวราอยากให้คุณยอมปล่อยน้ำหนักของ “ต้องรู้ทุกอย่างก่อน” ลงบ้าง จักรวาลกำลังยื่นทางเดินใหม่ให้ — ไม่ใช่ทางที่ปลอดภัยที่สุด แต่เป็นทางที่เป็นของคุณจริง ๆ ค่ะ เริ่มจากก้าวเล็ก ๆ ที่จริงใจก็พอ'
-    },
-    {
-      id: 'magician', roman: 'I', name: 'THE MAGICIAN',
-      reading: 'พี่เวราเห็นแสงเล็ก ๆ ในมือคุณค่ะ — ของที่คุณมีอยู่แล้วนะ ไม่ใช่ของที่ยังต้องไปหา ความสามารถ ความตั้งใจ และจังหวะที่กำลังมาถึง กำลังเรียงตัวกันเงียบ ๆ คำถามของคุณกำลังบอกว่า คุณพร้อมจะลงมือมากกว่าที่คิด อย่ารอให้ทุกอย่างสมบูรณ์แบบก่อนเริ่มนะคะ พี่เวราอยากให้คุณเลือกหนึ่งสิ่งที่ทำได้จริงวันนี้ แล้วทำมันด้วยความตั้งใจเต็มที่ จักรวาลไม่ได้ขอผลลัพธ์ยิ่งใหญ่ในทันที ขอเพียงให้คุณใช้สิ่งที่มีอย่างจริงใจค่ะ พลังอยู่ที่คุณอยู่แล้ว'
-    },
-    {
-      id: 'priestess', roman: 'II', name: 'THE HIGH PRIESTESS',
-      reading: 'พี่เวรารู้สึกว่าคำตอบที่คุณตามหา อาจไม่ได้ดังหรือชัดอย่างที่หวังค่ะ มันอยู่เงียบ ๆ ในส่วนลึกของตัวคุณเอง เหมือนน้ำนิ่งที่สะท้อนดาว คำถามนี้กำลังชวนให้คุณหยุดฟังข้างใน มากกว่าวิ่งไปถามข้างนอก พี่เวราอยากให้คุณไว้ใจความรู้สึกที่ผุดขึ้นโดยไม่มีเหตุผลชัดเจนบ้างนะคะ — บางครั้งนั่นคือสัญญาณที่แท้จริง จงให้พื้นที่กับความเงียบอีกนิด คำตอบจะค่อย ๆ เผยตัวเองเมื่อคุณพร้อมจะรับโดยไม่เร่งค่ะ'
-    },
-    {
-      id: 'empress', roman: 'III', name: 'THE EMPRESS',
-      reading: 'พี่เวราเห็นความอ่อนโยนกำลังขอที่ทางในชีวิตคุณค่ะ — ไม่ใช่ความอ่อนแอ แต่เป็นการดูแลที่คุณอาจลืมให้ตัวเองมานาน คำถามของคุณเชื่อมกับเรื่องของการเติบโต การโอบรับ และการปล่อยให้สิ่งดีงามงอกเงยตามจังหวะของมัน พี่เวราอยากให้คุณถามตัวเองว่า อะไรในชีวิตนี้ต้องการความอบอุ่นจากคุณตอนนี้ บางทีคำตอบอาจไม่ได้อยู่ที่การควบคุมมากขึ้น แต่อยู่ที่การเปิดพื้นที่ให้หัวใจได้หายใจค่ะ จงใจดีกับตัวเองเหมือนที่คุณใจดีกับคนอื่นนะคะ'
-    },
-    {
-      id: 'emperor', roman: 'IV', name: 'THE EMPEROR',
-      reading: 'พี่เวรารู้สึกถึงโครงร่างที่กำลังต้องการความชัดเจนในชีวิตคุณค่ะ คำถามนี้ไม่ได้เกี่ยวกับการแข็งกร้าว แต่เกี่ยวกับการวางขอบเขตด้วยความรักต่อตัวเอง คุณอาจต้องตัดสินใจ หรือยืนหยัดในสิ่งที่รู้ว่าถูกต้อง แม้จะไม่ใช่ทางที่คนอื่นคาดหวัง พี่เวราอยากให้คุณจัดระเบียบสิ่งที่กระจัดกระจาย — ความคิด ความสัมพันธ์ หรือทางเลือก — แล้วเลือกยืนบนพื้นดินที่มั่นคงของคุณเองค่ะ ความสงบที่แท้จริงมักเกิดจากการที่เรารู้ว่าเราเป็นใคร และยอมรับความรับผิดชอบนั้นอย่างสง่างาม'
-    },
-    {
-      id: 'hierophant', roman: 'V', name: 'THE HIEROPHANT',
-      reading: 'พี่เวราได้ยินเสียงกระซิบจากสิ่งที่คุณเคยเรียนรู้มาค่ะ — บทเรียนเก่า คำสอน หรือความเชื่อที่เคยพยุงคุณไว้ คำถามของคุณอาจกำลังถามว่า ยังควรยึดสิ่งเดิมอยู่ไหม หรือถึงเวลาจะฟังเสียงของตัวเองมากขึ้น พี่เวราไม่ได้บอกให้ทิ้งทุกอย่างนะคะ แต่ชวนให้คุณเลือกอย่างมีสติว่า อะไรยังเลี้ยงหัวใจคุณอยู่ และอะไรเป็นเพียงรูปแบบที่เคยชิน จงเคารพภูมิปัญญาที่ผ่านมา แต่ก็อย่าลืมว่าคุณมีสิทธิ์จะตีความมันใหม่ด้วยสายตาของวันนี้ค่ะ'
-    },
-    {
-      id: 'lovers', roman: 'VI', name: 'THE LOVERS',
-      reading: 'พี่เวราเห็นทางแยกที่หัวใจคุณกำลังมองอยู่ค่ะ — ไม่จำเป็นต้องเป็นเรื่องความรักเสมอไป แต่มักเกี่ยวกับการเลือกที่สอดคล้องกับคุณค่าที่แท้จริง คำถามของคุณกำลังถามถึงความเชื่อมโยง และการตัดสินใจที่ซื่อสัตย์กับตัวเอง พี่เวราอยากให้คุณสังเกตว่า ส่วนไหนของตัวเองที่คุณอาจกำลังตัดทิ้งเพื่อเอาใจสถานการณ์ เมื่อคุณเลือกด้วยหัวใจที่เปิดและซื่อตรง จักรวาลมักจะจัดเรียงส่วนที่เหลือให้สอดคล้องตามมาค่ะ จงเลือกในสิ่งที่ทำให้คุณรู้สึกเป็นตัวเองมากขึ้นนะคะ'
-    },
-    {
-      id: 'chariot', roman: 'VII', name: 'THE CHARIOT',
-      reading: 'พี่เวรารู้สึกถึงแรงขับเคลื่อนที่กำลังตื่นในตัวคุณค่ะ — ทิศทาง ความตั้งใจ และการเดินทางที่ต้องการความมุ่งมั่น คำถามของคุณไม่ได้ขอให้คุณหยุดนิ่ง แต่อยากให้คุณจับพวงมาลัยชีวิตให้มั่น โดยไม่ปล่อยให้อารมณ์ฉุดไปคนละทาง พี่เวราอยากให้คุณรวมพลังที่กระจัดกระจายเข้าด้วยกัน แล้วมุ่งไปข้างหน้าอย่างมีสติ ความสำเร็จที่กำลังมาถึงไม่ได้มาจากการฝืนทุกอย่าง แต่มาจากการรู้ว่าคุณกำลังไปไหน และยอมปล่อยสิ่งที่ฉุดรั้งออกไปทีละน้อยค่ะ มั่นใจในจังหวะของตัวเองนะคะ'
-    },
-    {
-      id: 'strength', roman: 'VIII', name: 'STRENGTH',
-      reading: 'พี่เวราเห็นความแข็งแกร่งที่ไม่ต้องตะโกนในตัวคุณค่ะ — ความอดทน ความเมตตา และความกล้าที่จะอยู่กับสิ่งที่ยากโดยไม่หนี คำถามของคุณกำลังถูกโอบด้วยพลังเงียบ ๆ แบบนี้ พี่เวราอยากให้คุณรู้ว่า คุณไม่จำเป็นต้องพิสูจน์อะไรกับใครในตอนนี้ การควบคุมอารมณ์ด้วยความอ่อนโยน — ไม่ใช่ด้วยการกดทับ — คือกุญแจ จงเชื่อใจในความอดทนของตัวเองค่ะ สิ่งที่คุณเผชิญอยู่อาจค่อย ๆ ผ่อนคลาย เมื่อคุณเข้าใกล้มันด้วยหัวใจที่ไม่กลัว แต่ก็ไม่จำเป็นต้องดุดัน'
-    },
-    {
-      id: 'hermit', roman: 'IX', name: 'THE HERMIT',
-      reading: 'พี่เวรารู้สึกถึงแสงไฟเล็ก ๆ ในความมืดที่คุณกำลังถืออยู่ค่ะ — คุณอาจต้องการเวลาอยู่กับตัวเองมากกว่าที่เคยยอมรับ คำถามนี้ไม่ได้ตอบด้วยเสียงดังจากภายนอก แต่อยู่ในช่วงที่คุณยอมถอยเข้ามาใคร่ครวญ พี่เวราอยากให้คุณอนุญาตให้ตัวเองได้เงียบ ได้เดินช้า และได้ถามคำถามที่ลึกขึ้นโดยไม่ต้องรีบหาคำตอบทันที ความโดดเดี่ยวในตอนนี้ไม่ใช่การถูกทิ้งค่ะ แต่อาจเป็นการเดินทางเข้าสู่แก่นของตัวเอง จงให้เกียรติช่วงเวลานี้ — คำตอบจะชัดเมื่อคุณพร้อมมองเห็นจริง ๆ'
-    },
-    {
-      id: 'wheel', roman: 'X', name: 'WHEEL OF FORTUNE',
-      reading: 'พี่เวราเห็นวงล้อที่กำลังหมุนเบา ๆ รอบคำถามของคุณค่ะ — สิ่งต่าง ๆ ไม่ได้อยู่กับที่ และจังหวะของจักรวาลกำลังเปลี่ยนทิศ คุณอาจรู้สึกว่ามีอะไรเคลื่อนไหวโดยที่ยังจับไม่ได้เต็มมือ พี่เวราอยากให้คุณไม่ยึดติดกับภาพเดิมของสถานการณ์มากเกินไปนะคะ สิ่งที่ดูเหมือนการสิ้นสุด อาจเป็นจุดเริ่มของวงจรใหม่ จงเปิดรับการเปลี่ยนแปลงด้วยใจที่นิ่ง ไม่ตื่นตระหนก และไม่ฝืนหมุนล้อด้วยมือตัวเองทุกวินาทีค่ะ บางครั้งการยอมไหลไปกับจังหวะ คือภูมิปัญญาที่ลึกที่สุด'
-    },
-    {
-      id: 'justice', roman: 'XI', name: 'JUSTICE',
-      reading: 'พี่เวรารู้สึกถึงความสมดุลที่กำลังถูกตั้งคำถามในชีวิตคุณค่ะ คำถามนี้เกี่ยวข้องกับความจริง ความรับผิดชอบ และการมองเห็นสิ่งต่าง ๆ อย่างตรงไปตรงมา โดยไม่บิดเพื่อความสบายใจชั่วคราว พี่เวราอยากให้คุณถามตัวเองอย่างซื่อสัตย์ว่า อะไรคือสิ่งที่ยุติธรรม — ไม่ใช่แค่กับคนอื่น แต่กับตัวคุณเองด้วยค่ะ บางทีคุณอาจต้องยอมรับผลของการเลือกในอดีต หรือตัดสินใจใหม่ด้วยความชัดเจน ความสงบจะกลับมาเมื่อคุณไม่หนีจากความจริงอีกต่อไปนะคะ'
-    },
-    {
-      id: 'hanged', roman: 'XII', name: 'THE HANGED MAN',
-      reading: 'พี่เวราเห็นภาพที่โลกกลับหัวเล็กน้อยรอบตัวคุณค่ะ — สิ่งที่เคยดูชัด ตอนนี้อาจต้องการมุมมองใหม่ คำถามของคุณไม่ได้ขอคำตอบเร็ว แต่ขอการยอมหยุดชั่วคราว การปล่อย และการมองจากอีกด้าน พี่เวราอยากให้คุณไม่ฝืนผลักสถานการณ์ในตอนนี้นะคะ บางครั้งการแขวนรอไม่ใช่ความล้มเหลว แต่เป็นการเติบโตเงียบ ๆ จงถามตัวเองว่า ถ้าคุณยอมปล่อยการควบคุมสักนิด จะเห็นอะไรที่เคยมองข้ามไป คำตอบอาจมาเมื่อคุณเลิกเร่งค่ะ'
-    },
-    {
-      id: 'death', roman: 'XIII', name: 'DEATH',
-      reading: 'พี่เวราอยากบอกก่อนนะคะว่าไพ่นี้ไม่ได้หมายถึงจุดจบที่น่ากลัวเสมอไป — มันคือการปล่อยวางอย่างลึกซึ้ง สิ่งหนึ่งในชีวิตคุณกำลังจะปิดวงจร เพื่อเปิดพื้นที่ให้สิ่งใหม่เกิด คำถามของคุณเชื่อมกับช่วงเปลี่ยนผ่านนี้ พี่เวราอยากให้คุณอนุญาตให้ตัวเองโศกหรือโล่งใจกับสิ่งที่กำลังจากไปได้ โดยไม่ต้องรีบหาของแทนทันทีค่ะ การสิ้นสุดที่สัตย์ซื่อ มักนำมาซึ่งความเบาในระยะยาว จงไว้ใจกระบวนการนี้ — คุณกำลังถูกเชิญให้เกิดใหม่ในแบบที่จริงกว่าเดิมค่ะ'
-    },
-    {
-      id: 'temperance', roman: 'XIV', name: 'TEMPERANCE',
-      reading: 'พี่เวรารู้สึกถึงการผสมผสานอย่างนุ่มนวลรอบคำถามของคุณค่ะ — สองสิ่งที่ดูขัดแย้งกัน กำลังหาทางอยู่ด้วยกันได้ ความใจเย็น ความพอดี และการเยียวยาแบบค่อยเป็นค่อยไป คือพลังของช่วงนี้ พี่เวราอยากให้คุณไม่สุดโต่งไปทางใดทางหนึ่งนะคะ ลองหาจุดกลางที่หัวใจยังหายใจได้สบาย บางทีคำตอบไม่ได้มาจากการเลือกข้าง แต่มาจากการหลอมรวมสิ่งที่มีอยู่ให้เข้ากันอย่างสงบ จงอดทนกับกระบวนการนี้ค่ะ ความกลมกลืนต้องการเวลาและความเมตตา'
-    },
-    {
-      id: 'devil', roman: 'XV', name: 'THE DEVIL',
-      reading: 'พี่เวราเห็นโซ่ที่ดูหนัก แต่เมื่อมองใกล้ ๆ อาจหลวมกว่าที่คิดค่ะ คำถามของคุณอาจแตะกับสิ่งที่คุณรู้สึกติดอยู่ — นิสัย ความกลัว ความสัมพันธ์ หรือความคิดที่บอกว่าคุณไม่มีทางเลือก พี่เวราอยากให้คุณสังเกตว่า อะไรที่คุณยอมมอบอำนาจให้โดยไม่รู้ตัว การมองเห็นพันธนาการอย่างชัดเจน คือก้าวแรกของการปลดปล่อยค่ะ คุณมีอิสระมากกว่าที่เสียงในหัวบอก จงใจดีกับตัวเองขณะที่ค่อย ๆ คลายปมทีละปมนะคะ ไม่ต้องตัดทุกอย่างในวันเดียว'
-    },
-    {
-      id: 'tower', roman: 'XVI', name: 'THE TOWER',
-      reading: 'พี่เวรารู้สึกถึงแรงสั่นสะเทือนรอบคำถามของคุณค่ะ — บางโครงสร้างที่เคยยึดไว้ อาจกำลังเผยรอยร้าว ไม่ใช่เพื่อทำร้ายคุณ แต่เพื่อให้ความจริงได้โผล่ขึ้นมา คำถามนี้อาจเชื่อมกับช่วงที่รู้สึกไม่มั่นคงหรือถูกเขย่า พี่เวราอยากให้คุณหายใจลึก ๆ นะคะ สิ่งที่พังลงไป อาจเป็นสิ่งที่ไม่ยั่งยืนอยู่แล้วตั้งแต่แรก หลังพายุ มักมีพื้นที่ว่างที่จริงกว่าเดิม จงยอมให้ตัวเองรู้สึก และค่อย ๆ สร้างจากฐานที่สัตย์ซื่อขึ้นมาใหม่ค่ะ คุณแข็งแกร่งกว่าที่คิดในตอนนี้'
-    },
-    {
-      id: 'star', roman: 'XVII', name: 'THE STAR',
-      reading: 'พี่เวราเห็นแสงดาวอ่อน ๆ กำลังส่องลงมาบนน้ำรอบตัวคุณค่ะ — ความหวังที่เงียบ ความเชื่อที่นุ่มนวล และการเยียวยาที่ค่อยคืนกลับ คำถามของคุณกำลังถูกโอบด้วยพลังแห่งการฟื้นฟูนี้ พี่เวราอยากให้คุณเปิดใจรับความเป็นไปได้ดี ๆ อีกครั้ง โดยไม่ต้องมีหลักฐานครบทุกอย่างในทันทีนะคะ จงอนุญาตให้ตัวเองฝันและเชื่ออีกครั้ง ความสงบที่คุณกำลังต้องการอยู่ไม่ไกล — มันเริ่มจากแสงเล็ก ๆ ในใจที่คุณยอมจุดขึ้นเองค่ะ ไว้ใจแสงนั้นเลยนะคะ'
-    },
-    {
-      id: 'moon', roman: 'XVIII', name: 'THE MOON',
-      reading: 'พี่เวรารู้สึกถึงหมอกบาง ๆ รอบคำถามของคุณค่ะ — สิ่งต่าง ๆ อาจยังไม่ชัด และความรู้สึกอาจขึ้นลงเหมือนน้ำขึ้นน้ำลง นี่ไม่ใช่สัญญาณว่าคุณหลงทาง แต่เป็นช่วงที่จิตใต้สำนึกกำลังพูดดังกว่าเหตุผล พี่เวราอยากให้คุณใส่ใจฝัน สัญชาตญาณ และความรู้สึกที่อธิบายยากนะคะ อย่ารีบตัดสินใจจากความกลัวเพียงอย่างเดียว จงเดินช้า ๆ ในความไม่แน่นอนนี้ ค่อย ๆ แยกสิ่งที่เป็นเงากับสิ่งที่เป็นจริง เมื่อหมอกจาง คำตอบจะค่อย ๆ เผยโดยไม่ต้องฝืนค่ะ'
-    },
-    {
-      id: 'sun', roman: 'XIX', name: 'THE SUN',
-      reading: 'พี่เวราเห็นแสงอุ่น ๆ กำลังแผ่ปกคลุมคำถามของคุณค่ะ — ความกระจ่าง ความเบา และการยอมให้ตัวเองมีความสุขโดยไม่ต้องขอโทษใคร มีบางอย่างในชีวิตคุณที่พร้อมจะถูกเฉลิมฉลอง หรืออย่างน้อยก็ถูกยอมรับด้วยรอยยิ้ม พี่เวราอยากให้คุณไม่เก็บความดีงามไว้ในเงามืดนะคะ จงเปิดรับความชัดเจนและความอบอุ่นที่กำลังมาถึง แม้จะยังมีเงื่อนไขไม่สมบูรณ์ ความจริงใจและความเบิกบานจะพาคุณไปไกลกว่าความกังวลค่ะ อนุญาตให้แสงส่องถึงตัวคุณเต็ม ๆ ได้เลยนะคะ'
-    },
-    {
-      id: 'judgement', roman: 'XX', name: 'JUDGEMENT',
-      reading: 'พี่เวราได้ยินเสียงเรียกเบา ๆ จากส่วนลึกในตัวคุณค่ะ — เหมือนมีบางอย่างที่พร้อมจะถูกปลุกขึ้นมาอีกครั้ง คำถามของคุณเชื่อมกับการตื่นรู้ การตัดสินใจครั้งสำคัญ หรือการให้อภัยที่ปลดปล่อยคุณจากอดีต พี่เวราอยากให้คุณฟังเสียงนั้นอย่างจริงจังนะคะ ไม่ใช่เสียงวิจารณ์ตัวเอง แต่เสียงที่เชิญให้คุณก้าวสู่เวอร์ชันที่จริงกว่า นี่คือช่วงที่คุณสามารถปิดบัญชีเก่า และตอบรับการเชิญชวนใหม่จากชีวิตได้ จงกล้าที่จะเกิดใหม่ในสายตาของตัวเองค่ะ'
-    },
-    {
-      id: 'world', roman: 'XXI', name: 'THE WORLD',
-      reading: 'พี่เวราเห็นวงกลมที่กำลังครบในจังหวะเงียบ ๆ ค่ะ — การเดินทางช่วงหนึ่งใกล้สมบูรณ์ และคุณกำลังยืนอยู่ใกล้จุดที่ทุกอย่างเชื่อมกัน คำถามของคุณสัมผัสกับความรู้สึกของความครบถ้วน การปิดจบอย่างสง่างาม หรือการยอมรับว่าคุณมาได้ไกลขนาดนี้แล้ว พี่เวราอยากให้คุณหยุดชมทิวทัศน์สักครู่ก่อนก้าวต่อนะคะ คุณสมควรได้รับความภูมิใจที่นุ่มนวลนี้ จักรวาลกำลังสะท้อนว่า คุณเป็นส่วนหนึ่งของภาพใหญ่ และพร้อมจะเปิดประตูสู่วงจรใหม่ด้วยหัวใจที่เต็มกว่าเดิมค่ะ'
+(() => {
+
+  "use strict";
+
+  /* =======================================================
+     ELEMENTS
+  ======================================================= */
+
+  const landing = document.getElementById("landing");
+  const questionScreen = document.getElementById("questionScreen");
+  const readingScreen = document.getElementById("readingScreen");
+
+  const enterBtn = document.getElementById("enterBtn");
+  const questionForm = document.getElementById("questionForm");
+  const questionInput = document.getElementById("questionInput");
+  const questionSubmit = document.getElementById("questionSubmit");
+
+  const veraFigure = document.getElementById("veraFigure");
+  const dialogueLine = document.getElementById("dialogueLine");
+  const questionLight = document.getElementById("questionLight");
+
+  const cardShell = document.getElementById("cardShell");
+  const cardImage = document.getElementById("cardImage");
+  const readingContent = document.getElementById("readingContent");
+  const readingText = document.getElementById("readingText");
+
+  const deepReading = document.getElementById("deepReading");
+  const btnDeeper = document.getElementById("btnDeeper");
+  const secondGate = document.getElementById("secondGate");
+
+  const portal = document.getElementById("portal");
+
+  const soundToggle = document.getElementById("soundToggle");
+  const soundIcon = soundToggle.querySelector(".sound-icon");
+
+
+  /* =======================================================
+     STATE
+  ======================================================= */
+
+  let currentScreen = "landing";
+
+  let lastQuestion = "";
+
+  let currentCard = null;
+
+  let soundEnabled = true;
+
+  let audioContext = null;
+  let masterGain = null;
+
+  let ambienceStarted = false;
+
+  let questionSequenceRunning = false;
+
+
+  /* =======================================================
+     ANALYTICS HOOK
+     รองรับ GA4 / GTAG / GTM DataLayer
+     และมี localStorage สำหรับ debug เครื่องเดียว
+  ======================================================= */
+
+  function trackEvent(name, params = {}) {
+
+    try {
+
+      if (typeof window.gtag === "function") {
+
+        window.gtag(
+          "event",
+          name,
+          params
+        );
+
+      }
+
+      if (
+        Array.isArray(window.dataLayer)
+      ) {
+
+        window.dataLayer.push({
+          event:name,
+          ...params
+        });
+
+      }
+
+      const key =
+        "stillwater_event_" + name;
+
+      const oldCount =
+        Number(
+          localStorage.getItem(key) || 0
+        );
+
+      localStorage.setItem(
+        key,
+        String(oldCount + 1)
+      );
+
+    } catch(error){
+
+      console.warn(
+        "Stillwater analytics error:",
+        error
+      );
+
     }
+
+  }
+
+
+  /* =======================================================
+     MAJOR ARCANA
+     22 ใบ
+     อ่านแบบกว้าง ไม่แบ่งหมวดชีวิต
+  ======================================================= */
+
+  const CARDS = [
+
+    {
+      id:0,
+      number:"0",
+      name:"THE FOOL",
+      image:"cards/web/0.jpg",
+
+      reading:
+`มีบางอย่างกำลังเรียกให้คุณก้าวออกจากจุดที่คุ้นเคยค่ะ
+
+ไพ่ใบนี้มีพลังของการเริ่มต้นที่ยังไม่มีคำตอบครบทุกอย่าง สิ่งที่กำลังเกิดขึ้นมีความเป็นไปได้ที่จะเปิดประตูใหม่ให้คุณ และอาจพาคุณออกจากรูปแบบเดิมที่คุณอยู่มานาน
+
+ช่วงนี้คุณอาจรู้สึกเหมือนยังมองไม่เห็นปลายทางทั้งหมด แต่ไม่ได้แปลว่าทางข้างหน้าไม่มีอยู่จริง เพียงแต่คุณอาจต้องก้าวก่อน แล้วค่อยเห็นสิ่งที่จะเกิดขึ้นทีละช่วง
+
+มีเรื่องหนึ่งที่ไพ่เตือนเบา ๆ คือ อย่าเอาความผิดพลาดในอดีตไปใช้เป็นคำตอบของอนาคตทั้งหมดค่ะ และอย่ารีบเชื่อทุกสิ่งเพียงเพราะมันดูน่าตื่นเต้น
+
+บางครั้งสิ่งที่ชีวิตต้องการจากคุณ ไม่ใช่คำตอบที่สมบูรณ์แบบ แต่คือความกล้าที่จะก้าวหนึ่งก้าวก่อน` 
+    },
+
+    {
+      id:1,
+      number:"I",
+      name:"THE MAGICIAN",
+      image:"cards/web/1.jpg",
+
+      reading:
+`สิ่งที่คุณกำลังมีอยู่ในมือ อาจมากกว่าที่คุณคิดค่ะ
+
+ความสามารถ เครื่องมือ หรือช่องทางบางอย่างที่คุณมีอยู่แล้ว กำลังมีโอกาสถูกนำมาใช้ให้เกิดผลจริง
+
+สิ่งที่เด่นมากกับไพ่ใบนี้คือการสื่อสาร การเจรจา การเรียนรู้เร็ว และการรู้จักใช้จังหวะที่เข้ามาให้เป็นประโยชน์ บางอย่างอาจเริ่มขยับทันทีเมื่อคุณเป็นฝ่ายลงมือก่อน
+
+แต่ไพ่ก็เตือนเรื่องคำพูดเช่นกันค่ะ คนที่พูดเก่งอาจไม่ได้หมายความว่าทำเก่งเสมอไป และคุณเองก็ไม่จำเป็นต้องเชื่อคำสัญญาทั้งหมดจนกว่าจะเห็นการกระทำ
+
+ตอนนี้ให้ดูว่าความคิด คำพูด และการกระทำของคุณกำลังไปในทิศทางเดียวกันหรือไม่
+
+ถ้าใช่ คุณมีพลังมากพอที่จะเริ่มสร้างผลลัพธ์บางอย่างให้เกิดขึ้นจริงแล้วค่ะ`
+    },
+
+    {
+      id:2,
+      number:"II",
+      name:"THE HIGH PRIESTESS",
+      image:"cards/web/2.jpg",
+
+      reading:
+`ตอนนี้อาจมีบางอย่างที่คุณยังไม่รู้ทั้งหมดค่ะ
+
+ความรู้สึกของใครบางคน ข้อมูลที่ยังไม่ถูกพูด ความจริงที่ยังเปิดไม่หมด หรือเหตุผลบางอย่างที่ยังถูกเก็บไว้ข้างใน
+
+ความเงียบก็คือข้อมูลอย่างหนึ่งนะคะ
+
+ถ้าช่วงนี้คุณกำลังรอคำตอบ อย่าเพิ่งเติมช่องว่างด้วยสิ่งที่คุณอยากให้เป็น เพราะสิ่งที่คุณรู้สึกกับสิ่งที่เกิดขึ้นจริงอาจยังไม่ใช่เรื่องเดียวกันทั้งหมด
+
+คุณอาจรู้อยู่แล้วว่ามีบางอย่างไม่เหมือนที่เห็น เพียงแต่ยังไม่มีหลักฐานมากพอ
+
+ไพ่ใบนี้จึงไม่ได้เร่งให้คุณทำอะไรค่ะ กลับกัน มันกำลังบอกให้คุณนิ่งอีกนิด สังเกตอีกหน่อย และปล่อยให้สิ่งที่ซ่อนอยู่ค่อย ๆ เปิดตัวมันเอง
+
+บางคำตอบยังไม่ควรถูกบังคับให้ออกมาตอนนี้`
+    },
+
+    {
+      id:3,
+      number:"III",
+      name:"THE EMPRESS",
+      image:"cards/web/3.jpg",
+
+      reading:
+`สิ่งที่คุณกำลังดูแลอยู่มีโอกาสเติบโตค่ะ
+
+ไพ่ใบนี้มีพลังของการสร้างสิ่งหนึ่งให้ค่อย ๆ มีชีวิตขึ้นมา ไม่ว่าจะเป็นสิ่งที่คุณกำลังเริ่มทำ สิ่งที่กำลังดูแล หรือบางอย่างที่คุณลงทุนทั้งเวลาและความรู้สึกลงไป
+
+ผลลัพธ์อาจไม่ได้มาแบบฉับพลัน แต่มีแนวโน้มของการงอกเงยและเพิ่มพูน
+
+สิ่งที่ต้องระวังคือการให้มากเกินไปค่ะ คุณอาจกำลังดูแลบางอย่างจนลืมดูว่าตัวเองเหลือพลังอยู่เท่าไร
+
+บางสิ่งต้องการ "พื้นที่" มากกว่าการบังคับ
+
+ให้มันโต แต่ต้องรู้ด้วยว่าอะไรควรได้รับน้ำ และอะไรควรถูกตัดออก
+
+เมื่อคุณดูแลสิ่งที่มีคุณค่าอย่างพอดี สิ่งนั้นมีโอกาสตอบกลับคุณด้วยผลลัพธ์ที่จับต้องได้มากขึ้นค่ะ`
+    },
+
+    {
+      id:4,
+      number:"IV",
+      name:"THE EMPEROR",
+      image:"cards/web/4.jpg",
+
+      reading:
+`ถึงเวลาที่บางอย่างในชีวิตต้องมีคนตัดสินใจแล้วค่ะ
+
+ไพ่ใบนี้พูดถึงการกำหนดทิศทาง วางกฎ และรับผิดชอบผลของสิ่งที่เลือก
+
+ช่วงนี้สิ่งที่ไม่มีโครงสร้างอาจเริ่มสร้างปัญหาให้คุณ ไม่ว่าจะเป็นเรื่องเวลา ขอบเขต เงิน งาน หรือการจัดการกับคนอื่น
+
+บางครั้งคุณอาจกำลังรอให้คนอื่นเป็นฝ่ายกำหนดสถานการณ์ ทั้งที่จริง ๆ แล้วคุณมีสิทธิ์เลือกทิศทางของตัวเองมากกว่าที่คิด
+
+แต่การเป็นคนถือพวงมาลัยไม่ได้หมายความว่าต้องควบคุมถนนทั้งสายค่ะ
+
+ตั้งหลักให้ดี กำหนดสิ่งที่ยอมรับได้และไม่ได้ แล้วเดินหน้าอย่างมีแผน
+
+ความมั่นคงของคุณจะเกิดขึ้นเมื่อคุณหยุดปล่อยให้สถานการณ์เป็นคนตัดสินใจแทนคุณ`
+    },
+
+    {
+      id:5,
+      number:"V",
+      name:"THE HIEROPHANT",
+      image:"cards/web/5.jpg",
+
+      reading:
+`บางเรื่องในชีวิตกำลังสอนคุณผ่าน "กฎของมันเอง" ค่ะ
+
+สิ่งที่กำลังเกิดขึ้นอาจต้องอาศัยความรู้ ประสบการณ์ ผู้เชี่ยวชาญ หรือระบบบางอย่างมากกว่าการลองผิดลองถูกเพียงอย่างเดียว
+
+ถ้าตอนนี้ทุกอย่างดูช้า อย่าเพิ่งคิดว่ามันไม่เดินหน้า เพราะบางครั้งความช้าคือช่วงที่กำลังสร้างโครงสร้างให้สิ่งหนึ่งมั่นคงขึ้น
+
+แต่ไพ่ใบนี้มีอีกด้านหนึ่งที่อยากให้คุณระวัง
+
+อย่าทำตามกฎเพียงเพราะ "ทุกคนทำแบบนี้"
+
+เรียนรู้จากสิ่งที่มีอยู่ รับคำแนะนำที่เป็นประโยชน์ แล้วเลือกด้วยตัวเองว่าจะรับอะไรไว้และจะวางอะไรลง
+
+สิ่งที่กำลังเกิดขึ้นอาจไม่ได้ต้องการให้คุณรีบค่ะ แต่มันกำลังสอนให้คุณเข้าใจวิธีเดินบนเส้นทางนี้ให้ดีขึ้น`
+    },
+
+    {
+      id:6,
+      number:"VI",
+      name:"THE LOVERS",
+      image:"cards/web/6.jpg",
+
+      reading:
+`มีบางอย่างกำลังขอให้คุณ "เลือก" ค่ะ
+
+อาจเป็นสองทาง สองความต้องการ สองความรู้สึก หรือสองสิ่งที่คุณกำลังพยายามถือไว้พร้อมกัน
+
+สิ่งที่กำลังเกิดขึ้นมีแนวโน้มพาคุณเข้าใกล้จุดที่ต้องชัดเจนขึ้น
+
+แรงดึงดูดอย่างเดียวไม่ได้สร้างสิ่งที่มั่นคง และความรู้สึกที่แรงมากก็ไม่ได้แปลว่าทางนั้นถูกเสมอไป
+
+ลองถามตัวเองตรง ๆ ว่า สิ่งที่คุณกำลังเลือก สอดคล้องกับสิ่งที่คุณต้องการจริง ๆ หรือไม่
+
+อย่าเลือกเพียงเพราะกลัวเสียบางอย่างไปค่ะ
+
+การตัดสินใจที่ดีในตอนนี้อาจไม่ใช่สิ่งที่ทำให้คุณสบายใจที่สุดในทันที แต่เป็นสิ่งที่ทำให้คุณรู้สึกว่า "นี่คือสิ่งที่ฉันเลือกด้วยตัวเอง" ในภายหลัง`
+    },
+
+    {
+      id:7,
+      number:"VII",
+      name:"THE CHARIOT",
+      image:"cards/web/7.jpg",
+
+      reading:
+`สิ่งที่เคยติดอยู่กำลังมีแรงให้เคลื่อนค่ะ
+
+ไพ่ใบนี้มีพลังของการเดินหน้า การเคลื่อนไหว การเดินทาง การติดต่อกับคนไกล หรือสถานการณ์ที่เริ่มหลุดออกจากจุดเดิม
+
+บางอย่างอาจไม่ได้เกิดขึ้นง่าย แต่กำลังมีแรงส่งมากขึ้น
+
+อย่าหยุดเพียงเพราะมีอุปสรรค เพราะสิ่งที่ไพ่ใบนี้ต้องการจากคุณคือการรักษาทิศทางเอาไว้
+
+ชัยชนะไม่ได้เกิดจากแรงอย่างเดียว แต่มาจากการควบคุมแรงนั้นให้ไปในทิศเดียวกัน
+
+ถ้าช่วงนี้มีหลายอย่างดึงคุณคนละทาง ให้เลือกก่อนว่าอะไรคือปลายทางที่คุณต้องการจริง ๆ
+
+เมื่อทิศชัด การเคลื่อนไหวจะชัดตามค่ะ`
+    },
+
+    {
+      id:8,
+      number:"VIII",
+      name:"STRENGTH",
+      image:"cards/web/8.jpg",
+
+      reading:
+`สิ่งที่คุณกำลังเจออาจต้องใช้เวลา มากกว่าการใช้แรงค่ะ
+
+ไพ่ใบนี้ไม่ได้บอกว่าคุณอ่อนแอ ตรงกันข้าม มันกำลังบอกว่าคุณมีความสามารถในการผ่านเรื่องยากได้ เพียงแต่คุณไม่จำเป็นต้องชนะทุกอย่างด้วยการฝืน
+
+สิ่งที่คุณรออาจไม่ได้เร็ว แต่ไม่ได้หมายความว่าไม่มีความคืบหน้า
+
+มีบางอย่างกำลังค่อย ๆ เปลี่ยนจากข้างใน
+
+ลองถามตัวเองด้วยว่า คุณกำลังควบคุมสถานการณ์ หรือกำลังพยายามควบคุมคนอื่นอยู่
+
+เพราะสองอย่างนี้ไม่เหมือนกันเลยค่ะ
+
+ความนุ่มนวลในเวลานี้อาจมีพลังมากกว่าการบังคับ และความมั่นใจที่แท้จริงคือการรู้ว่าเมื่อไหร่ควรเดินหน้า และเมื่อไหร่ควรปล่อยให้เวลาเป็นคนทำงาน`
+    },
+
+    {
+      id:9,
+      number:"IX",
+      name:"THE HERMIT",
+      image:"cards/web/9.jpg",
+
+      reading:
+`ตอนนี้บางคำตอบอาจไม่ได้อยู่กับคนอื่นค่ะ
+
+บางคนอาจกำลังเว้นระยะ บางสถานการณ์อาจเงียบ หรือสิ่งที่คุณกำลังรออาจไม่ได้เคลื่อนเร็วอย่างที่ใจต้องการ
+
+แต่ความเงียบไม่ได้แปลว่า "จบ"
+
+บางครั้งมันคือช่วงที่บางสิ่งกำลังถูกคิดทบทวนอยู่
+
+ไพ่ใบนี้อยากให้คุณระวังการเอาความเงียบมาตีความจนกลายเป็นคำตอบที่ไม่มีหลักฐาน
+
+และในขณะเดียวกัน อย่าใช้คำว่า "รอ" เป็นข้ออ้างเพื่อหยุดชีวิตของตัวเอง
+
+กลับมาอยู่กับตัวเองก่อนค่ะ
+
+เมื่อคุณไม่ต้องวิ่งตามคำตอบตลอดเวลา คุณอาจเริ่มเห็นคำตอบบางส่วนที่จริง ๆ แล้วอยู่กับคุณมาตลอด`
+    },
+
+    {
+      id:10,
+      number:"X",
+      name:"WHEEL OF FORTUNE",
+      image:"cards/web/10.jpg",
+
+      reading:
+`สิ่งที่กำลังเกิดขึ้นไม่ได้อยู่ในจุดเดิมตลอดไปค่ะ
+
+จังหวะกำลังเปลี่ยน
+
+ข่าว การติดต่อ เงิน โอกาส หรือเหตุการณ์บางอย่างอาจเปลี่ยนทิศทางเร็วกว่าที่คุณคาด และบางเรื่องที่คิดว่าเงียบอาจกลับมาขยับขึ้นอย่างกะทันหัน
+
+ถ้าช่วงนี้กำลังมีโชค อย่าประมาท
+
+แต่ถ้ากำลังติดขัด ก็อย่าเพิ่งคิดว่าทุกอย่างจะเป็นแบบนี้ตลอดไป
+
+ไพ่ใบนี้เตือนว่าคุณไม่สามารถควบคุมทุกอย่างได้ แต่คุณสามารถเตรียมตัวให้พร้อมกับจังหวะที่กำลังจะเปลี่ยน
+
+เมื่อประตูเปิด คุณจะพร้อมเดินเข้าไปหรือยัง
+
+เพราะบางโอกาสไม่ได้เคาะประตูซ้ำหลายครั้งค่ะ`
+    },
+
+    {
+      id:11,
+      number:"XI",
+      name:"JUSTICE",
+      image:"cards/web/11.jpg",
+
+      reading:
+`ถึงเวลาที่บางอย่างต้องถูกมองตามความจริงค่ะ
+
+ไพ่ใบนี้เกี่ยวข้องกับผลของการเลือกในอดีต และสิ่งที่กำลังเกิดขึ้นอาจเป็นผลที่ค่อย ๆ เดินทางมาถึงคุณ
+
+บางเรื่องอาจเกี่ยวข้องกับเอกสาร ข้อตกลง เงินที่ต้องเคลียร์ หรือสถานการณ์ที่ต้องใช้หลักฐานมากกว่าความรู้สึก
+
+อย่าตัดสินใจเพียงเพราะกลัวผลลัพธ์
+
+และอย่าพยายามบิดความจริงเพื่อให้มันตรงกับสิ่งที่คุณอยากได้ยิน
+
+ในตอนนี้สิ่งที่แฟร์กับตัวคุณที่สุด อาจเป็นการยอมรับสิ่งที่เกิดขึ้นตามจริง แล้วตัดสินใจจากตรงนั้น
+
+เลือกสิ่งที่คุณสามารถยืนอยู่ข้างมันได้ แม้วันที่ไม่มีใครเข้าข้างคุณค่ะ`
+    },
+
+    {
+      id:12,
+      number:"XII",
+      name:"THE HANGED MAN",
+      image:"cards/web/12.jpg",
+
+      reading:
+`สิ่งที่คุณกำลังพยายามผลัก อาจยังไม่ใช่เวลาที่มันจะเคลื่อนค่ะ
+
+สถานการณ์อาจเหมือนแขวนอยู่ตรงกลาง การรอคอยยืดเยื้อ การตอบกลับล่าช้า หรือบางอย่างที่คุณคิดว่าควรเกิดขึ้นแล้วกลับยังไม่เกิด
+
+มันอาจทำให้รู้สึกว่าเสียเวลา เสียโอกาส เสียเงิน หรือเสียความสัมพันธ์
+
+แต่ไพ่ใบนี้ไม่ได้บอกให้คุณรีบแก้ความไม่แน่นอนด้วยการตัดสินใจทันที
+
+บางครั้งการหยุดครั้งนี้มีเหตุผล
+
+ลองเปลี่ยนวิธีมองสิ่งเดิมดูค่ะ
+
+สิ่งที่คุณคิดว่าเป็น "การติดอยู่" อาจกำลังบังคับให้คุณเห็นบางอย่างที่ก่อนหน้านี้คุณไม่เคยมอง
+
+ยังไม่ต้องรีบขยับเพียงเพราะคุณไม่ชอบความรู้สึกของการรอ`
+    },
+
+    {
+      id:13,
+      number:"XIII",
+      name:"DEATH",
+      image:"cards/web/13.jpg",
+
+      reading:
+`มีบางอย่างกำลังหมดอายุในชีวิตค่ะ
+
+สิ่งหนึ่งอาจไม่สามารถอยู่ในรูปเดิมต่อไปได้อีกแล้ว และการเปลี่ยนครั้งนี้อาจรู้สึกหนักในตอนแรก เพราะมันกำลังพาคุณออกจากสิ่งที่คุ้นเคย
+
+ความสัมพันธ์หนึ่งอาจเปลี่ยนรูป งานหนึ่งอาจจบ หรือความคิดหนึ่งอาจไม่ใช่ตัวคุณอีกต่อไป
+
+สิ่งที่ไพ่เตือนมากที่สุดคือการพยายามรักษาสิ่งที่หมดเวลาแล้ว
+
+บางประตูไม่ได้ปิดเพื่อทำร้ายคุณค่ะ
+
+มันปิดเพื่อหยุดวงจรเดิม
+
+การจบในครั้งนี้อาจเป็นวิธีที่ชีวิตกำลังเปิดพื้นที่ให้สิ่งใหม่เข้ามา
+
+อย่ากลัวการเปลี่ยนรูปของสิ่งหนึ่งมากเกินไป เพราะบางครั้งสิ่งที่คุณต้องเสีย คือสิ่งที่กำลังขวางสิ่งที่คุณต้องการได้มา`
+    },
+
+    {
+      id:14,
+      number:"XIV",
+      name:"TEMPERANCE",
+      image:"cards/web/14.jpg",
+
+      reading:
+`สิ่งที่กำลังเกิดขึ้นไม่จำเป็นต้องเลือกสุดทางค่ะ
+
+มีพลังของการผสมสิ่งที่แตกต่าง การปรับตัว และการนำบางอย่างกลับมาอยู่ในจังหวะที่พอดี
+
+บางเรื่องอาจเกี่ยวข้องกับการเดินทาง การโยกย้าย การติดต่อระหว่างสองพื้นที่ หรือการนำสิ่งสองอย่างกลับมาเชื่อมกัน
+
+อย่าเร่งผลลัพธ์
+
+สิ่งที่กำลังดีขึ้นอาจดีขึ้นแบบเงียบ ๆ และช้าเกินกว่าที่คุณจะรู้สึกได้ในแต่ละวัน
+
+ไม่มากเกินไป
+ไม่น้อยเกินไป
+ไม่เร็วเกินไป
+และไม่ช้าเกินไป
+
+ไพ่ใบนี้กำลังบอกว่าความพอดีไม่ได้แปลว่าไม่มีความก้าวหน้า
+
+บางครั้งความพอดีนั่นแหละ คือวิธีที่ทำให้สิ่งหนึ่งไปได้ไกลที่สุด`
+    },
+
+    {
+      id:15,
+      number:"XV",
+      name:"THE DEVIL",
+      image:"cards/web/15.jpg",
+
+      reading:
+`มีบางอย่างกำลังดึงคุณแรงมากค่ะ
+
+อาจเป็นความอยาก ความกลัว นิสัย ความสัมพันธ์ หรือความคิดบางอย่างที่บอกคุณว่า "ไม่มีทางเลือกอื่นแล้ว"
+
+แต่ไพ่ใบนี้อยากให้คุณหยุดตรงนั้นสักนิด
+
+แรงดึงดูดไม่ได้แปลว่าสิ่งนั้นดีสำหรับคุณ
+
+ความอยากได้เงินไม่ได้แปลว่าโอกาสนั้นคุ้ม
+ความคิดถึงไม่ได้แปลว่าคุณต้องกลับไป
+และความผูกพันไม่ได้แปลว่าคุณไม่มีสิทธิ์เดินออกมา
+
+ลองถามตัวเองว่า
+
+ฉันกำลังเลือกสิ่งนี้อยู่
+หรือสิ่งนี้กำลังเลือกฉัน?
+
+คุณมีอิสระมากกว่าที่เสียงในหัวกำลังบอกค่ะ
+
+บางครั้งการเห็นโซ่ของตัวเองชัด ๆ คือจุดเริ่มต้นของการปลดมัน`
+    },
+
+    {
+      id:16,
+      number:"XVI",
+      name:"THE TOWER",
+      image:"cards/web/16.jpg",
+
+      reading:
+`มีบางอย่างกำลังจะไม่เหมือนเดิมค่ะ
+
+ข่าวบางอย่างอาจมาเร็ว ความจริงบางอย่างอาจถูกเปิดเผย หรือแผนที่คุณคิดว่าชัวร์อาจต้องเปลี่ยน
+
+สิ่งที่เกิดขึ้นอาจทำให้รู้สึกเหมือนทุกอย่างพังลงพร้อมกัน แต่ไพ่ใบนี้ไม่ได้พังสิ่งที่มั่นคงจริง ๆ
+
+มันกำลังเปิดให้เห็นว่าสิ่งไหนสร้างอยู่บนพื้นฐานที่ไม่แข็งแรง
+
+หลังฝุ่นตก คุณจะเห็นชัดขึ้นว่าตรงไหนควรเก็บ ตรงไหนควรปล่อย และตรงไหนควรสร้างใหม่
+
+ถ้าช่วงนี้มีบางอย่างเปลี่ยนแบบกะทันหัน อย่าเพิ่งรีบตัดสินว่ามันคือความเสียหายทั้งหมด
+
+บางการพัง คือการเปิดพื้นที่ให้คุณสร้างสิ่งที่ตรงกับความจริงมากกว่าเดิมค่ะ`
+    },
+
+    {
+      id:17,
+      number:"XVII",
+      name:"THE STAR",
+      image:"cards/web/17.jpg",
+
+      reading:
+`หลังจากช่วงเวลาที่หนัก ไพ่ใบนี้บอกว่ามีบางอย่างกำลังกลับมามีแสงค่ะ
+
+สิ่งที่เคยทำให้คุณเหนื่อยอาจเริ่มเบาลง ความสัมพันธ์บางอย่างอาจกลับมามีพื้นที่ของความจริงใจ งานหรือความฝันที่เคยดูไกลอาจเริ่มเห็นทาง และโอกาสบางอย่างอาจค่อย ๆ กลับมา
+
+สิ่งสำคัญคือ อย่าคาดหวังให้การฟื้นตัวเกิดขึ้นพร้อมกันทุกอย่าง
+
+บางอย่างจะกลับมาก่อน
+บางอย่างจะตามมาทีหลัง
+
+ยังมีเหตุผลให้เดินต่อค่ะ
+
+และการฟื้นตัวบางอย่างไม่ได้เสียงดัง
+
+บางครั้งมันคือวันที่คุณตื่นขึ้นมาแล้วรู้สึกว่า "ฉันไม่ต้องกลัวเรื่องนี้เท่าเดิมแล้ว"
+
+แค่นั้นก็ถือเป็นการเปลี่ยนแปลงที่สำคัญมากแล้ว`
+    },
+
+    {
+      id:18,
+      number:"XVIII",
+      name:"THE MOON",
+      image:"cards/web/18.jpg",
+
+      reading:
+`ตอนนี้คุณอาจกำลังเห็นเพียงบางส่วนของเรื่องทั้งหมดค่ะ
+
+ความรู้สึกที่เกิดขึ้นอาจจริง แต่ความหมายที่คุณตีความจากมันอาจยังไม่ใช่ความจริงทั้งหมด
+
+ช่องว่างกำลังทำให้คุณเติมเรื่องราวเอง
+
+โดยเฉพาะในช่วงที่ไม่มีคำตอบ ไม่มีการติดต่อ หรือข้อมูลบางอย่างหายไป คุณอาจเผลอใช้ความกลัวมาสร้างคำอธิบายแทนสิ่งที่ยังไม่รู้
+
+ไพ่ใบนี้ไม่ได้บอกว่าความรู้สึกของคุณผิดค่ะ
+
+แต่มันกำลังบอกว่า อย่าเอาความรู้สึกไปตัดสินทุกอย่างทันที
+
+เก็บมันไว้เป็นสัญญาณ
+
+แล้วรอให้ความจริงมีโอกาสเดินเข้ามา
+
+บางสิ่งที่ดูน่ากลัวในตอนกลางคืน อาจไม่ได้เหมือนเดิมเมื่อแสงสว่างมาถึง`
+    },
+
+    {
+      id:19,
+      number:"XIX",
+      name:"THE SUN",
+      image:"cards/web/19.jpg",
+
+      reading:
+`สิ่งที่เคยมืดกำลังมีโอกาสถูกเปิดให้เห็นค่ะ
+
+ไพ่ใบนี้นำพลังของความชัดเจน ข่าว การได้รับการยอมรับ และการกลับมามองเห็นสิ่งหนึ่งอย่างตรงไปตรงมา
+
+เรื่องที่กำลังรอคำตอบมีแนวโน้มได้รับความกระจ่างมากขึ้น
+
+สิ่งที่คุณพยายามมานานอาจเริ่มได้รับการมองเห็น หรือสิ่งที่เคยคลุมเครืออาจเริ่มพูดได้ชัดขึ้น
+
+ถ้ามีบางอย่างกำลังดีขึ้น ให้ยอมรับความสุขนั้นโดยไม่ต้องระแวงว่ามันจะหายไปทันทีค่ะ
+
+แต่ไพ่ก็เตือนว่า ความสำเร็จที่เกิดขึ้นแล้วก็ต้องได้รับการดูแล
+
+อย่ารีบกลับไปใช้ชีวิตแบบเดิมเพียงเพราะตอนนี้ทุกอย่างเริ่มสว่าง
+
+รักษาสิ่งที่กำลังดีไว้ แล้วให้มันเติบโตต่อไป`
+    },
+
+    {
+      id:20,
+      number:"XX",
+      name:"JUDGEMENT",
+      image:"cards/web/20.jpg",
+
+      reading:
+`มีบางอย่างจากอดีตหรือสิ่งที่ยังค้างอยู่กำลังกลับมาให้คุณจัดการค่ะ
+
+คนหนึ่งอาจกลับมาติดต่อ
+ข่าวหนึ่งอาจย้อนกลับมา
+หรือโอกาสหนึ่งอาจเปิดขึ้นอีกครั้ง
+
+แต่การกลับมาไม่ใช่จุดสำคัญที่สุด
+
+สิ่งสำคัญคือคุณในวันนี้ไม่ใช่คนเดิมกับตอนที่เรื่องนั้นเกิดขึ้น
+
+ไพ่ใบนี้กำลังพูดถึงการตื่นขึ้น การมองสิ่งเดิมด้วยสายตาใหม่ และการตัดสินใจครั้งใหญ่ที่ไม่จำเป็นต้องเกิดจากความรู้สึกผิด
+
+บางอย่างอาจกลับมาเพื่อให้คุณรับไว้
+
+บางอย่างอาจกลับมาเพื่อให้คุณปิดมันอย่างสมบูรณ์
+
+คุณไม่จำเป็นต้องกลับไปเป็นคนเดิม เพียงเพราะเรื่องเดิมกลับมาค่ะ`
+    },
+
+    {
+      id:21,
+      number:"XXI",
+      name:"THE WORLD",
+      image:"cards/web/21.jpg",
+
+      reading:
+`สิ่งหนึ่งกำลังเดินทางมาถึงจุดที่มันควรจะเป็นค่ะ
+
+ไพ่ใบนี้มีพลังของการปิดวงจร การทำสิ่งหนึ่งให้ครบ และการเดินทางไปยังบทถัดไป
+
+งานหนึ่งอาจสำเร็จ
+เงินอาจมาจากสิ่งที่สะสมมานาน
+หรือสถานการณ์หนึ่งอาจเดินทางมาถึงจุดที่ต้องนิยามใหม่
+
+ยังมีพลังของระยะทาง ต่างประเทศ การเดินทาง และการขยายโลกของตัวเองอยู่ด้วย
+
+สิ่งที่สำคัญคือ อย่าพยายามลากบทที่จบแล้วให้ยาวออกไปเพียงเพราะคุณคุ้นเคยกับมัน
+
+บทหนึ่งจบลงไม่ได้หมายความว่าคุณเสียอะไรเสมอไป
+
+บางครั้งมันจบเพราะคุณพร้อมสำหรับโลกที่ใหญ่กว่าเดิมแล้วค่ะ`
+    }
+
   ];
 
-  /* ========== CARD SYMBOLS (minimal SVG) ========== */
-  const SYMBOLS = {
-    fool: '<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="20" r="8" stroke="rgba(245,240,230,0.7)" stroke-width="1.2"/><path d="M32 28v18M24 36l8 4 8-4M28 52l4-6 4 6" stroke="rgba(245,240,230,0.55)" stroke-width="1.2" stroke-linecap="round"/></svg>',
-    magician: '<svg viewBox="0 0 64 64" fill="none"><rect x="20" y="36" width="24" height="4" rx="1" stroke="rgba(245,240,230,0.6)" stroke-width="1.2"/><path d="M32 12v24M32 12l-6 8M32 12l6 8" stroke="rgba(245,240,230,0.7)" stroke-width="1.2" stroke-linecap="round"/><circle cx="32" cy="48" r="4" stroke="rgba(245,240,230,0.5)" stroke-width="1"/></svg>',
-    priestess: '<svg viewBox="0 0 64 64" fill="none"><path d="M22 50V22c0-6 4-10 10-10s10 4 10 10v28" stroke="rgba(245,240,230,0.6)" stroke-width="1.2"/><circle cx="32" cy="28" r="5" stroke="rgba(245,240,230,0.7)" stroke-width="1.2"/><path d="M26 50h12" stroke="rgba(245,240,230,0.45)" stroke-width="1"/></svg>',
-    empress: '<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="18" r="7" stroke="rgba(245,240,230,0.65)" stroke-width="1.2"/><path d="M20 52c0-10 5-18 12-22 7 4 12 12 12 22" stroke="rgba(245,240,230,0.55)" stroke-width="1.2"/><path d="M28 14l4-6 4 6" stroke="rgba(245,240,230,0.5)" stroke-width="1"/></svg>',
-    emperor: '<svg viewBox="0 0 64 64" fill="none"><rect x="18" y="28" width="28" height="22" rx="2" stroke="rgba(245,240,230,0.6)" stroke-width="1.2"/><path d="M24 28V20l8-6 8 6v8M32 36v8" stroke="rgba(245,240,230,0.55)" stroke-width="1.2"/></svg>',
-    hierophant: '<svg viewBox="0 0 64 64" fill="none"><path d="M32 10v44M22 22h20M26 50h12" stroke="rgba(245,240,230,0.6)" stroke-width="1.2"/><circle cx="32" cy="18" r="5" stroke="rgba(245,240,230,0.7)" stroke-width="1.2"/></svg>',
-    lovers: '<svg viewBox="0 0 64 64" fill="none"><circle cx="22" cy="24" r="7" stroke="rgba(245,240,230,0.6)" stroke-width="1.2"/><circle cx="42" cy="24" r="7" stroke="rgba(245,240,230,0.6)" stroke-width="1.2"/><path d="M22 32c0 12 10 20 10 20s10-8 10-20" stroke="rgba(245,240,230,0.5)" stroke-width="1.2"/></svg>',
-    chariot: '<svg viewBox="0 0 64 64" fill="none"><rect x="18" y="24" width="28" height="18" rx="2" stroke="rgba(245,240,230,0.6)" stroke-width="1.2"/><circle cx="24" cy="48" r="5" stroke="rgba(245,240,230,0.55)" stroke-width="1.2"/><circle cx="40" cy="48" r="5" stroke="rgba(245,240,230,0.55)" stroke-width="1.2"/><path d="M32 14v10" stroke="rgba(245,240,230,0.5)" stroke-width="1.2"/></svg>',
-    strength: '<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="22" r="8" stroke="rgba(245,240,230,0.65)" stroke-width="1.2"/><path d="M20 48c2-10 6-16 12-18 6 2 10 8 12 18" stroke="rgba(245,240,230,0.55)" stroke-width="1.2"/><path d="M26 18c2-4 6-6 6-6s4 2 6 6" stroke="rgba(245,240,230,0.45)" stroke-width="1"/></svg>',
-    hermit: '<svg viewBox="0 0 64 64" fill="none"><path d="M32 14v8M28 50c0-12 1-20 4-28 3 8 4 16 4 28" stroke="rgba(245,240,230,0.55)" stroke-width="1.2"/><circle cx="38" cy="20" r="5" stroke="rgba(245,240,230,0.75)" stroke-width="1.2"/><path d="M38 25v6" stroke="rgba(245,240,230,0.5)" stroke-width="1"/></svg>',
-    wheel: '<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="18" stroke="rgba(245,240,230,0.6)" stroke-width="1.2"/><circle cx="32" cy="32" r="6" stroke="rgba(245,240,230,0.5)" stroke-width="1"/><path d="M32 14v36M14 32h36M20 20l24 24M44 20L20 44" stroke="rgba(245,240,230,0.35)" stroke-width="1"/></svg>',
-    justice: '<svg viewBox="0 0 64 64" fill="none"><path d="M32 12v40M18 24h28" stroke="rgba(245,240,230,0.6)" stroke-width="1.2"/><path d="M18 24l-6 14h12zM46 24l-6 14h12z" stroke="rgba(245,240,230,0.55)" stroke-width="1.2" fill="none"/></svg>',
-    hanged: '<svg viewBox="0 0 64 64" fill="none"><path d="M16 14h32M32 14v10" stroke="rgba(245,240,230,0.5)" stroke-width="1.2"/><circle cx="32" cy="48" r="6" stroke="rgba(245,240,230,0.65)" stroke-width="1.2"/><path d="M32 42V28M24 34l8-6 8 6" stroke="rgba(245,240,230,0.5)" stroke-width="1.2"/></svg>',
-    death: '<svg viewBox="0 0 64 64" fill="none"><path d="M32 10v44M22 28h20" stroke="rgba(245,240,230,0.45)" stroke-width="1.2"/><path d="M18 50c4-12 8-20 14-28 6 8 10 16 14 28" stroke="rgba(245,240,230,0.55)" stroke-width="1.2"/><circle cx="32" cy="18" r="4" stroke="rgba(245,240,230,0.5)" stroke-width="1"/></svg>',
-    temperance: '<svg viewBox="0 0 64 64" fill="none"><path d="M24 16l8 12 8-12M32 28v8" stroke="rgba(245,240,230,0.6)" stroke-width="1.2"/><path d="M22 48c2-6 5-10 10-12 5 2 8 6 10 12" stroke="rgba(245,240,230,0.5)" stroke-width="1.2"/><circle cx="26" cy="20" r="2" fill="rgba(245,240,230,0.4)"/><circle cx="38" cy="20" r="2" fill="rgba(245,240,230,0.4)"/></svg>',
-    devil: '<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="26" r="10" stroke="rgba(245,240,230,0.55)" stroke-width="1.2"/><path d="M24 20l-4-8M40 20l4-8M22 48c2-8 5-14 10-16 5 2 8 8 10 16" stroke="rgba(245,240,230,0.5)" stroke-width="1.2"/></svg>',
-    tower: '<svg viewBox="0 0 64 64" fill="none"><path d="M24 52V22l8-10 8 10v30M20 52h24" stroke="rgba(245,240,230,0.6)" stroke-width="1.2"/><path d="M28 32h8M28 40h8M36 18l10-8M42 22l6 2" stroke="rgba(245,240,230,0.4)" stroke-width="1"/></svg>',
-    star: '<svg viewBox="0 0 64 64" fill="none"><path d="M32 10l3 10h10l-8 6 3 10-8-6-8 6 3-10-8-6h10z" stroke="rgba(245,240,230,0.7)" stroke-width="1.2" fill="none"/><circle cx="18" cy="48" r="2" fill="rgba(245,240,230,0.4)"/><circle cx="46" cy="44" r="1.5" fill="rgba(245,240,230,0.35)"/></svg>',
-    moon: '<svg viewBox="0 0 64 64" fill="none"><path d="M36 14a16 16 0 1 0 0 36 14 14 0 0 1 0-36z" stroke="rgba(245,240,230,0.65)" stroke-width="1.2"/><circle cx="20" cy="48" r="2" fill="rgba(245,240,230,0.3)"/><circle cx="48" cy="20" r="1.5" fill="rgba(245,240,230,0.3)"/></svg>',
-    sun: '<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="12" stroke="rgba(245,240,230,0.7)" stroke-width="1.2"/><path d="M32 8v6M32 50v6M8 32h6M50 32h6M14 14l4 4M46 46l4 4M14 50l4-4M46 18l4-4" stroke="rgba(245,240,230,0.45)" stroke-width="1.2" stroke-linecap="round"/></svg>',
-    judgement: '<svg viewBox="0 0 64 64" fill="none"><path d="M20 44c0-8 5-14 12-16 7 2 12 8 12 16" stroke="rgba(245,240,230,0.55)" stroke-width="1.2"/><circle cx="32" cy="20" r="6" stroke="rgba(245,240,230,0.65)" stroke-width="1.2"/><path d="M26 52h12M32 26v10" stroke="rgba(245,240,230,0.45)" stroke-width="1.2"/></svg>',
-    world: '<svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="16" stroke="rgba(245,240,230,0.65)" stroke-width="1.2"/><ellipse cx="32" cy="32" rx="8" ry="16" stroke="rgba(245,240,230,0.4)" stroke-width="1"/><path d="M16 32h32M32 16c6 4 8 10 8 16s-2 12-8 16c-6-4-8-10-8-16s2-12 8-16z" stroke="rgba(245,240,230,0.35)" stroke-width="1"/></svg>'
-  };
 
-  /* ========== REDUCED MOTION ========== */
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const wait = (ms) => new Promise((r) => setTimeout(r, reduceMotion ? Math.min(ms, 200) : ms));
+  /* =======================================================
+     SCREEN CONTROL
+  ======================================================= */
 
-  /* ========== WEB AUDIO ========== */
-  const AudioCtx = window.AudioContext || window.webkitAudioContext;
-  let audioCtx = null;
-  let masterGain = null;
-  let soundEnabled = false;
-  let ambientNodes = [];
-  let audioUnlocked = false;
+  function showScreen(target){
 
-  function initAudio() {
-    if (audioCtx) return;
-    audioCtx = new AudioCtx();
-    masterGain = audioCtx.createGain();
-    masterGain.gain.value = 0;
-    masterGain.connect(audioCtx.destination);
-  }
-
-  async function unlockAudio() {
-    initAudio();
-    if (audioCtx.state === 'suspended') {
-      try { await audioCtx.resume(); } catch (e) { /* ignore */ }
-    }
-    audioUnlocked = true;
-  }
-
-  function setSound(on) {
-    soundEnabled = on;
-    const btn = document.getElementById('soundToggle');
-    btn.textContent = on ? 'SOUND ON' : 'SOUND OFF';
-    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-    if (!masterGain) return;
-    const now = audioCtx.currentTime;
-    masterGain.gain.cancelScheduledValues(now);
-    masterGain.gain.linearRampToValueAtTime(on ? 0.22 : 0, now + 0.6);
-  }
-
-  function noiseBuffer(duration) {
-    const len = audioCtx.sampleRate * duration;
-    const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
-    const data = buf.getChannelData(0);
-    for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * 0.5;
-    return buf;
-  }
-
-  function startAmbient(mode) {
-    stopAmbient(true);
-    if (!audioCtx || !soundEnabled) return;
-
-    const now = audioCtx.currentTime;
-
-    // Deep drone
-    const osc1 = audioCtx.createOscillator();
-    const g1 = audioCtx.createGain();
-    osc1.type = 'sine';
-    osc1.frequency.value = mode === 'vera' ? 55 : 48;
-    g1.gain.value = 0;
-    osc1.connect(g1);
-    g1.connect(masterGain);
-    osc1.start(now);
-    g1.gain.linearRampToValueAtTime(mode === 'vera' ? 0.35 : 0.28, now + 2.5);
-
-    // Second partial
-    const osc2 = audioCtx.createOscillator();
-    const g2 = audioCtx.createGain();
-    osc2.type = 'sine';
-    osc2.frequency.value = mode === 'vera' ? 82.5 : 72;
-    g2.gain.value = 0;
-    osc2.connect(g2);
-    g2.connect(masterGain);
-    osc2.start(now);
-    g2.gain.linearRampToValueAtTime(0.12, now + 3);
-
-    // Cosmic texture (filtered noise)
-    const src = audioCtx.createBufferSource();
-    src.buffer = noiseBuffer(4);
-    src.loop = true;
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.value = mode === 'vera' ? 400 : 600;
-    filter.Q.value = 0.6;
-    const gN = audioCtx.createGain();
-    gN.gain.value = 0;
-    src.connect(filter);
-    filter.connect(gN);
-    gN.connect(masterGain);
-    src.start(now);
-    gN.gain.linearRampToValueAtTime(mode === 'vera' ? 0.04 : 0.03, now + 2);
-
-    ambientNodes = [
-      { stop: (t) => { try { g1.gain.linearRampToValueAtTime(0, t); osc1.stop(t + 0.05); } catch(e){} } },
-      { stop: (t) => { try { g2.gain.linearRampToValueAtTime(0, t); osc2.stop(t + 0.05); } catch(e){} } },
-      { stop: (t) => { try { gN.gain.linearRampToValueAtTime(0, t); src.stop(t + 0.05); } catch(e){} } }
-    ];
-
-    if (mode === 'vera') {
-      // Soft water / wind hint
-      const wind = audioCtx.createBufferSource();
-      wind.buffer = noiseBuffer(3);
-      wind.loop = true;
-      const wf = audioCtx.createBiquadFilter();
-      wf.type = 'lowpass';
-      wf.frequency.value = 280;
-      const wg = audioCtx.createGain();
-      wg.gain.value = 0;
-      wind.connect(wf);
-      wf.connect(wg);
-      wg.connect(masterGain);
-      wind.start(now);
-      wg.gain.linearRampToValueAtTime(0.025, now + 3);
-      ambientNodes.push({
-        stop: (t) => { try { wg.gain.linearRampToValueAtTime(0, t); wind.stop(t + 0.05); } catch(e){} }
+    [landing, questionScreen, readingScreen]
+      .forEach(screen => {
+        screen.classList.remove("active");
       });
+
+    target.classList.add("active");
+
+    currentScreen =
+      target === landing
+        ? "landing"
+        : target === questionScreen
+          ? "question"
+          : "reading";
+
+  }
+
+
+  /* =======================================================
+     AUDIO
+  ======================================================= */
+
+  function createAudio(){
+
+    if(audioContext) return;
+
+    try{
+
+      audioContext =
+        new (
+          window.AudioContext ||
+          window.webkitAudioContext
+        )();
+
+      masterGain =
+        audioContext.createGain();
+
+      masterGain.gain.value =
+        soundEnabled ? 0.055 : 0;
+
+      masterGain.connect(
+        audioContext.destination
+      );
+
+      const osc1 =
+        audioContext.createOscillator();
+
+      const gain1 =
+        audioContext.createGain();
+
+      osc1.type = "sine";
+      osc1.frequency.value = 55;
+
+      gain1.gain.value = 0.32;
+
+      osc1.connect(gain1);
+      gain1.connect(masterGain);
+
+      osc1.start();
+
+      const osc2 =
+        audioContext.createOscillator();
+
+      const gain2 =
+        audioContext.createGain();
+
+      osc2.type = "sine";
+      osc2.frequency.value = 82.4;
+
+      gain2.gain.value = 0.055;
+
+      osc2.connect(gain2);
+      gain2.connect(masterGain);
+
+      osc2.start();
+
+      ambienceStarted = true;
+
+    }catch(error){
+
+      console.warn(
+        "Audio unavailable:",
+        error
+      );
+
     }
+
   }
 
-  function stopAmbient(immediate) {
-    const t = audioCtx ? audioCtx.currentTime + (immediate ? 0.3 : 1.2) : 0;
-    ambientNodes.forEach((n) => n.stop(t));
-    ambientNodes = [];
+
+  function resumeAudio(){
+
+    if(!audioContext) return;
+
+    if(
+      audioContext.state === "suspended"
+    ){
+
+      audioContext.resume()
+        .catch(() => {});
+
+    }
+
   }
 
-  function playTone(freq, dur, type, vol, delay) {
-    if (!audioCtx || !soundEnabled) return;
-    const now = audioCtx.currentTime + (delay || 0);
-    const osc = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    osc.type = type || 'sine';
-    osc.frequency.value = freq;
-    g.gain.value = 0;
-    osc.connect(g);
-    g.connect(masterGain);
-    osc.start(now);
-    g.gain.linearRampToValueAtTime(vol || 0.15, now + 0.08);
-    g.gain.exponentialRampToValueAtTime(0.001, now + dur);
-    osc.stop(now + dur + 0.05);
+
+  function playTone(
+    frequency = 440,
+    duration = .45,
+    volume = .05
+  ){
+
+    if(
+      !soundEnabled ||
+      !audioContext ||
+      !masterGain
+    ) return;
+
+    try{
+
+      const osc =
+        audioContext.createOscillator();
+
+      const gain =
+        audioContext.createGain();
+
+      osc.type = "sine";
+
+      osc.frequency.setValueAtTime(
+        frequency,
+        audioContext.currentTime
+      );
+
+      gain.gain.setValueAtTime(
+        0,
+        audioContext.currentTime
+      );
+
+      gain.gain.linearRampToValueAtTime(
+        volume,
+        audioContext.currentTime + .04
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        .001,
+        audioContext.currentTime + duration
+      );
+
+      osc.connect(gain);
+      gain.connect(masterGain);
+
+      osc.start();
+
+      osc.stop(
+        audioContext.currentTime + duration + .03
+      );
+
+    }catch(error){}
+
   }
 
-  function playEnterSound() {
-    playTone(90, 1.8, 'sine', 0.2, 0);
-    playTone(180, 1.4, 'sine', 0.08, 0.15);
-    playTone(540, 1.2, 'triangle', 0.06, 0.4);
-    playTone(810, 0.9, 'sine', 0.04, 0.55);
+
+  soundToggle.addEventListener(
+    "click",
+    () => {
+
+      soundEnabled =
+        !soundEnabled;
+
+      soundIcon.textContent =
+        soundEnabled ? "◒" : "◌";
+
+      if(
+        !audioContext &&
+        soundEnabled
+      ){
+
+        createAudio();
+
+      }
+
+      if(
+        audioContext &&
+        masterGain
+      ){
+
+        masterGain.gain.setTargetAtTime(
+          soundEnabled ? .055 : 0,
+          audioContext.currentTime,
+          .08
+        );
+
+      }
+
+    }
+  );
+
+
+  /* =======================================================
+     ENTER
+  ======================================================= */
+
+  async function enterStillwater(){
+
+    if(
+      currentScreen !== "landing"
+    ) return;
+
+    createAudio();
+    resumeAudio();
+
+    playTone(220,.8,.035);
+
+    trackEvent(
+      "stillwater_enter"
+    );
+
+    portal.classList.add("active");
+
+    setTimeout(() => {
+
+      portal.classList.remove("active");
+
+      showScreen(
+        questionScreen
+      );
+
+      setTimeout(() => {
+
+        veraFigure.classList.add(
+          "visible"
+        );
+
+        playDialogue();
+
+      },500);
+
+    },850);
+
   }
 
-  function playSubmitPulse() {
-    playTone(220, 0.6, 'sine', 0.1, 0);
-    playTone(440, 0.8, 'sine', 0.06, 0.15);
-    playTone(660, 1.0, 'triangle', 0.04, 0.35);
+
+  enterBtn.addEventListener(
+    "click",
+    enterStillwater
+  );
+
+
+  /* =======================================================
+     VERA DIALOGUE
+  ======================================================= */
+
+  function showDialogue(text){
+
+    dialogueLine.classList.remove(
+      "show"
+    );
+
+    setTimeout(() => {
+
+      dialogueLine.textContent =
+        text;
+
+      dialogueLine.classList.add(
+        "show"
+      );
+
+    },250);
+
   }
 
-  function playRevealSequence() {
-    playTone(70, 1.2, 'sine', 0.18, 0);
-    playTone(105, 1.0, 'sine', 0.1, 0.1);
-    // brief silence then celestial chime
-    playTone(523.25, 1.5, 'sine', 0.09, 1.6);
-    playTone(659.25, 1.4, 'sine', 0.07, 1.75);
-    playTone(783.99, 1.8, 'triangle', 0.05, 1.9);
-    playTone(1046.5, 1.2, 'sine', 0.03, 2.1);
+
+  function playDialogue(){
+
+    showDialogue(
+      "มาถึงแล้วนะคะ"
+    );
+
+    setTimeout(() => {
+
+      showDialogue(
+        "ถ้าคุณมีคำถามหนึ่งข้อ ลองส่งมันมาให้พี่เวรา"
+      );
+
+    },2400);
+
+    setTimeout(() => {
+
+      questionForm.classList.add(
+        "visible"
+      );
+
+      questionInput.focus();
+
+    },4700);
+
   }
 
-  /* ========== COSMOS CANVAS ========== */
-  const cosmos = document.getElementById('cosmos');
-  const ctx = cosmos.getContext('2d');
-  const waterC = document.getElementById('water-canvas');
-  const wctx = waterC.getContext('2d');
 
-  let W = 0, H = 0, waterLine = 0;
+  /* =======================================================
+     SUBMIT QUESTION
+  ======================================================= */
+
+  questionForm.addEventListener(
+    "submit",
+    async event => {
+
+      event.preventDefault();
+
+      if(
+        questionSequenceRunning
+      ) return;
+
+      const question =
+        questionInput.value.trim();
+
+      if(!question){
+
+        questionInput.focus();
+
+        return;
+
+      }
+
+      if(
+        question.length < 3
+      ){
+
+        questionInput.focus();
+
+        return;
+
+      }
+
+      questionSequenceRunning =
+        true;
+
+      lastQuestion =
+        question;
+
+      questionInput.blur();
+
+      questionSubmit.disabled =
+        true;
+
+      questionInput.disabled =
+        true;
+
+      trackEvent(
+        "free_question_submitted",
+        {
+          question_length:
+            question.length
+        }
+      );
+
+      await beginReadingSequence();
+
+    }
+  );
+
+
+  /* =======================================================
+     READING SEQUENCE
+  ======================================================= */
+
+  async function beginReadingSequence(){
+
+    showDialogue(
+      "พี่เวราจะลองขอคำตอบจากจักรวาลให้คุณนะคะ…"
+    );
+
+    questionLight.classList.remove(
+      "travel"
+    );
+
+    void questionLight.offsetWidth;
+
+    questionLight.classList.add(
+      "travel"
+    );
+
+    playTone(330,.7,.04);
+
+    await wait(1750);
+
+    portal.classList.add(
+      "active"
+    );
+
+    playTone(110,1.1,.035);
+
+    await wait(900);
+
+    portal.classList.remove(
+      "active"
+    );
+
+    showScreen(
+      readingScreen
+    );
+
+    await wait(500);
+
+    revealCard();
+
+  }
+
+
+  /* =======================================================
+     CARD REVEAL
+  ======================================================= */
+
+  function revealCard(){
+
+    /*
+      ภายในระบบเลือกไพ่จาก Major Arcana 22 ใบ
+      แต่ไม่แสดงกลไกนี้ต่อผู้ใช้
+    */
+
+    currentCard =
+      CARDS[
+        Math.floor(
+          Math.random() *
+          CARDS.length
+        )
+      ];
+
+    cardImage.src =
+      currentCard.image;
+
+    cardImage.alt =
+      currentCard.name;
+
+    cardShell.classList.remove(
+      "revealed"
+    );
+
+    readingContent.classList.remove(
+      "visible"
+    );
+
+    deepReading.classList.remove(
+      "visible"
+    );
+
+    secondGate.classList.remove(
+      "visible"
+    );
+
+    readingText.textContent =
+      "";
+
+    btnDeeper.disabled =
+      false;
+
+    btnDeeper.textContent =
+      "✦ เปิดไพ่ใบที่ 2 · 19 บาท";
+
+    setTimeout(() => {
+
+      cardShell.classList.add(
+        "revealed"
+      );
+
+      playTone(523.25,.8,.055);
+
+    },250);
+
+    setTimeout(() => {
+
+      readingText.textContent =
+        currentCard.reading;
+
+      readingContent.classList.add(
+        "visible"
+      );
+
+    },1450);
+
+    setTimeout(() => {
+
+      deepReading.classList.add(
+        "visible"
+      );
+
+      trackEvent(
+        "free_reading_completed",
+        {
+          card_id:
+            currentCard.id,
+          card_name:
+            currentCard.name
+        }
+      );
+
+      trackEvent(
+        "deep_reading_offer_viewed",
+        {
+          card_id:
+            currentCard.id,
+          card_name:
+            currentCard.name
+        }
+      );
+
+    },2600);
+
+  }
+
+
+  /* =======================================================
+     SECOND CARD
+  ======================================================= */
+
+  btnDeeper.addEventListener(
+    "click",
+    () => {
+
+      if(!currentCard){
+        return;
+      }
+
+      trackEvent(
+        "deep_reading_interest",
+        {
+          card_id:
+            currentCard.id,
+          card_name:
+            currentCard.name,
+          price_thb:19
+        }
+      );
+
+      playTone(
+        659.25,
+        .65,
+        .045
+      );
+
+      secondGate.classList.add(
+        "visible"
+      );
+
+      btnDeeper.disabled =
+        true;
+
+      btnDeeper.textContent =
+        "รับคำขอแล้ว";
+
+      trackEvent(
+        "deep_reading_gate_viewed",
+        {
+          card_id:
+            currentCard.id
+        }
+      );
+
+      setTimeout(() => {
+
+        secondGate.scrollIntoView({
+          behavior:"smooth",
+          block:"center"
+        });
+
+      },100);
+
+    }
+  );
+
+
+  /* =======================================================
+     CANVAS — COSMOS
+  ======================================================= */
+
+  const cosmos =
+    document.getElementById(
+      "cosmos"
+    );
+
+  const ctx =
+    cosmos.getContext("2d");
+
+  let cw = 0;
+  let ch = 0;
+
   let stars = [];
   let particles = [];
-  let dust = [];
-  let rafId = 0;
-  let time = 0;
 
-  function resize() {
-    W = cosmos.width = waterC.width = window.innerWidth * (window.devicePixelRatio > 1.5 ? 1.5 : window.devicePixelRatio || 1);
-    H = cosmos.height = waterC.height = window.innerHeight * (window.devicePixelRatio > 1.5 ? 1.5 : window.devicePixelRatio || 1);
-    cosmos.style.width = waterC.style.width = window.innerWidth + 'px';
-    cosmos.style.height = waterC.style.height = window.innerHeight + 'px';
-    waterLine = H * 0.62;
-    seedStars();
+  function resizeCosmos(){
+
+    cw =
+      window.innerWidth;
+
+    ch =
+      window.innerHeight;
+
+    const dpr =
+      Math.min(
+        window.devicePixelRatio || 1,
+        2
+      );
+
+    cosmos.width =
+      cw * dpr;
+
+    cosmos.height =
+      ch * dpr;
+
+    cosmos.style.width =
+      cw + "px";
+
+    cosmos.style.height =
+      ch + "px";
+
+    ctx.setTransform(
+      dpr,
+      0,
+      0,
+      dpr,
+      0,
+      0
+    );
+
+    createCosmosObjects();
+
   }
 
-  function seedStars() {
+
+  function createCosmosObjects(){
+
     stars = [];
-    const count = Math.floor((W * H) / 9000);
-    for (let i = 0; i < count; i++) {
-      stars.push({
-        x: Math.random() * W,
-        y: Math.random() * waterLine * 1.05,
-        r: Math.random() * 1.4 + 0.2,
-        a: Math.random() * 0.7 + 0.15,
-        tw: Math.random() * Math.PI * 2,
-        sp: 0.3 + Math.random() * 1.2,
-        depth: Math.random()
-      });
-    }
     particles = [];
-    for (let i = 0; i < 35; i++) {
+
+    const starCount =
+      Math.min(
+        180,
+        Math.floor(
+          (cw * ch) / 6500
+        )
+      );
+
+    for(
+      let i=0;
+      i<starCount;
+      i++
+    ){
+
+      stars.push({
+        x:Math.random()*cw,
+        y:Math.random()*ch,
+        r:Math.random()*1.2+.15,
+        a:Math.random()*.65+.1,
+        speed:Math.random()*.008+.002,
+        phase:Math.random()*Math.PI*2
+      });
+
+    }
+
+    const particleCount =
+      Math.min(
+        55,
+        Math.floor(
+          (cw * ch) / 20000
+        )
+      );
+
+    for(
+      let i=0;
+      i<particleCount;
+      i++
+    ){
+
       particles.push({
-        x: Math.random() * W,
-        y: Math.random() * H,
-        r: Math.random() * 1.8 + 0.4,
-        vx: (Math.random() - 0.5) * 0.15,
-        vy: -0.05 - Math.random() * 0.12,
-        a: Math.random() * 0.25 + 0.05
+        x:Math.random()*cw,
+        y:Math.random()*ch,
+        r:Math.random()*1.8+.3,
+        vx:(Math.random()-.5)*.12,
+        vy:(Math.random()-.5)*.10,
+        a:Math.random()*.20+.05
       });
+
     }
-    dust = [];
-    for (let i = 0; i < 20; i++) {
-      dust.push({
-        x: Math.random() * W,
-        y: Math.random() * waterLine,
-        r: 20 + Math.random() * 60,
-        a: 0.015 + Math.random() * 0.03,
-        drift: Math.random() * Math.PI * 2
-      });
-    }
+
   }
 
-  function drawCosmos(t) {
-    // Deep layered background
-    const g = ctx.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, '#050510');
-    g.addColorStop(0.35, '#0a0c22');
-    g.addColorStop(0.55, '#12102e');
-    g.addColorStop(0.62, '#0e1230');
-    g.addColorStop(1, '#060818');
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, W, H);
 
-    // Soft nebula blobs
-    const nebulae = [
-      { x: W * 0.2, y: H * 0.2, r: W * 0.35, c: 'rgba(60,40,120,0.12)' },
-      { x: W * 0.75, y: H * 0.15, r: W * 0.3, c: 'rgba(40,50,110,0.1)' },
-      { x: W * 0.5, y: H * 0.4, r: W * 0.4, c: 'rgba(80,40,100,0.08)' }
-    ];
-    nebulae.forEach((n) => {
-      const ng = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r);
-      ng.addColorStop(0, n.c);
-      ng.addColorStop(1, 'transparent');
-      ctx.fillStyle = ng;
-      ctx.fillRect(0, 0, W, H);
-    });
+  function drawCosmos(time){
 
-    // Cosmic dust
-    dust.forEach((d) => {
-      const dx = d.x + Math.sin(t * 0.0002 + d.drift) * 15;
-      const dy = d.y + Math.cos(t * 0.00015 + d.drift) * 10;
-      const dg = ctx.createRadialGradient(dx, dy, 0, dx, dy, d.r);
-      dg.addColorStop(0, `rgba(160,170,220,${d.a})`);
-      dg.addColorStop(1, 'transparent');
-      ctx.fillStyle = dg;
+    ctx.clearRect(
+      0,
+      0,
+      cw,
+      ch
+    );
+
+    /* deep space */
+
+    const base =
+      ctx.createRadialGradient(
+        cw*.5,
+        ch*.45,
+        0,
+        cw*.5,
+        ch*.45,
+        Math.max(cw,ch)*.75
+      );
+
+    base.addColorStop(
+      0,
+      "#15102d"
+    );
+
+    base.addColorStop(
+      .35,
+      "#0c0a20"
+    );
+
+    base.addColorStop(
+      1,
+      "#050510"
+    );
+
+    ctx.fillStyle =
+      base;
+
+    ctx.fillRect(
+      0,
+      0,
+      cw,
+      ch
+    );
+
+    /* nebula */
+
+    const nebula1 =
+      ctx.createRadialGradient(
+        cw*.22,
+        ch*.30,
+        0,
+        cw*.22,
+        ch*.30,
+        cw*.45
+      );
+
+    nebula1.addColorStop(
+      0,
+      "rgba(80,60,150,.13)"
+    );
+
+    nebula1.addColorStop(
+      1,
+      "rgba(20,15,50,0)"
+    );
+
+    ctx.fillStyle =
+      nebula1;
+
+    ctx.fillRect(
+      0,
+      0,
+      cw,
+      ch
+    );
+
+    const nebula2 =
+      ctx.createRadialGradient(
+        cw*.78,
+        ch*.55,
+        0,
+        cw*.78,
+        ch*.55,
+        cw*.50
+      );
+
+    nebula2.addColorStop(
+      0,
+      "rgba(70,80,160,.10)"
+    );
+
+    nebula2.addColorStop(
+      1,
+      "rgba(20,15,50,0)"
+    );
+
+    ctx.fillStyle =
+      nebula2;
+
+    ctx.fillRect(
+      0,
+      0,
+      cw,
+      ch
+    );
+
+    /* stars */
+
+    for(
+      const star of stars
+    ){
+
+      const alpha =
+        star.a +
+        Math.sin(
+          time * star.speed +
+          star.phase
+        ) * .18;
+
       ctx.beginPath();
-      ctx.arc(dx, dy, d.r, 0, Math.PI * 2);
-      ctx.fill();
-    });
 
-    // Stars multi-depth
-    stars.forEach((s) => {
-      const twinkle = 0.5 + 0.5 * Math.sin(t * 0.001 * s.sp + s.tw);
-      const alpha = s.a * twinkle * (0.4 + s.depth * 0.6);
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r * (0.6 + s.depth * 0.6), 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(220,230,255,${alpha})`;
-      ctx.fill();
-      if (s.depth > 0.85 && twinkle > 0.85) {
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r * 2.5, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(180,200,255,${alpha * 0.25})`;
-        ctx.fill();
-      }
-    });
+      ctx.arc(
+        star.x,
+        star.y,
+        star.r,
+        0,
+        Math.PI*2
+      );
 
-    // Floating particles
-    particles.forEach((p) => {
+      ctx.fillStyle =
+        `rgba(220,225,255,${Math.max(.03,alpha)})`;
+
+      ctx.fill();
+
+    }
+
+    /* floating particles */
+
+    for(
+      const p of particles
+    ){
+
       p.x += p.vx;
       p.y += p.vy;
-      if (p.y < -10) { p.y = H + 10; p.x = Math.random() * W; }
-      if (p.x < -10) p.x = W + 10;
-      if (p.x > W + 10) p.x = -10;
+
+      if(p.x < -10) p.x = cw+10;
+      if(p.x > cw+10) p.x = -10;
+
+      if(p.y < -10) p.y = ch+10;
+      if(p.y > ch+10) p.y = -10;
+
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(190,210,255,${p.a})`;
+
+      ctx.arc(
+        p.x,
+        p.y,
+        p.r,
+        0,
+        Math.PI*2
+      );
+
+      ctx.fillStyle =
+        `rgba(185,200,255,${p.a})`;
+
       ctx.fill();
-    });
+
+    }
+
+    requestAnimationFrame(
+      drawCosmos
+    );
+
   }
 
-  function drawWater(t) {
-    wctx.clearRect(0, 0, W, H);
-    const wl = waterLine;
 
-    // Water body
-    const wg = wctx.createLinearGradient(0, wl - 20, 0, H);
-    wg.addColorStop(0, 'rgba(20,30,70,0.55)');
-    wg.addColorStop(0.3, 'rgba(12,18,45,0.75)');
-    wg.addColorStop(1, 'rgba(5,8,20,0.92)');
-    wctx.fillStyle = wg;
-    wctx.fillRect(0, wl - 10, W, H - wl + 10);
+  /* =======================================================
+     CANVAS — WATER
+  ======================================================= */
 
-    // Soft surface line with shimmer
-    wctx.beginPath();
-    wctx.moveTo(0, wl);
-    for (let x = 0; x <= W; x += 8) {
-      const y = wl + Math.sin(x * 0.008 + t * 0.0008) * 2.5
-                    + Math.sin(x * 0.02 + t * 0.0012) * 1.2;
-      wctx.lineTo(x, y);
-    }
-    wctx.strokeStyle = 'rgba(160,190,255,0.18)';
-    wctx.lineWidth = 1.5;
-    wctx.stroke();
+  const water =
+    document.getElementById(
+      "water"
+    );
 
-    // Star reflections on water
-    const reflCount = Math.min(stars.length, 80);
-    for (let i = 0; i < reflCount; i++) {
-      const s = stars[i];
-      if (s.y > wl * 0.9) continue;
-      const dist = (wl - s.y) / wl;
-      const rx = s.x + Math.sin(t * 0.0005 + s.tw) * 3;
-      const ry = wl + (wl - s.y) * 0.35 + Math.sin(t * 0.001 + s.x) * 2;
-      if (ry > H) continue;
-      const twinkle = 0.5 + 0.5 * Math.sin(t * 0.001 * s.sp + s.tw);
-      const a = s.a * twinkle * 0.25 * (1 - dist * 0.5);
+  const wctx =
+    water.getContext("2d");
+
+  let ww = 0;
+  let wh = 0;
+
+  function resizeWater(){
+
+    ww =
+      window.innerWidth;
+
+    wh =
+      window.innerHeight;
+
+    const dpr =
+      Math.min(
+        window.devicePixelRatio || 1,
+        2
+      );
+
+    water.width =
+      ww * dpr;
+
+    water.height =
+      wh * dpr;
+
+    water.style.width =
+      ww + "px";
+
+    water.style.height =
+      wh + "px";
+
+    wctx.setTransform(
+      dpr,
+      0,
+      0,
+      dpr,
+      0,
+      0
+    );
+
+  }
+
+
+  function drawWater(time){
+
+    wctx.clearRect(
+      0,
+      0,
+      ww,
+      wh
+    );
+
+    const horizon =
+      wh * .70;
+
+    const waterGradient =
+      wctx.createLinearGradient(
+        0,
+        horizon,
+        0,
+        wh
+      );
+
+    waterGradient.addColorStop(
+      0,
+      "rgba(45,45,100,.09)"
+    );
+
+    waterGradient.addColorStop(
+      .35,
+      "rgba(25,30,75,.15)"
+    );
+
+    waterGradient.addColorStop(
+      1,
+      "rgba(4,6,20,.32)"
+    );
+
+    wctx.fillStyle =
+      waterGradient;
+
+    wctx.fillRect(
+      0,
+      horizon,
+      ww,
+      wh-horizon
+    );
+
+    /* horizon glow */
+
+    const glow =
+      wctx.createRadialGradient(
+        ww*.5,
+        horizon,
+        0,
+        ww*.5,
+        horizon,
+        ww*.6
+      );
+
+    glow.addColorStop(
+      0,
+      "rgba(170,185,255,.10)"
+    );
+
+    glow.addColorStop(
+      1,
+      "rgba(120,140,220,0)"
+    );
+
+    wctx.fillStyle =
+      glow;
+
+    wctx.fillRect(
+      0,
+      horizon-100,
+      ww,
+      200
+    );
+
+    /* horizontal ripples */
+
+    for(
+      let i=0;
+      i<22;
+      i++
+    ){
+
+      const y =
+        horizon +
+        i * 11;
+
+      const wave =
+        Math.sin(
+          time*.00055 +
+          i*.55
+        );
+
       wctx.beginPath();
-      wctx.ellipse(rx, ry, s.r * 1.5, s.r * 0.4 + 0.3, 0, 0, Math.PI * 2);
-      wctx.fillStyle = `rgba(180,200,255,${a})`;
-      wctx.fill();
+
+      wctx.moveTo(
+        0,
+        y
+      );
+
+      for(
+        let x=0;
+        x<=ww;
+        x+=16
+      ){
+
+        const yy =
+          y +
+          Math.sin(
+            x*.018 +
+            time*.0007 +
+            i*.4
+          ) * 1.5 +
+          wave;
+
+        wctx.lineTo(
+          x,
+          yy
+        );
+
+      }
+
+      wctx.strokeStyle =
+        `rgba(180,195,245,${.018 + i*.0012})`;
+
+      wctx.lineWidth =
+        .7;
+
+      wctx.stroke();
+
     }
 
-    // Soft fog above water
-    const fog = wctx.createLinearGradient(0, wl - H * 0.12, 0, wl + H * 0.05);
-    fog.addColorStop(0, 'transparent');
-    fog.addColorStop(0.5, 'rgba(100,120,180,0.06)');
-    fog.addColorStop(1, 'transparent');
-    wctx.fillStyle = fog;
-    wctx.fillRect(0, wl - H * 0.12, W, H * 0.17);
-  }
+    /* reflected stars */
 
-  function frame(t) {
-    time = t;
-    drawCosmos(t);
-    drawWater(t);
-    rafId = requestAnimationFrame(frame);
-  }
+    for(
+      const star of stars
+    ){
 
-  window.addEventListener('resize', () => {
-    resize();
-  });
-  resize();
-  rafId = requestAnimationFrame(frame);
+      if(
+        star.y < horizon
+      ){
 
-  /* ========== SCREEN FLOW ========== */
-  const screens = {
-    landing: document.getElementById('screen-landing'),
-    vera: document.getElementById('screen-vera'),
-    reading: document.getElementById('screen-reading')
-  };
+        const distance =
+          horizon -
+          star.y;
 
-  function showScreen(name) {
-    Object.keys(screens).forEach((k) => {
-      screens[k].classList.toggle('active', k === name);
-      screens[k].classList.remove('leaving');
-    });
-  }
+        const ry =
+          horizon +
+          distance*.17;
 
-  async function enterStillwater() {
-    const btn = document.getElementById('btnEnter');
-    btn.disabled = true;
+        if(
+          ry < wh
+        ){
 
-    await unlockAudio();
-    setSound(true);
-    document.getElementById('soundToggle').classList.add('visible');
-    playEnterSound();
-    startAmbient('landing');
+          const shimmer =
+            Math.sin(
+              time*.002 +
+              star.x*.02
+            );
 
-    const portal = document.getElementById('portal');
-    portal.classList.add('active');
+          wctx.beginPath();
 
-    screens.landing.classList.add('leaving');
-    screens.landing.classList.remove('active');
+          wctx.ellipse(
+            star.x,
+            ry,
+            star.r*3.5,
+            .7,
+            0,
+            0,
+            Math.PI*2
+          );
 
-    await wait(reduceMotion ? 400 : 1600);
+          wctx.fillStyle =
+            `rgba(190,205,255,${Math.max(0,.025 + shimmer*.015)})`;
 
-    showScreen('vera');
-    portal.classList.remove('active');
+          wctx.fill();
 
-    await wait(reduceMotion ? 200 : 800);
-    startAmbient('vera');
+        }
 
-    document.getElementById('veraFigure').classList.add('visible');
-    document.getElementById('waterGlow').classList.add('visible');
+      }
 
-    await wait(reduceMotion ? 200 : 1000);
-    document.getElementById('line1').classList.add('visible');
-
-    await wait(reduceMotion ? 300 : 1800);
-    document.getElementById('line2').classList.add('visible');
-
-    await wait(reduceMotion ? 200 : 1000);
-    document.getElementById('questionForm').classList.add('visible');
-    document.getElementById('questionInput').focus();
-  }
-
-  async function submitQuestion(e) {
-    e.preventDefault();
-    const input = document.getElementById('questionInput');
-    const q = input.value.trim();
-    if (!q) return;
-
-    const form = document.getElementById('questionForm');
-    const submitBtn = form.querySelector('.submit-btn');
-    submitBtn.disabled = true;
-    input.disabled = true;
-
-    playSubmitPulse();
-
-    // Soft light into water
-    const light = document.getElementById('questionLight');
-    light.classList.remove('sending');
-    void light.offsetWidth;
-    light.classList.add('sending');
-
-    await wait(reduceMotion ? 400 : 2200);
-
-    // Transition to reading
-    screens.vera.classList.add('leaving');
-    screens.vera.classList.remove('active');
-    await wait(reduceMotion ? 200 : 900);
-
-    showScreen('reading');
-
-    const intro = document.getElementById('readingIntro');
-    intro.classList.add('visible');
-
-    await wait(reduceMotion ? 400 : 2200);
-
-    // Pick card
-    const card = CARDS[Math.floor(Math.random() * CARDS.length)];
-
-    // Reveal sound: resonance → silence → chime
-    playRevealSequence();
-
-    await wait(reduceMotion ? 200 : 1400);
-
-    document.getElementById('cardNumeral').textContent = card.roman;
-    document.getElementById('cardName').textContent = card.name;
-    document.getElementById('cardSymbol').innerHTML = '';
-    const cardImg = document.getElementById('cardImage');
-    cardImg.src = 'cards/web/' + card.id + '.jpg';
-    cardImg.alt = card.name;
-    document.getElementById('cardShell').classList.add('revealed');
-
-    await wait(reduceMotion ? 300 : 800);
-    const rt = document.getElementById('readingText');
-    rt.textContent = card.reading;
-    rt.classList.add('visible');
-
-    await wait(reduceMotion ? 200 : 1200);
-    document.getElementById('btnDeeper').classList.add('visible');
-  }
-
-  /* ========== EVENTS ========== */
-  document.getElementById('btnEnter').addEventListener('click', enterStillwater);
-
-  document.getElementById('soundToggle').addEventListener('click', async () => {
-    await unlockAudio();
-    const next = !soundEnabled;
-    setSound(next);
-    if (next) {
-      const onVera = screens.vera.classList.contains('active') || screens.reading.classList.contains('active');
-      startAmbient(onVera ? 'vera' : 'landing');
-    } else {
-      stopAmbient(false);
     }
-  });
 
-  document.getElementById('questionForm').addEventListener('submit', submitQuestion);
+    requestAnimationFrame(
+      drawWater
+    );
 
-  document.getElementById('btnDeeper').addEventListener('click', () => {
-    // Placeholder — no payment wire yet
-    const btn = document.getElementById('btnDeeper');
-    btn.style.opacity = '0.5';
-    btn.textContent = 'เร็ว ๆ นี้…';
-    btn.disabled = true;
-  });
+  }
 
-  // Start landing ambient hint only after first gesture via Enter
-  // (audio unlock happens on Enter)
+
+  /* =======================================================
+     RESIZE
+  ======================================================= */
+
+  window.addEventListener(
+    "resize",
+    () => {
+
+      resizeCosmos();
+      resizeWater();
+
+    },
+    {passive:true}
+  );
+
+
+  resizeCosmos();
+  resizeWater();
+
+  requestAnimationFrame(
+    drawCosmos
+  );
+
+  requestAnimationFrame(
+    drawWater
+  );
+
+
+  /* =======================================================
+     UTIL
+  ======================================================= */
+
+  function wait(ms){
+
+    return new Promise(
+      resolve =>
+        setTimeout(
+          resolve,
+          ms
+        )
+    );
+
+  }
+
+
+  /* =======================================================
+     KEYBOARD
+  ======================================================= */
+
+  document.addEventListener(
+    "keydown",
+    event => {
+
+      if(
+        event.key === "Enter" &&
+        event.shiftKey
+      ){
+
+        event.preventDefault();
+
+        if(
+          currentScreen === "landing"
+        ){
+
+          enterStillwater();
+
+        }
+
+      }
+
+    }
+  );
+
 
 })();
 </script>
+
 </body>
 </html>
