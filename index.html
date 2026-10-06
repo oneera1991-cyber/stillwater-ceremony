@@ -8,28 +8,31 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans+Thai:wght@300;400;500&display=swap" rel="stylesheet">
+
+<!--
+  English:
+  Cormorant Garamond
+
+  Thai:
+  Anuphan = loopless Thai
+-->
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@300;400;500&family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
+
 :root{
   --deep:#050510;
   --space:#0a0a1a;
   --indigo:#1a1040;
   --violet:#2a1850;
 
-  --mist:rgba(210,220,255,.10);
-  --mist-strong:rgba(220,230,255,.18);
-
   --cream:#f5f0e6;
-  --cream-dim:#c8c0b0;
 
   --text:rgba(230,235,255,.92);
   --text-soft:rgba(200,210,240,.70);
 
   --accent:rgba(200,180,255,.90);
   --glow:rgba(160,180,255,.35);
-
-  --white-aura:rgba(245,248,255,.82);
 }
 
 *{
@@ -49,9 +52,9 @@ body{
 }
 
 body{
-  font-family:"IBM Plex Sans Thai",sans-serif;
+  font-family:"Anuphan",sans-serif;
   font-weight:300;
-  letter-spacing:.02em;
+  letter-spacing:.01em;
 }
 
 button,
@@ -64,6 +67,11 @@ button{
   border:0;
   outline:0;
 }
+
+
+/* =========================================================
+   CANVAS
+========================================================= */
 
 #cosmos,
 #water{
@@ -82,12 +90,21 @@ button{
   z-index:1;
 }
 
+
+/* =========================================================
+   ATMOSPHERE
+========================================================= */
+
 body::before{
   content:"";
+
   position:fixed;
   inset:0;
+
   z-index:2;
+
   pointer-events:none;
+
   background:
     radial-gradient(
       ellipse at 50% 48%,
@@ -99,25 +116,40 @@ body::before{
 
 body::after{
   content:"";
+
   position:fixed;
   inset:0;
+
   z-index:3;
+
   pointer-events:none;
+
   opacity:.16;
+
   background-image:
-    radial-gradient(rgba(255,255,255,.20) 1px,transparent 1px);
+    radial-gradient(
+      rgba(255,255,255,.20) 1px,
+      transparent 1px
+    );
+
   background-size:4px 4px;
+
   mix-blend-mode:screen;
 }
 
 .fog-band{
   position:fixed;
+
   left:-10%;
   right:-10%;
   bottom:17%;
+
   height:28%;
+
   z-index:4;
+
   pointer-events:none;
+
   background:
     radial-gradient(
       ellipse at center,
@@ -125,28 +157,44 @@ body::after{
       rgba(130,150,220,.06) 32%,
       transparent 72%
     );
+
   filter:blur(25px);
+
   opacity:.75;
-  animation:fogFloat 12s ease-in-out infinite alternate;
+
+  animation:
+    fogFloat 12s ease-in-out infinite alternate;
 }
 
 @keyframes fogFloat{
+
   from{
-    transform:translate3d(-1%,0,0) scale(1);
+    transform:translate3d(-1%,0,0);
   }
+
   to{
     transform:translate3d(1%,2%,0) scale(1.04);
   }
+
 }
+
 
 /* =========================================================
    SOUND
 ========================================================= */
 
 .sound-toggle{
+
   position:fixed;
-  top:calc(18px + env(safe-area-inset-top));
+
+  top:
+    calc(
+      18px +
+      env(safe-area-inset-top)
+    );
+
   right:18px;
+
   z-index:50;
 
   width:42px;
@@ -159,54 +207,67 @@ body::after{
   justify-content:center;
 
   color:rgba(235,240,255,.72);
-  background:rgba(10,10,28,.28);
-  border:1px solid rgba(220,225,255,.14);
+
+  background:
+    rgba(10,10,28,.28);
+
+  border:
+    1px solid
+    rgba(220,225,255,.14);
 
   backdrop-filter:blur(10px);
   -webkit-backdrop-filter:blur(10px);
 
   cursor:pointer;
 
-  transition:
-    background .4s ease,
-    border-color .4s ease,
-    transform .4s ease;
+  transition:.4s ease;
 }
 
 .sound-toggle:hover{
-  background:rgba(50,40,100,.28);
-  border-color:rgba(220,225,255,.28);
-}
 
-.sound-toggle:active{
-  transform:scale(.94);
+  background:
+    rgba(50,40,100,.28);
+
+  border-color:
+    rgba(220,225,255,.28);
 }
 
 .sound-icon{
   font-size:15px;
-  opacity:.8;
 }
+
 
 /* =========================================================
    SCREENS
 ========================================================= */
 
 .screen{
+
   position:fixed;
   inset:0;
+
   z-index:10;
 
   display:flex;
+
   align-items:center;
   justify-content:center;
 
   padding:
-    calc(30px + env(safe-area-inset-top))
+    calc(
+      30px +
+      env(safe-area-inset-top)
+    )
     24px
-    calc(30px + env(safe-area-inset-bottom));
+    calc(
+      30px +
+      env(safe-area-inset-bottom)
+    );
 
   opacity:0;
+
   visibility:hidden;
+
   pointer-events:none;
 
   transition:
@@ -215,144 +276,184 @@ body::after{
 }
 
 .screen.active{
+
   opacity:1;
+
   visibility:visible;
+
   pointer-events:auto;
 }
+
 
 /* =========================================================
    LANDING
 ========================================================= */
 
 .landing-inner{
+
   width:min(90vw,700px);
+
   text-align:center;
+
   transform:translateY(10px);
-  transition:transform 1.5s ease;
+
+  transition:
+    transform 1.5s ease;
 }
 
 .screen.active .landing-inner{
   transform:translateY(0);
 }
 
+
+/*
+  STILLWATER
+  - uppercase
+  - much smaller
+  - thinner
+  - more breathing space
+*/
+
 .brand{
-  margin-bottom:28px;
 
-  font-family:"Cormorant Garamond",serif;
-  font-size:clamp(58px,14vw,100px);
-  line-height:.8;
-  font-weight:400;
-  letter-spacing:.08em;
+  margin-bottom:24px;
 
-  color:rgba(245,245,255,.94);
+  font-family:
+    "Cormorant Garamond",
+    serif;
 
-  text-shadow:
-    0 0 35px rgba(150,160,255,.18),
-    0 0 90px rgba(120,110,255,.12);
-}
+  font-size:
+    clamp(
+      32px,
+      7vw,
+      50px
+    );
 
-.brand-sub{
-  margin-bottom:28px;
+  line-height:.9;
 
-  font-family:"Cormorant Garamond",serif;
-  font-size:14px;
-  letter-spacing:.32em;
+  font-weight:300;
+
+  letter-spacing:.28em;
+
   text-transform:uppercase;
 
-  color:rgba(205,210,235,.46);
+  color:
+    rgba(245,245,255,.92);
+
+  text-shadow:
+    0 0 35px
+    rgba(150,160,255,.16);
 }
+
+
+.brand-sub{
+
+  margin-bottom:28px;
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size:11px;
+
+  letter-spacing:.28em;
+
+  text-transform:uppercase;
+
+  color:
+    rgba(205,210,235,.40);
+}
+
 
 .landing-line{
-  margin:0 auto 44px;
+
+  margin:
+    0 auto 42px;
+
   max-width:500px;
 
-  font-size:15px;
+  font-family:
+    "Anuphan",
+    sans-serif;
+
+  font-size:14px;
+
+  font-weight:300;
+
   line-height:2;
 
-  color:rgba(220,225,245,.72);
+  color:
+    rgba(220,225,245,.68);
 }
 
+
 .enter-btn{
+
   position:relative;
 
   min-width:150px;
-  padding:14px 34px;
 
-  border:1px solid rgba(220,225,255,.24);
+  padding:
+    13px 34px;
+
+  border:
+    1px solid
+    rgba(220,225,255,.24);
+
   border-radius:999px;
 
-  background:rgba(30,24,70,.22);
+  background:
+    rgba(30,24,70,.22);
 
-  color:rgba(245,245,255,.88);
+  color:
+    rgba(245,245,255,.88);
 
-  font-family:"Cormorant Garamond",serif;
-  font-size:19px;
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size:18px;
+
+  font-weight:400;
+
   letter-spacing:.18em;
 
   cursor:pointer;
 
   backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
 
-  transition:
-    background .5s ease,
-    border-color .5s ease,
-    box-shadow .5s ease,
-    transform .5s ease;
-}
-
-.enter-btn::before{
-  content:"";
-  position:absolute;
-  inset:-7px;
-  border-radius:inherit;
-
-  background:radial-gradient(
-    ellipse,
-    rgba(180,190,255,.16),
-    transparent 70%
-  );
-
-  opacity:.7;
-  z-index:-1;
-
-  animation:enterGlow 3s ease-in-out infinite alternate;
-}
-
-@keyframes enterGlow{
-  from{
-    transform:scale(.96);
-    opacity:.35;
-  }
-  to{
-    transform:scale(1.08);
-    opacity:.8;
-  }
+  transition:.5s ease;
 }
 
 .enter-btn:hover{
-  background:rgba(60,45,110,.28);
-  border-color:rgba(220,225,255,.42);
-  box-shadow:0 0 35px rgba(160,170,255,.12);
-  transform:translateY(-2px);
+
+  background:
+    rgba(60,45,110,.28);
+
+  border-color:
+    rgba(220,225,255,.42);
+
+  box-shadow:
+    0 0 35px
+    rgba(160,170,255,.12);
 }
 
-.enter-btn:active{
-  transform:scale(.97);
-}
 
 /* =========================================================
    PORTAL
 ========================================================= */
 
 .portal{
+
   position:fixed;
   inset:0;
+
   z-index:100;
 
   pointer-events:none;
 
   opacity:0;
+
   background:
     radial-gradient(
       circle at center,
@@ -362,17 +463,20 @@ body::after{
       rgba(0,0,0,.95) 100%
     );
 
-  transform:scale(1);
-
-  transition:opacity .5s ease;
+  transition:
+    opacity .5s ease;
 }
 
 .portal.active{
+
   opacity:1;
-  animation:portalPulse 1.7s ease forwards;
+
+  animation:
+    portalPulse 1.7s ease forwards;
 }
 
 @keyframes portalPulse{
+
   0%{
     transform:scale(.8);
     opacity:0;
@@ -392,46 +496,58 @@ body::after{
     transform:scale(1.35);
     opacity:0;
   }
+
 }
 
+
 /* =========================================================
-   VERA QUESTION SCREEN
+   QUESTION
 ========================================================= */
 
 .question-inner{
+
   width:min(100%,520px);
+
   text-align:center;
 
   transform:translateY(15px);
-  transition:transform 1.4s ease;
+
+  transition:
+    transform 1.4s ease;
 }
 
 .screen.active .question-inner{
   transform:translateY(0);
 }
 
+
 .scene-stage{
+
   position:relative;
 
   width:min(100%,420px);
+
   height:min(42vh,320px);
 
   min-height:230px;
 
-  margin:0 auto 16px;
+  margin:
+    0 auto 16px;
 
   display:flex;
+
   align-items:center;
   justify-content:center;
 }
 
-/* ---------------------------------------------------------
+
+/* =========================================================
    VERA
-   ไม่มีหน้า ไม่มีรายละเอียดบุคคล
-   เป็นเพียงร่างขาวจาง ๆ + aura
---------------------------------------------------------- */
+   NO FACE
+========================================================= */
 
 .vera-figure{
+
   position:relative;
 
   width:170px;
@@ -444,17 +560,30 @@ body::after{
     scale(.92);
 
   transition:
-    opacity:2.2s ease,
-    transform:2.8s cubic-bezier(.22,.61,.36,1);
+    opacity 2.2s ease,
+    transform 2.8s
+      cubic-bezier(.22,.61,.36,1);
 
   filter:
-    drop-shadow(0 0 22px rgba(225,235,255,.28))
-    drop-shadow(0 0 70px rgba(150,170,255,.18));
+    drop-shadow(
+      0 0 22px
+      rgba(225,235,255,.28)
+    )
+    drop-shadow(
+      0 0 70px
+      rgba(150,170,255,.18)
+    );
 
-  animation:veraFloat 7s ease-in-out infinite alternate;
+  animation:
+    veraFloat
+    7s
+    ease-in-out
+    infinite
+    alternate;
 }
 
 .vera-figure.visible{
+
   opacity:.9;
 
   transform:
@@ -463,19 +592,25 @@ body::after{
 }
 
 @keyframes veraFloat{
+
   from{
     margin-top:0;
   }
+
   to{
     margin-top:-8px;
   }
+
 }
 
-/* Aura ด้านนอก */
 
 .vera-aura{
+
   position:absolute;
-  inset:-35px -45px;
+
+  inset:
+    -35px
+    -45px;
 
   border-radius:50%;
 
@@ -491,23 +626,30 @@ body::after{
   filter:blur(18px);
 
   animation:
-    auraPulse 4.5s ease-in-out infinite alternate;
+    auraPulse
+    4.5s
+    ease-in-out
+    infinite
+    alternate;
 }
 
 @keyframes auraPulse{
+
   from{
     transform:scale(.88);
     opacity:.45;
   }
+
   to{
     transform:scale(1.08);
     opacity:.9;
   }
+
 }
 
-/* วงแสงเหนือร่าง */
 
 .vera-halo{
+
   position:absolute;
 
   width:145px;
@@ -516,7 +658,8 @@ body::after{
   top:10px;
   left:50%;
 
-  transform:translateX(-50%);
+  transform:
+    translateX(-50%);
 
   border-radius:50%;
 
@@ -529,14 +672,11 @@ body::after{
     );
 
   filter:blur(12px);
-
-  opacity:.75;
 }
 
-/* ร่างแบบ abstract
-   ไม่มีหน้า ไม่มีตา ไม่มีจมูก ไม่มีรายละเอียด */
 
 .vera-body{
+
   position:absolute;
 
   left:50%;
@@ -545,7 +685,8 @@ body::after{
   width:92px;
   height:170px;
 
-  transform:translateX(-50%);
+  transform:
+    translateX(-50%);
 
   border-radius:
     48% 48% 42% 42% /
@@ -566,10 +707,9 @@ body::after{
   opacity:.68;
 }
 
-/* แสงแทนศีรษะ
-   จงใจให้ไม่เป็นรูปหน้าคน */
 
 .vera-presence{
+
   position:absolute;
 
   left:50%;
@@ -578,7 +718,8 @@ body::after{
   width:72px;
   height:82px;
 
-  transform:translateX(-50%);
+  transform:
+    translateX(-50%);
 
   border-radius:50%;
 
@@ -596,9 +737,9 @@ body::after{
   opacity:.65;
 }
 
-/* แสงตามลำตัว */
 
 .vera-light{
+
   position:absolute;
 
   left:50%;
@@ -607,7 +748,8 @@ body::after{
   width:155px;
   height:80px;
 
-  transform:translateX(-50%);
+  transform:
+    translateX(-50%);
 
   border-radius:50%;
 
@@ -623,9 +765,9 @@ body::after{
   opacity:.55;
 }
 
-/* เงาสะท้อนของ Vera บนน้ำ */
 
 .vera-reflection{
+
   position:absolute;
 
   left:50%;
@@ -634,7 +776,8 @@ body::after{
   width:130px;
   height:45px;
 
-  transform:translateX(-50%);
+  transform:
+    translateX(-50%);
 
   border-radius:50%;
 
@@ -648,22 +791,11 @@ body::after{
   filter:blur(8px);
 
   opacity:.45;
-
-  animation:reflectionPulse 4s ease-in-out infinite alternate;
 }
 
-@keyframes reflectionPulse{
-  from{
-    transform:translateX(-50%) scaleX(.8);
-    opacity:.28;
-  }
-  to{
-    transform:translateX(-50%) scaleX(1.15);
-    opacity:.65;
-  }
-}
 
 .water-glow{
+
   position:absolute;
 
   left:50%;
@@ -672,7 +804,8 @@ body::after{
   width:250px;
   height:70px;
 
-  transform:translateX(-50%);
+  transform:
+    translateX(-50%);
 
   border-radius:50%;
 
@@ -684,15 +817,15 @@ body::after{
     );
 
   filter:blur(16px);
-
-  opacity:.7;
 }
 
-/* ---------------------------------------------------------
+
+/* =========================================================
    QUESTION LIGHT
---------------------------------------------------------- */
+========================================================= */
 
 .question-light{
+
   position:absolute;
 
   left:50%;
@@ -708,9 +841,14 @@ body::after{
   background:#fff;
 
   box-shadow:
-    0 0 12px rgba(255,255,255,.9),
-    0 0 30px rgba(190,205,255,.75),
-    0 0 65px rgba(150,170,255,.55);
+    0 0 12px
+    rgba(255,255,255,.9),
+
+    0 0 30px
+    rgba(190,205,255,.75),
+
+    0 0 65px
+    rgba(150,170,255,.55);
 
   opacity:0;
 
@@ -718,12 +856,18 @@ body::after{
 }
 
 .question-light.travel{
+
   opacity:1;
 
-  animation:lightIntoWater 1.7s cubic-bezier(.55,.06,.68,.19) forwards;
+  animation:
+    lightIntoWater
+    1.7s
+    cubic-bezier(.55,.06,.68,.19)
+    forwards;
 }
 
 @keyframes lightIntoWater{
+
   0%{
     top:32%;
     transform:scale(.7);
@@ -745,62 +889,90 @@ body::after{
     transform:scale(.2);
     opacity:0;
   }
+
 }
 
-/* ---------------------------------------------------------
+
+/* =========================================================
    DIALOGUE
---------------------------------------------------------- */
+========================================================= */
 
 .dialogue{
+
   min-height:92px;
 
   display:flex;
+
   align-items:center;
   justify-content:center;
 
-  margin:0 auto 18px;
+  margin:
+    0 auto 18px;
 
   max-width:430px;
 
   text-align:center;
 
-  font-family:"Cormorant Garamond",serif;
-  font-size:clamp(20px,5vw,25px);
-  line-height:1.65;
+  font-family:
+    "Anuphan",
+    sans-serif;
 
-  color:rgba(242,244,255,.90);
+  font-size:
+    clamp(
+      18px,
+      4.5vw,
+      22px
+    );
+
+  font-weight:300;
+
+  line-height:1.8;
+
+  color:
+    rgba(242,244,255,.90);
 
   text-shadow:
-    0 0 20px rgba(160,180,255,.10);
+    0 0 20px
+    rgba(160,180,255,.10);
 }
 
 .dialogue-line{
+
   opacity:0;
 
   transition:
     opacity 1s ease,
     transform 1s ease;
 
-  transform:translateY(8px);
+  transform:
+    translateY(8px);
 }
 
 .dialogue-line.show{
+
   opacity:1;
-  transform:translateY(0);
+
+  transform:
+    translateY(0);
 }
 
-/* ---------------------------------------------------------
+
+/* =========================================================
    QUESTION FORM
---------------------------------------------------------- */
+========================================================= */
 
 .question-form{
+
   width:100%;
+
   max-width:460px;
 
   margin:0 auto;
 
   opacity:0;
-  transform:translateY(12px);
+
+  transform:
+    translateY(12px);
 
   pointer-events:none;
 
@@ -810,23 +982,35 @@ body::after{
 }
 
 .question-form.visible{
+
   opacity:1;
-  transform:translateY(0);
+
+  transform:
+    translateY(0);
+
   pointer-events:auto;
 }
 
+
 .question-label{
+
   display:block;
 
   margin-bottom:10px;
 
-  font-size:12px;
-  letter-spacing:.08em;
+  font-size:11px;
 
-  color:rgba(205,210,235,.48);
+  font-weight:300;
+
+  letter-spacing:.06em;
+
+  color:
+    rgba(205,210,235,.45);
 }
 
+
 .question-input{
+
   width:100%;
 
   min-height:104px;
@@ -837,7 +1021,9 @@ body::after{
 
   border-radius:18px;
 
-  border:1px solid rgba(220,225,255,.16);
+  border:
+    1px solid
+    rgba(220,225,255,.16);
 
   background:
     linear-gradient(
@@ -846,45 +1032,45 @@ body::after{
       rgba(10,10,30,.35)
     );
 
-  color:rgba(242,244,255,.92);
+  color:
+    rgba(242,244,255,.92);
 
-  font-size:15px;
+  font-family:
+    "Anuphan",
+    sans-serif;
+
+  font-size:14px;
+
+  font-weight:300;
+
   line-height:1.8;
 
   outline:none;
 
   backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
 
-  box-shadow:
-    inset 0 0 25px rgba(100,110,180,.04),
-    0 0 30px rgba(60,50,130,.04);
-
-  transition:
-    border-color .5s ease,
-    box-shadow .5s ease,
-    background .5s ease;
+  transition:.5s ease;
 }
 
 .question-input::placeholder{
-  color:rgba(205,210,235,.35);
+
+  color:
+    rgba(205,210,235,.32);
 }
 
 .question-input:focus{
-  border-color:rgba(215,225,255,.34);
 
-  background:
-    linear-gradient(
-      180deg,
-      rgba(40,32,80,.28),
-      rgba(10,10,30,.40)
-    );
+  border-color:
+    rgba(215,225,255,.34);
 
   box-shadow:
-    0 0 35px rgba(150,165,255,.08);
+    0 0 35px
+    rgba(150,165,255,.08);
 }
 
+
 .question-submit{
+
   margin-top:13px;
 
   width:100%;
@@ -893,52 +1079,49 @@ body::after{
 
   border-radius:999px;
 
-  border:1px solid rgba(220,225,255,.20);
+  border:
+    1px solid
+    rgba(220,225,255,.20);
 
-  background:rgba(40,32,85,.28);
+  background:
+    rgba(40,32,85,.28);
 
-  color:rgba(245,245,255,.88);
+  color:
+    rgba(245,245,255,.88);
 
-  font-family:"Cormorant Garamond",serif;
-  font-size:18px;
-  letter-spacing:.10em;
+  font-family:
+    "Anuphan",
+    sans-serif;
+
+  font-size:15px;
+
+  font-weight:300;
 
   cursor:pointer;
 
-  transition:
-    background .5s ease,
-    border-color .5s ease,
-    box-shadow .5s ease,
-    transform .4s ease;
+  transition:.5s ease;
 }
 
 .question-submit:hover{
-  background:rgba(60,45,110,.34);
-  border-color:rgba(220,225,255,.38);
 
-  box-shadow:
-    0 0 35px rgba(150,165,255,.10);
+  background:
+    rgba(60,45,110,.34);
 
-  transform:translateY(-1px);
+  border-color:
+    rgba(220,225,255,.38);
 }
 
-.question-submit:active{
-  transform:scale(.985);
-}
-
-.question-submit:disabled{
-  opacity:.4;
-  cursor:default;
-}
 
 /* =========================================================
    READING
 ========================================================= */
 
 .reading-screen{
+
   align-items:flex-start;
 
   overflow-y:auto;
+
   overflow-x:hidden;
 
   scrollbar-width:none;
@@ -948,53 +1131,78 @@ body::after{
   display:none;
 }
 
+
 .reading-wrap{
+
   width:min(100%,600px);
 
   min-height:100%;
 
   padding:
     34px 0
-    calc(45px + env(safe-area-inset-bottom));
+    calc(
+      45px +
+      env(safe-area-inset-bottom)
+    );
 
   display:flex;
+
   flex-direction:column;
+
   align-items:center;
 
   text-align:center;
 }
 
+
 .reading-eyebrow{
+
   margin-top:8px;
+
   margin-bottom:10px;
 
-  font-family:"Cormorant Garamond",serif;
-  font-size:13px;
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size:12px;
 
   letter-spacing:.22em;
+
   text-transform:uppercase;
 
-  color:rgba(205,215,245,.44);
+  color:
+    rgba(205,215,245,.44);
 }
+
 
 .reading-title{
+
   margin-bottom:22px;
 
-  font-family:"Cormorant Garamond",serif;
-  font-size:24px;
-  font-weight:400;
+  font-family:
+    "Anuphan",
+    sans-serif;
 
-  color:rgba(245,245,255,.88);
+  font-size:20px;
+
+  font-weight:300;
+
+  color:
+    rgba(245,245,255,.88);
 }
 
-/* ---------------------------------------------------------
+
+/* =========================================================
    CARD
---------------------------------------------------------- */
+========================================================= */
 
 .card-shell{
+
   position:relative;
 
   width:220px;
+
   aspect-ratio:2 / 3;
 
   margin-bottom:26px;
@@ -1012,34 +1220,38 @@ body::after{
     );
 
   box-shadow:
-    0 0 30px rgba(100,110,190,.10),
-    0 20px 70px rgba(0,0,0,.40);
+    0 0 30px
+    rgba(100,110,190,.10),
+
+    0 20px 70px
+    rgba(0,0,0,.40);
 
   transform:
-    perspective(800px)
-    rotateY(0deg)
     scale(.94);
 
   opacity:0;
 
   transition:
     opacity 1.2s ease,
-    transform 1.5s cubic-bezier(.22,.61,.36,1);
+    transform 1.5s
+      cubic-bezier(.22,.61,.36,1);
 }
 
 .card-shell.revealed{
+
   opacity:1;
 
   transform:
-    perspective(800px)
-    rotateY(0deg)
     scale(1);
 }
 
+
 .card-shell::before{
+
   content:"";
 
   position:absolute;
+
   inset:-18px;
 
   border-radius:22px;
@@ -1056,7 +1268,9 @@ body::after{
   z-index:-1;
 }
 
+
 .card-shell img{
+
   display:block;
 
   width:100%;
@@ -1065,17 +1279,24 @@ body::after{
   object-fit:cover;
 
   border-radius:11px;
+
+  background:
+    rgba(30,25,65,.4);
 }
 
-/* ---------------------------------------------------------
+
+/* =========================================================
    READING TEXT
---------------------------------------------------------- */
+========================================================= */
 
 .reading-content{
+
   width:100%;
 
   opacity:0;
-  transform:translateY(15px);
+
+  transform:
+    translateY(15px);
 
   transition:
     opacity 1.3s ease,
@@ -1083,39 +1304,60 @@ body::after{
 }
 
 .reading-content.visible{
+
   opacity:1;
-  transform:translateY(0);
+
+  transform:
+    translateY(0);
 }
 
+
 .reading-text{
+
   width:100%;
 
   margin:0 auto;
 
-  padding:0 4px;
+  padding:
+    0 4px;
 
-  font-size:15px;
+  font-family:
+    "Anuphan",
+    sans-serif;
+
+  font-size:14px;
+
+  font-weight:300;
+
   line-height:2.05;
 
-  color:rgba(225,230,245,.78);
+  color:
+    rgba(225,230,245,.78);
 
   white-space:pre-line;
 }
 
-/* ---------------------------------------------------------
-   DEEP READING CTA
---------------------------------------------------------- */
+
+/* =========================================================
+   DEEP READING
+========================================================= */
 
 .deep-reading{
+
   width:100%;
 
   margin-top:34px;
+
   padding-top:30px;
 
-  border-top:1px solid rgba(220,225,255,.10);
+  border-top:
+    1px solid
+    rgba(220,225,255,.10);
 
   opacity:0;
-  transform:translateY(15px);
+
+  transform:
+    translateY(15px);
 
   transition:
     opacity 1.3s ease,
@@ -1123,36 +1365,60 @@ body::after{
 }
 
 .deep-reading.visible{
+
   opacity:1;
-  transform:translateY(0);
+
+  transform:
+    translateY(0);
 }
 
+
 .deep-reading-copy{
-  margin:0 auto 22px;
+
+  margin:
+    0 auto 22px;
 
   max-width:510px;
 
-  font-size:14px;
+  font-family:
+    "Anuphan",
+    sans-serif;
+
+  font-size:13px;
+
+  font-weight:300;
+
   line-height:2;
 
-  color:rgba(220,225,245,.72);
+  color:
+    rgba(220,225,245,.72);
 
   white-space:pre-line;
 }
 
+
+/* =========================================================
+   SECOND CARD BUTTON
+========================================================= */
+
 .deep-reading-btn{
+
   position:relative;
 
   width:100%;
+
   max-width:390px;
 
   min-height:54px;
 
-  padding:12px 22px;
+  padding:
+    12px 22px;
 
   border-radius:999px;
 
-  border:1px solid rgba(220,225,255,.24);
+  border:
+    1px solid
+    rgba(220,225,255,.24);
 
   background:
     linear-gradient(
@@ -1161,59 +1427,31 @@ body::after{
       rgba(30,24,65,.30)
     );
 
-  color:rgba(248,248,255,.94);
+  color:
+    rgba(248,248,255,.94);
 
-  font-family:"Cormorant Garamond",serif;
-  font-size:19px;
-  letter-spacing:.04em;
+  /*
+    ใช้ Anuphan
+    เพื่อให้เลข 2 / 19 เป็นตัวเลขธรรมดา
+  */
+
+  font-family:
+    "Anuphan",
+    sans-serif;
+
+  font-size:15px;
+
+  font-weight:300;
+
+  font-variant-numeric:normal;
 
   cursor:pointer;
 
-  box-shadow:
-    0 0 30px rgba(150,160,255,.06);
-
-  transition:
-    background .5s ease,
-    border-color .5s ease,
-    box-shadow .5s ease,
-    transform .4s ease;
-}
-
-.deep-reading-btn::before{
-  content:"";
-
-  position:absolute;
-  inset:-7px;
-
-  border-radius:inherit;
-
-  background:
-    radial-gradient(
-      ellipse,
-      rgba(180,190,255,.12),
-      transparent 70%
-    );
-
-  z-index:-1;
-
-  opacity:.65;
-
-  animation:deepGlow 3.5s ease-in-out infinite alternate;
-}
-
-@keyframes deepGlow{
-  from{
-    transform:scale(.96);
-    opacity:.3;
-  }
-
-  to{
-    transform:scale(1.06);
-    opacity:.75;
-  }
+  transition:.5s ease;
 }
 
 .deep-reading-btn:hover{
+
   background:
     linear-gradient(
       180deg,
@@ -1221,36 +1459,39 @@ body::after{
       rgba(35,28,75,.35)
     );
 
-  border-color:rgba(225,230,255,.42);
+  border-color:
+    rgba(225,230,255,.42);
 
   box-shadow:
-    0 0 40px rgba(150,165,255,.13);
-
-  transform:translateY(-2px);
-}
-
-.deep-reading-btn:active{
-  transform:scale(.985);
+    0 0 40px
+    rgba(150,165,255,.13);
 }
 
 .deep-reading-btn:disabled{
   cursor:default;
 }
 
-/* ---------------------------------------------------------
-   SECOND CARD GATE
---------------------------------------------------------- */
+
+/* =========================================================
+   COMING SOON
+========================================================= */
 
 .second-gate{
+
   width:100%;
+
   max-width:480px;
 
   margin-top:22px;
-  padding:22px 20px;
+
+  padding:
+    24px 20px;
 
   border-radius:18px;
 
-  border:1px solid rgba(220,225,255,.12);
+  border:
+    1px solid
+    rgba(220,225,255,.12);
 
   background:
     linear-gradient(
@@ -1260,135 +1501,318 @@ body::after{
     );
 
   backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
 
   opacity:0;
-  transform:translateY(10px);
+
+  transform:
+    translateY(10px);
 
   pointer-events:none;
 
-  transition:
-    opacity .8s ease,
-    transform .8s ease;
+  transition:.8s;
 }
 
 .second-gate.visible{
+
   opacity:1;
-  transform:translateY(0);
+
+  transform:
+    translateY(0);
+
   pointer-events:auto;
 }
 
+
 .second-gate-title{
-  margin-bottom:8px;
 
-  font-family:"IBM Plex Sans Thai",sans-serif;
-  font-size:22px;
+  margin-bottom:10px;
 
-  color:rgba(245,245,255,.88);
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size:28px;
+
+  font-weight:300;
+
+  letter-spacing:.10em;
+
+  text-transform:uppercase;
+
+  color:
+    rgba(245,245,255,.90);
 }
 
+
 .second-gate-text{
+
   margin:0;
 
+  font-family:
+    "Anuphan",
+    sans-serif;
+
   font-size:13px;
+
+  font-weight:300;
+
   line-height:1.9;
 
-  color:rgba(210,218,240,.66);
+  color:
+    rgba(210,218,240,.66);
 
   white-space:pre-line;
 }
 
+
 /* =========================================================
-   RESPONSIVE
+   STATS SCREEN
+========================================================= */
+
+.stats-screen{
+
+  z-index:200;
+
+  background:
+    rgba(5,5,16,.96);
+
+  overflow:auto;
+}
+
+
+.stats-box{
+
+  width:min(92vw,520px);
+
+  padding:28px;
+
+  border:
+    1px solid
+    rgba(220,225,255,.14);
+
+  border-radius:22px;
+
+  background:
+    rgba(20,16,50,.55);
+
+  text-align:center;
+}
+
+
+.stats-title{
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size:30px;
+
+  font-weight:300;
+
+  letter-spacing:.12em;
+
+  text-transform:uppercase;
+
+  margin-bottom:20px;
+}
+
+
+.stat-row{
+
+  display:flex;
+
+  justify-content:space-between;
+
+  gap:20px;
+
+  padding:14px 0;
+
+  border-bottom:
+    1px solid
+    rgba(220,225,255,.08);
+
+  font-family:
+    "Anuphan",
+    sans-serif;
+
+  font-size:14px;
+
+  font-weight:300;
+}
+
+
+.stat-value{
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size:24px;
+
+  font-weight:400;
+}
+
+
+.stats-note{
+
+  margin-top:20px;
+
+  font-family:
+    "Anuphan",
+    sans-serif;
+
+  font-size:11px;
+
+  font-weight:300;
+
+  line-height:1.8;
+
+  color:
+    rgba(205,215,240,.50);
+}
+
+
+.stats-refresh{
+
+  margin-top:20px;
+
+  padding:
+    10px 22px;
+
+  border-radius:999px;
+
+  border:
+    1px solid
+    rgba(220,225,255,.18);
+
+  background:transparent;
+
+  color:#eee;
+
+  cursor:pointer;
+
+  font-family:
+    "Anuphan",
+    sans-serif;
+
+  font-weight:300;
+}
+
+
+/* =========================================================
+   MOBILE
 ========================================================= */
 
 @media(max-width:600px){
 
   .sound-toggle{
-    top:calc(12px + env(safe-area-inset-top));
+
+    top:
+      calc(
+        12px +
+        env(safe-area-inset-top)
+      );
+
     right:12px;
   }
 
+
   .screen{
+
     padding-left:18px;
     padding-right:18px;
   }
 
+
   .brand{
-    font-size:clamp(54px,16vw,78px);
+
+    font-size:
+      clamp(
+        30px,
+        7vw,
+        40px
+      );
+
+    letter-spacing:.22em;
   }
+
+
+  .brand-sub{
+    font-size:9px;
+  }
+
 
   .landing-line{
-    font-size:14px;
-    max-width:330px;
-    margin-bottom:38px;
+    font-size:13px;
   }
 
+
   .scene-stage{
+
     height:34vh;
+
     min-height:215px;
   }
 
+
   .vera-figure{
+
     transform:
       translateY(15px)
       scale(.82);
   }
 
+
   .vera-figure.visible{
+
     transform:
       translateY(0)
       scale(.82);
   }
 
+
   .dialogue{
-    font-size:20px;
+
+    font-size:17px;
+
     min-height:82px;
   }
+
 
   .question-input{
     min-height:112px;
   }
 
+
   .reading-wrap{
     padding-top:28px;
   }
+
 
   .card-shell{
     width:195px;
   }
 
+
   .reading-text{
-    font-size:14px;
-    line-height:2;
+    font-size:13px;
   }
+
 
   .deep-reading-copy{
-    font-size:13px;
-    line-height:1.95;
+    font-size:12px;
   }
+
 
   .deep-reading-btn{
-    font-size:18px;
+    font-size:14px;
   }
+
 }
 
-/* =========================================================
-   REDUCED MOTION
-========================================================= */
-
-@media(prefers-reduced-motion:reduce){
-
-  *,
-  *::before,
-  *::after{
-    animation-duration:.01ms !important;
-    animation-iteration-count:1 !important;
-    transition-duration:.01ms !important;
-  }
-}
 </style>
 </head>
+
 
 <body>
 
@@ -1397,16 +1821,27 @@ body::after{
 
 <div class="fog-band"></div>
 
+
 <button
   id="soundToggle"
   class="sound-toggle"
   type="button"
   aria-label="เปิดหรือปิดเสียง"
 >
-  <span class="sound-icon">◒</span>
+  <span
+    id="soundIcon"
+    class="sound-icon"
+  >
+    ◒
+  </span>
 </button>
 
-<div id="portal" class="portal"></div>
+
+<div
+  id="portal"
+  class="portal"
+></div>
+
 
 <!-- =======================================================
      LANDING
@@ -1415,16 +1850,16 @@ body::after{
 <section
   id="landing"
   class="screen active"
-  aria-label="Stillwater"
 >
+
   <div class="landing-inner">
 
     <div class="brand">
-      Stillwater
+      STILLWATER
     </div>
 
     <div class="brand-sub">
-      A quiet place between questions and answers
+      A QUIET PLACE BETWEEN QUESTIONS AND ANSWERS
     </div>
 
     <p class="landing-line">
@@ -1441,23 +1876,27 @@ body::after{
     </button>
 
   </div>
+
 </section>
 
+
 <!-- =======================================================
-     VERA / QUESTION
+     QUESTION
 ======================================================== -->
 
 <section
   id="questionScreen"
   class="screen"
-  aria-label="ถามคำถาม"
 >
 
   <div class="question-inner">
 
     <div class="scene-stage">
 
-      <div id="veraFigure" class="vera-figure">
+      <div
+        id="veraFigure"
+        class="vera-figure"
+      >
 
         <div class="vera-aura"></div>
 
@@ -1473,22 +1912,26 @@ body::after{
 
       </div>
 
+
       <div class="water-glow"></div>
 
-      <div id="questionLight" class="question-light"></div>
+      <div
+        id="questionLight"
+        class="question-light"
+      ></div>
 
     </div>
 
-    <div
-      id="dialogue"
-      class="dialogue"
-      aria-live="polite"
-    >
+
+    <div class="dialogue">
+
       <div
         id="dialogueLine"
         class="dialogue-line"
       ></div>
+
     </div>
+
 
     <form
       id="questionForm"
@@ -1502,6 +1945,7 @@ body::after{
         ส่งคำถามหนึ่งข้อให้พี่เวรา
       </label>
 
+
       <textarea
         id="questionInput"
         class="question-input"
@@ -1509,6 +1953,7 @@ body::after{
         autocomplete="off"
         placeholder="พิมพ์คำถามที่อยู่ในใจคุณ..."
       ></textarea>
+
 
       <button
         id="questionSubmit"
@@ -1524,6 +1969,7 @@ body::after{
 
 </section>
 
+
 <!-- =======================================================
      READING
 ======================================================== -->
@@ -1531,29 +1977,33 @@ body::after{
 <section
   id="readingScreen"
   class="screen reading-screen"
-  aria-label="คำตอบจากไพ่"
 >
 
   <div class="reading-wrap">
 
     <div class="reading-eyebrow">
-      Stillwater
+      STILLWATER
     </div>
+
 
     <div class="reading-title">
       ไพ่ที่ปรากฏขึ้นสำหรับคุณ
     </div>
 
+
     <div
       id="cardShell"
       class="card-shell"
     >
+
       <img
         id="cardImage"
         src=""
         alt="ไพ่ Major Arcana"
       >
+
     </div>
+
 
     <div
       id="readingContent"
@@ -1566,15 +2016,13 @@ body::after{
         aria-live="polite"
       ></div>
 
+
       <div
         id="deepReading"
         class="deep-reading"
       >
 
-        <div
-          id="deepReadingCopy"
-          class="deep-reading-copy"
-        >ไพ่ใบนี้ได้บอกสิ่งที่จักรวาลอยากให้คุณรู้ในตอนนี้แล้ว
+        <div class="deep-reading-copy">ไพ่ใบนี้ได้บอกสิ่งที่จักรวาลอยากให้คุณรู้ในตอนนี้แล้ว
 
 แต่ถ้าคุณยังรู้สึกว่า
 มีบางอย่างที่อยากรู้มากกว่านี้...
@@ -1584,6 +2032,7 @@ body::after{
 
 บางคำตอบอาจไม่ได้ปรากฏขึ้นในไพ่ใบแรก</div>
 
+
         <button
           id="btnDeeper"
           class="deep-reading-btn"
@@ -1592,23 +2041,19 @@ body::after{
           ✦ เปิดไพ่ใบที่ 2 · 19 บาท
         </button>
 
+
         <div
           id="secondGate"
           class="second-gate"
-          aria-live="polite"
         >
 
           <div class="second-gate-title">
-            พี่เวรารับคำขอของคุณแล้ว
+            coming soon
           </div>
 
-          <p class="second-gate-text">การเปิดไพ่ใบที่ 2 ราคา 19 บาท
-
-ตอนนี้ Stillwater ยังอยู่ในช่วงทดลอง
-จึงยังไม่มีการตัดเงินจริง
-
-คำขอของคุณถูกบันทึกไว้เป็นความสนใจ
-เพื่อใช้พัฒนาการอ่านครั้งต่อไป</p>
+          <p class="second-gate-text">
+            พี่เวราจะกลับมาพร้อมการเปิดไพ่ใบที่ 2 ในเร็ว ๆ นี้
+          </p>
 
         </div>
 
@@ -1620,139 +2065,517 @@ body::after{
 
 </section>
 
+
+<!-- =======================================================
+     PRIVATE STATS PAGE
+     
+     เปิดด้วย:
+     ?stats=1
+
+     ตัวอย่าง:
+     /stillwater-ceremony/?stats=1
+======================================================== -->
+
+<section
+  id="statsScreen"
+  class="screen stats-screen"
+>
+
+  <div class="stats-box">
+
+    <div class="stats-title">
+      STILLWATER STATS
+    </div>
+
+
+    <div class="stat-row">
+
+      <span>
+        เปิดไพ่ใบที่ 2
+      </span>
+
+      <strong
+        id="statDeep"
+        class="stat-value"
+      >
+        —
+      </strong>
+
+    </div>
+
+
+    <div class="stat-row">
+
+      <span>
+        อ่านไพ่ใบแรกจบ
+      </span>
+
+      <strong
+        id="statComplete"
+        class="stat-value"
+      >
+        —
+      </strong>
+
+    </div>
+
+
+    <div class="stat-row">
+
+      <span>
+        Conversion
+      </span>
+
+      <strong
+        id="statRate"
+        class="stat-value"
+      >
+        —
+      </strong>
+
+    </div>
+
+
+    <div
+      id="statsNote"
+      class="stats-note"
+    >
+      กำลังโหลดข้อมูล...
+    </div>
+
+
+    <button
+      id="statsRefresh"
+      class="stats-refresh"
+      type="button"
+    >
+      รีเฟรช
+    </button>
+
+  </div>
+
+</section>
+
+
 <script>
-/* =========================================================
-   STILLWATER
-   CORE LOGIC
-========================================================= */
 
 (() => {
 
-  "use strict";
-
-  /* =======================================================
-     ELEMENTS
-  ======================================================= */
-
-  const landing = document.getElementById("landing");
-  const questionScreen = document.getElementById("questionScreen");
-  const readingScreen = document.getElementById("readingScreen");
-
-  const enterBtn = document.getElementById("enterBtn");
-  const questionForm = document.getElementById("questionForm");
-  const questionInput = document.getElementById("questionInput");
-  const questionSubmit = document.getElementById("questionSubmit");
-
-  const veraFigure = document.getElementById("veraFigure");
-  const dialogueLine = document.getElementById("dialogueLine");
-  const questionLight = document.getElementById("questionLight");
-
-  const cardShell = document.getElementById("cardShell");
-  const cardImage = document.getElementById("cardImage");
-  const readingContent = document.getElementById("readingContent");
-  const readingText = document.getElementById("readingText");
-
-  const deepReading = document.getElementById("deepReading");
-  const btnDeeper = document.getElementById("btnDeeper");
-  const secondGate = document.getElementById("secondGate");
-
-  const portal = document.getElementById("portal");
-
-  const soundToggle = document.getElementById("soundToggle");
-  const soundIcon = soundToggle.querySelector(".sound-icon");
+"use strict";
 
 
-  /* =======================================================
-     STATE
-  ======================================================= */
-
-  let currentScreen = "landing";
-
-  let lastQuestion = "";
-
-  let currentCard = null;
-
-  let soundEnabled = true;
-
-  let audioContext = null;
-  let masterGain = null;
-
-  let ambienceStarted = false;
-
-  let questionSequenceRunning = false;
+/* =========================================================
+   SETTINGS
+========================================================= */
 
 
-  /* =======================================================
-     ANALYTICS HOOK
-     รองรับ GA4 / GTAG / GTM DataLayer
-     และมี localStorage สำหรับ debug เครื่องเดียว
-  ======================================================= */
+/*
+  Online counter
 
-  function trackEvent(name, params = {}) {
+  ใช้สำหรับ MVP เพื่อเก็บยอดรวมจากคนที่เข้ามาใช้จริง
+*/
 
-    try {
+const COUNTER_BASE =
+  "https://countapi.mileshilliard.com/api/v1";
 
-      if (typeof window.gtag === "function") {
 
-        window.gtag(
-          "event",
-          name,
-          params
-        );
+const COUNTER_PREFIX =
+  "stillwater-vera-2026";
 
-      }
 
-      if (
-        Array.isArray(window.dataLayer)
-      ) {
+/*
+  หน้า Stats
 
-        window.dataLayer.push({
-          event:name,
-          ...params
-        });
+  เปิด:
+  ?stats=1
+*/
 
-      }
+const DEBUG_STATS =
+  new URLSearchParams(
+    location.search
+  ).get("stats") === "1";
 
-      const key =
-        "stillwater_event_" + name;
 
-      const oldCount =
-        Number(
-          localStorage.getItem(key) || 0
-        );
+/*
+  fallback ไพ่
 
-      localStorage.setItem(
-        key,
-        String(oldCount + 1)
+  ถ้ามีรูปของเราเองใน GitHub
+  ระบบจะใช้รูปของเราก่อน
+
+  ถ้าไม่มี
+  จะ fallback ไปที่ Major Arcana
+*/
+
+const CARD_CDN =
+  "https://cdn.jsdelivr.net/gh/reginanka/tarot-cards@main/cards/";
+
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const landing =
+  document.getElementById(
+    "landing"
+  );
+
+const questionScreen =
+  document.getElementById(
+    "questionScreen"
+  );
+
+const readingScreen =
+  document.getElementById(
+    "readingScreen"
+  );
+
+const statsScreen =
+  document.getElementById(
+    "statsScreen"
+  );
+
+
+const enterBtn =
+  document.getElementById(
+    "enterBtn"
+  );
+
+const questionForm =
+  document.getElementById(
+    "questionForm"
+  );
+
+const questionInput =
+  document.getElementById(
+    "questionInput"
+  );
+
+const questionSubmit =
+  document.getElementById(
+    "questionSubmit"
+  );
+
+
+const veraFigure =
+  document.getElementById(
+    "veraFigure"
+  );
+
+const dialogueLine =
+  document.getElementById(
+    "dialogueLine"
+  );
+
+const questionLight =
+  document.getElementById(
+    "questionLight"
+  );
+
+
+const cardShell =
+  document.getElementById(
+    "cardShell"
+  );
+
+const cardImage =
+  document.getElementById(
+    "cardImage"
+  );
+
+const readingContent =
+  document.getElementById(
+    "readingContent"
+  );
+
+const readingText =
+  document.getElementById(
+    "readingText"
+  );
+
+
+const deepReading =
+  document.getElementById(
+    "deepReading"
+  );
+
+const btnDeeper =
+  document.getElementById(
+    "btnDeeper"
+  );
+
+const secondGate =
+  document.getElementById(
+    "secondGate"
+  );
+
+
+const portal =
+  document.getElementById(
+    "portal"
+  );
+
+
+const soundToggle =
+  document.getElementById(
+    "soundToggle"
+  );
+
+const soundIcon =
+  document.getElementById(
+    "soundIcon"
+  );
+
+
+const statDeep =
+  document.getElementById(
+    "statDeep"
+  );
+
+const statComplete =
+  document.getElementById(
+    "statComplete"
+  );
+
+const statRate =
+  document.getElementById(
+    "statRate"
+  );
+
+const statsNote =
+  document.getElementById(
+    "statsNote"
+  );
+
+const statsRefresh =
+  document.getElementById(
+    "statsRefresh"
+  );
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let currentScreen =
+  "landing";
+
+let currentCard =
+  null;
+
+let lastQuestion =
+  "";
+
+let soundEnabled =
+  true;
+
+let audioContext =
+  null;
+
+let masterGain =
+  null;
+
+let questionSequenceRunning =
+  false;
+
+
+/* =========================================================
+   ANALYTICS
+========================================================= */
+
+
+/*
+  เก็บ local event ด้วย
+  เผื่อ debug ในเครื่อง
+
+  และส่งให้ GA4/GTM ถ้าเราติดตั้งภายหลัง
+*/
+
+function trackLocal(
+  name
+){
+
+  try{
+
+    const key =
+      "stillwater_event_" +
+      name;
+
+    const oldValue =
+      Number(
+        localStorage.getItem(
+          key
+        ) || 0
       );
 
-    } catch(error){
+    localStorage.setItem(
+      key,
+      String(
+        oldValue + 1
+      )
+    );
 
-      console.warn(
-        "Stillwater analytics error:",
-        error
+  }catch(error){}
+
+}
+
+
+function trackEvent(
+  name,
+  params = {}
+){
+
+  trackLocal(
+    name
+  );
+
+
+  try{
+
+    if(
+      typeof window.gtag ===
+      "function"
+    ){
+
+      window.gtag(
+        "event",
+        name,
+        params
       );
 
     }
 
+
+    if(
+      Array.isArray(
+        window.dataLayer
+      )
+    ){
+
+      window.dataLayer.push({
+        event:name,
+        ...params
+      });
+
+    }
+
+  }catch(error){}
+
+}
+
+
+/*
+  นับยอดออนไลน์
+
+  key:
+  deep-reading-clicks
+
+  หรือ
+  free-reading-completed
+*/
+
+async function countHit(
+  key
+){
+
+  try{
+
+    const response =
+      await fetch(
+        `${COUNTER_BASE}/hit/${encodeURIComponent(
+          COUNTER_PREFIX +
+          "-" +
+          key
+        )}`,
+        {
+          cache:"no-store"
+        }
+      );
+
+
+    if(
+      !response.ok
+    ){
+
+      throw new Error(
+        "Counter unavailable"
+      );
+
+    }
+
+
+    return await response.json();
+
+  }catch(error){
+
+    console.warn(
+      "Online counter unavailable",
+      error
+    );
+
+    return null;
+
   }
 
+}
 
-  /* =======================================================
-     MAJOR ARCANA
-     22 ใบ
-     อ่านแบบกว้าง ไม่แบ่งหมวดชีวิต
-  ======================================================= */
 
-  const CARDS = [
+/*
+  ดึงยอดปัจจุบัน
+*/
 
-    {
-      id:0,
-      number:"0",
-      name:"THE FOOL",
-      image:"cards/web/0.jpg",
+async function getCount(
+  key
+){
 
-      reading:
+  try{
+
+    const response =
+      await fetch(
+        `${COUNTER_BASE}/get/${encodeURIComponent(
+          COUNTER_PREFIX +
+          "-" +
+          key
+        )}`,
+        {
+          cache:"no-store"
+        }
+      );
+
+
+    if(
+      !response.ok
+    ){
+
+      throw new Error(
+        "Counter unavailable"
+      );
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    return Number(
+      data.value || 0
+    );
+
+  }catch(error){
+
+    return null;
+
+  }
+
+}
+
+
+/* =========================================================
+   MAJOR ARCANA
+========================================================= */
+
+const READINGS = [
+
 `มีบางอย่างกำลังเรียกให้คุณก้าวออกจากจุดที่คุ้นเคยค่ะ
 
 ไพ่ใบนี้มีพลังของการเริ่มต้นที่ยังไม่มีคำตอบครบทุกอย่าง สิ่งที่กำลังเกิดขึ้นมีความเป็นไปได้ที่จะเปิดประตูใหม่ให้คุณ และอาจพาคุณออกจากรูปแบบเดิมที่คุณอยู่มานาน
@@ -1761,16 +2584,8 @@ body::after{
 
 มีเรื่องหนึ่งที่ไพ่เตือนเบา ๆ คือ อย่าเอาความผิดพลาดในอดีตไปใช้เป็นคำตอบของอนาคตทั้งหมดค่ะ และอย่ารีบเชื่อทุกสิ่งเพียงเพราะมันดูน่าตื่นเต้น
 
-บางครั้งสิ่งที่ชีวิตต้องการจากคุณ ไม่ใช่คำตอบที่สมบูรณ์แบบ แต่คือความกล้าที่จะก้าวหนึ่งก้าวก่อน` 
-    },
+บางครั้งสิ่งที่ชีวิตต้องการจากคุณ ไม่ใช่คำตอบที่สมบูรณ์แบบ แต่คือความกล้าที่จะก้าวหนึ่งก้าวก่อน`,
 
-    {
-      id:1,
-      number:"I",
-      name:"THE MAGICIAN",
-      image:"cards/web/1.jpg",
-
-      reading:
 `สิ่งที่คุณกำลังมีอยู่ในมือ อาจมากกว่าที่คุณคิดค่ะ
 
 ความสามารถ เครื่องมือ หรือช่องทางบางอย่างที่คุณมีอยู่แล้ว กำลังมีโอกาสถูกนำมาใช้ให้เกิดผลจริง
@@ -1781,16 +2596,8 @@ body::after{
 
 ตอนนี้ให้ดูว่าความคิด คำพูด และการกระทำของคุณกำลังไปในทิศทางเดียวกันหรือไม่
 
-ถ้าใช่ คุณมีพลังมากพอที่จะเริ่มสร้างผลลัพธ์บางอย่างให้เกิดขึ้นจริงแล้วค่ะ`
-    },
+ถ้าใช่ คุณมีพลังมากพอที่จะเริ่มสร้างผลลัพธ์บางอย่างให้เกิดขึ้นจริงแล้วค่ะ`,
 
-    {
-      id:2,
-      number:"II",
-      name:"THE HIGH PRIESTESS",
-      image:"cards/web/2.jpg",
-
-      reading:
 `ตอนนี้อาจมีบางอย่างที่คุณยังไม่รู้ทั้งหมดค่ะ
 
 ความรู้สึกของใครบางคน ข้อมูลที่ยังไม่ถูกพูด ความจริงที่ยังเปิดไม่หมด หรือเหตุผลบางอย่างที่ยังถูกเก็บไว้ข้างใน
@@ -1803,16 +2610,8 @@ body::after{
 
 ไพ่ใบนี้จึงไม่ได้เร่งให้คุณทำอะไรค่ะ กลับกัน มันกำลังบอกให้คุณนิ่งอีกนิด สังเกตอีกหน่อย และปล่อยให้สิ่งที่ซ่อนอยู่ค่อย ๆ เปิดตัวมันเอง
 
-บางคำตอบยังไม่ควรถูกบังคับให้ออกมาตอนนี้`
-    },
+บางคำตอบยังไม่ควรถูกบังคับให้ออกมาตอนนี้`,
 
-    {
-      id:3,
-      number:"III",
-      name:"THE EMPRESS",
-      image:"cards/web/3.jpg",
-
-      reading:
 `สิ่งที่คุณกำลังดูแลอยู่มีโอกาสเติบโตค่ะ
 
 ไพ่ใบนี้มีพลังของการสร้างสิ่งหนึ่งให้ค่อย ๆ มีชีวิตขึ้นมา ไม่ว่าจะเป็นสิ่งที่คุณกำลังเริ่มทำ สิ่งที่กำลังดูแล หรือบางอย่างที่คุณลงทุนทั้งเวลาและความรู้สึกลงไป
@@ -1825,16 +2624,8 @@ body::after{
 
 ให้มันโต แต่ต้องรู้ด้วยว่าอะไรควรได้รับน้ำ และอะไรควรถูกตัดออก
 
-เมื่อคุณดูแลสิ่งที่มีคุณค่าอย่างพอดี สิ่งนั้นมีโอกาสตอบกลับคุณด้วยผลลัพธ์ที่จับต้องได้มากขึ้นค่ะ`
-    },
+เมื่อคุณดูแลสิ่งที่มีคุณค่าอย่างพอดี สิ่งนั้นมีโอกาสตอบกลับคุณด้วยผลลัพธ์ที่จับต้องได้มากขึ้นค่ะ`,
 
-    {
-      id:4,
-      number:"IV",
-      name:"THE EMPEROR",
-      image:"cards/web/4.jpg",
-
-      reading:
 `ถึงเวลาที่บางอย่างในชีวิตต้องมีคนตัดสินใจแล้วค่ะ
 
 ไพ่ใบนี้พูดถึงการกำหนดทิศทาง วางกฎ และรับผิดชอบผลของสิ่งที่เลือก
@@ -1847,16 +2638,8 @@ body::after{
 
 ตั้งหลักให้ดี กำหนดสิ่งที่ยอมรับได้และไม่ได้ แล้วเดินหน้าอย่างมีแผน
 
-ความมั่นคงของคุณจะเกิดขึ้นเมื่อคุณหยุดปล่อยให้สถานการณ์เป็นคนตัดสินใจแทนคุณ`
-    },
+ความมั่นคงของคุณจะเกิดขึ้นเมื่อคุณหยุดปล่อยให้สถานการณ์เป็นคนตัดสินใจแทนคุณ`,
 
-    {
-      id:5,
-      number:"V",
-      name:"THE HIEROPHANT",
-      image:"cards/web/5.jpg",
-
-      reading:
 `บางเรื่องในชีวิตกำลังสอนคุณผ่าน "กฎของมันเอง" ค่ะ
 
 สิ่งที่กำลังเกิดขึ้นอาจต้องอาศัยความรู้ ประสบการณ์ ผู้เชี่ยวชาญ หรือระบบบางอย่างมากกว่าการลองผิดลองถูกเพียงอย่างเดียว
@@ -1869,16 +2652,8 @@ body::after{
 
 เรียนรู้จากสิ่งที่มีอยู่ รับคำแนะนำที่เป็นประโยชน์ แล้วเลือกด้วยตัวเองว่าจะรับอะไรไว้และจะวางอะไรลง
 
-สิ่งที่กำลังเกิดขึ้นอาจไม่ได้ต้องการให้คุณรีบค่ะ แต่มันกำลังสอนให้คุณเข้าใจวิธีเดินบนเส้นทางนี้ให้ดีขึ้น`
-    },
+สิ่งที่กำลังเกิดขึ้นอาจไม่ได้ต้องการให้คุณรีบค่ะ แต่มันกำลังสอนให้คุณเข้าใจวิธีเดินบนเส้นทางนี้ให้ดีขึ้น`,
 
-    {
-      id:6,
-      number:"VI",
-      name:"THE LOVERS",
-      image:"cards/web/6.jpg",
-
-      reading:
 `มีบางอย่างกำลังขอให้คุณ "เลือก" ค่ะ
 
 อาจเป็นสองทาง สองความต้องการ สองความรู้สึก หรือสองสิ่งที่คุณกำลังพยายามถือไว้พร้อมกัน
@@ -1891,16 +2666,8 @@ body::after{
 
 อย่าเลือกเพียงเพราะกลัวเสียบางอย่างไปค่ะ
 
-การตัดสินใจที่ดีในตอนนี้อาจไม่ใช่สิ่งที่ทำให้คุณสบายใจที่สุดในทันที แต่เป็นสิ่งที่ทำให้คุณรู้สึกว่า "นี่คือสิ่งที่ฉันเลือกด้วยตัวเอง" ในภายหลัง`
-    },
+การตัดสินใจที่ดีในตอนนี้อาจไม่ใช่สิ่งที่ทำให้คุณสบายใจที่สุดในทันที แต่เป็นสิ่งที่ทำให้คุณรู้สึกว่า "นี่คือสิ่งที่ฉันเลือกด้วยตัวเอง" ในภายหลัง`,
 
-    {
-      id:7,
-      number:"VII",
-      name:"THE CHARIOT",
-      image:"cards/web/7.jpg",
-
-      reading:
 `สิ่งที่เคยติดอยู่กำลังมีแรงให้เคลื่อนค่ะ
 
 ไพ่ใบนี้มีพลังของการเดินหน้า การเคลื่อนไหว การเดินทาง การติดต่อกับคนไกล หรือสถานการณ์ที่เริ่มหลุดออกจากจุดเดิม
@@ -1913,16 +2680,8 @@ body::after{
 
 ถ้าช่วงนี้มีหลายอย่างดึงคุณคนละทาง ให้เลือกก่อนว่าอะไรคือปลายทางที่คุณต้องการจริง ๆ
 
-เมื่อทิศชัด การเคลื่อนไหวจะชัดตามค่ะ`
-    },
+เมื่อทิศชัด การเคลื่อนไหวจะชัดตามค่ะ`,
 
-    {
-      id:8,
-      number:"VIII",
-      name:"STRENGTH",
-      image:"cards/web/8.jpg",
-
-      reading:
 `สิ่งที่คุณกำลังเจออาจต้องใช้เวลา มากกว่าการใช้แรงค่ะ
 
 ไพ่ใบนี้ไม่ได้บอกว่าคุณอ่อนแอ ตรงกันข้าม มันกำลังบอกว่าคุณมีความสามารถในการผ่านเรื่องยากได้ เพียงแต่คุณไม่จำเป็นต้องชนะทุกอย่างด้วยการฝืน
@@ -1935,16 +2694,8 @@ body::after{
 
 เพราะสองอย่างนี้ไม่เหมือนกันเลยค่ะ
 
-ความนุ่มนวลในเวลานี้อาจมีพลังมากกว่าการบังคับ และความมั่นใจที่แท้จริงคือการรู้ว่าเมื่อไหร่ควรเดินหน้า และเมื่อไหร่ควรปล่อยให้เวลาเป็นคนทำงาน`
-    },
+ความนุ่มนวลในเวลานี้อาจมีพลังมากกว่าการบังคับ และความมั่นใจที่แท้จริงคือการรู้ว่าเมื่อไหร่ควรเดินหน้า และเมื่อไหร่ควรปล่อยให้เวลาเป็นคนทำงาน`,
 
-    {
-      id:9,
-      number:"IX",
-      name:"THE HERMIT",
-      image:"cards/web/9.jpg",
-
-      reading:
 `ตอนนี้บางคำตอบอาจไม่ได้อยู่กับคนอื่นค่ะ
 
 บางคนอาจกำลังเว้นระยะ บางสถานการณ์อาจเงียบ หรือสิ่งที่คุณกำลังรออาจไม่ได้เคลื่อนเร็วอย่างที่ใจต้องการ
@@ -1959,16 +2710,8 @@ body::after{
 
 กลับมาอยู่กับตัวเองก่อนค่ะ
 
-เมื่อคุณไม่ต้องวิ่งตามคำตอบตลอดเวลา คุณอาจเริ่มเห็นคำตอบบางส่วนที่จริง ๆ แล้วอยู่กับคุณมาตลอด`
-    },
+เมื่อคุณไม่ต้องวิ่งตามคำตอบตลอดเวลา คุณอาจเริ่มเห็นคำตอบบางส่วนที่จริง ๆ แล้วอยู่กับคุณมาตลอด`,
 
-    {
-      id:10,
-      number:"X",
-      name:"WHEEL OF FORTUNE",
-      image:"cards/web/10.jpg",
-
-      reading:
 `สิ่งที่กำลังเกิดขึ้นไม่ได้อยู่ในจุดเดิมตลอดไปค่ะ
 
 จังหวะกำลังเปลี่ยน
@@ -1983,16 +2726,8 @@ body::after{
 
 เมื่อประตูเปิด คุณจะพร้อมเดินเข้าไปหรือยัง
 
-เพราะบางโอกาสไม่ได้เคาะประตูซ้ำหลายครั้งค่ะ`
-    },
+เพราะบางโอกาสไม่ได้เคาะประตูซ้ำหลายครั้งค่ะ`,
 
-    {
-      id:11,
-      number:"XI",
-      name:"JUSTICE",
-      image:"cards/web/11.jpg",
-
-      reading:
 `ถึงเวลาที่บางอย่างต้องถูกมองตามความจริงค่ะ
 
 ไพ่ใบนี้เกี่ยวข้องกับผลของการเลือกในอดีต และสิ่งที่กำลังเกิดขึ้นอาจเป็นผลที่ค่อย ๆ เดินทางมาถึงคุณ
@@ -2005,16 +2740,8 @@ body::after{
 
 ในตอนนี้สิ่งที่แฟร์กับตัวคุณที่สุด อาจเป็นการยอมรับสิ่งที่เกิดขึ้นตามจริง แล้วตัดสินใจจากตรงนั้น
 
-เลือกสิ่งที่คุณสามารถยืนอยู่ข้างมันได้ แม้วันที่ไม่มีใครเข้าข้างคุณค่ะ`
-    },
+เลือกสิ่งที่คุณสามารถยืนอยู่ข้างมันได้ แม้วันที่ไม่มีใครเข้าข้างคุณค่ะ`,
 
-    {
-      id:12,
-      number:"XII",
-      name:"THE HANGED MAN",
-      image:"cards/web/12.jpg",
-
-      reading:
 `สิ่งที่คุณกำลังพยายามผลัก อาจยังไม่ใช่เวลาที่มันจะเคลื่อนค่ะ
 
 สถานการณ์อาจเหมือนแขวนอยู่ตรงกลาง การรอคอยยืดเยื้อ การตอบกลับล่าช้า หรือบางอย่างที่คุณคิดว่าควรเกิดขึ้นแล้วกลับยังไม่เกิด
@@ -2029,16 +2756,8 @@ body::after{
 
 สิ่งที่คุณคิดว่าเป็น "การติดอยู่" อาจกำลังบังคับให้คุณเห็นบางอย่างที่ก่อนหน้านี้คุณไม่เคยมอง
 
-ยังไม่ต้องรีบขยับเพียงเพราะคุณไม่ชอบความรู้สึกของการรอ`
-    },
+ยังไม่ต้องรีบขยับเพียงเพราะคุณไม่ชอบความรู้สึกของการรอ`,
 
-    {
-      id:13,
-      number:"XIII",
-      name:"DEATH",
-      image:"cards/web/13.jpg",
-
-      reading:
 `มีบางอย่างกำลังหมดอายุในชีวิตค่ะ
 
 สิ่งหนึ่งอาจไม่สามารถอยู่ในรูปเดิมต่อไปได้อีกแล้ว และการเปลี่ยนครั้งนี้อาจรู้สึกหนักในตอนแรก เพราะมันกำลังพาคุณออกจากสิ่งที่คุ้นเคย
@@ -2053,16 +2772,8 @@ body::after{
 
 การจบในครั้งนี้อาจเป็นวิธีที่ชีวิตกำลังเปิดพื้นที่ให้สิ่งใหม่เข้ามา
 
-อย่ากลัวการเปลี่ยนรูปของสิ่งหนึ่งมากเกินไป เพราะบางครั้งสิ่งที่คุณต้องเสีย คือสิ่งที่กำลังขวางสิ่งที่คุณต้องการได้มา`
-    },
+อย่ากลัวการเปลี่ยนรูปของสิ่งหนึ่งมากเกินไป เพราะบางครั้งสิ่งที่คุณต้องเสีย คือสิ่งที่กำลังขวางสิ่งที่คุณต้องการได้มา`,
 
-    {
-      id:14,
-      number:"XIV",
-      name:"TEMPERANCE",
-      image:"cards/web/14.jpg",
-
-      reading:
 `สิ่งที่กำลังเกิดขึ้นไม่จำเป็นต้องเลือกสุดทางค่ะ
 
 มีพลังของการผสมสิ่งที่แตกต่าง การปรับตัว และการนำบางอย่างกลับมาอยู่ในจังหวะที่พอดี
@@ -2080,16 +2791,8 @@ body::after{
 
 ไพ่ใบนี้กำลังบอกว่าความพอดีไม่ได้แปลว่าไม่มีความก้าวหน้า
 
-บางครั้งความพอดีนั่นแหละ คือวิธีที่ทำให้สิ่งหนึ่งไปได้ไกลที่สุด`
-    },
+บางครั้งความพอดีนั่นแหละ คือวิธีที่ทำให้สิ่งหนึ่งไปได้ไกลที่สุด`,
 
-    {
-      id:15,
-      number:"XV",
-      name:"THE DEVIL",
-      image:"cards/web/15.jpg",
-
-      reading:
 `มีบางอย่างกำลังดึงคุณแรงมากค่ะ
 
 อาจเป็นความอยาก ความกลัว นิสัย ความสัมพันธ์ หรือความคิดบางอย่างที่บอกคุณว่า "ไม่มีทางเลือกอื่นแล้ว"
@@ -2109,16 +2812,8 @@ body::after{
 
 คุณมีอิสระมากกว่าที่เสียงในหัวกำลังบอกค่ะ
 
-บางครั้งการเห็นโซ่ของตัวเองชัด ๆ คือจุดเริ่มต้นของการปลดมัน`
-    },
+บางครั้งการเห็นโซ่ของตัวเองชัด ๆ คือจุดเริ่มต้นของการปลดมัน`,
 
-    {
-      id:16,
-      number:"XVI",
-      name:"THE TOWER",
-      image:"cards/web/16.jpg",
-
-      reading:
 `มีบางอย่างกำลังจะไม่เหมือนเดิมค่ะ
 
 ข่าวบางอย่างอาจมาเร็ว ความจริงบางอย่างอาจถูกเปิดเผย หรือแผนที่คุณคิดว่าชัวร์อาจต้องเปลี่ยน
@@ -2131,16 +2826,8 @@ body::after{
 
 ถ้าช่วงนี้มีบางอย่างเปลี่ยนแบบกะทันหัน อย่าเพิ่งรีบตัดสินว่ามันคือความเสียหายทั้งหมด
 
-บางการพัง คือการเปิดพื้นที่ให้คุณสร้างสิ่งที่ตรงกับความจริงมากกว่าเดิมค่ะ`
-    },
+บางการพัง คือการเปิดพื้นที่ให้คุณสร้างสิ่งที่ตรงกับความจริงมากกว่าเดิมค่ะ`,
 
-    {
-      id:17,
-      number:"XVII",
-      name:"THE STAR",
-      image:"cards/web/17.jpg",
-
-      reading:
 `หลังจากช่วงเวลาที่หนัก ไพ่ใบนี้บอกว่ามีบางอย่างกำลังกลับมามีแสงค่ะ
 
 สิ่งที่เคยทำให้คุณเหนื่อยอาจเริ่มเบาลง ความสัมพันธ์บางอย่างอาจกลับมามีพื้นที่ของความจริงใจ งานหรือความฝันที่เคยดูไกลอาจเริ่มเห็นทาง และโอกาสบางอย่างอาจค่อย ๆ กลับมา
@@ -2156,16 +2843,8 @@ body::after{
 
 บางครั้งมันคือวันที่คุณตื่นขึ้นมาแล้วรู้สึกว่า "ฉันไม่ต้องกลัวเรื่องนี้เท่าเดิมแล้ว"
 
-แค่นั้นก็ถือเป็นการเปลี่ยนแปลงที่สำคัญมากแล้ว`
-    },
+แค่นั้นก็ถือเป็นการเปลี่ยนแปลงที่สำคัญมากแล้ว`,
 
-    {
-      id:18,
-      number:"XVIII",
-      name:"THE MOON",
-      image:"cards/web/18.jpg",
-
-      reading:
 `ตอนนี้คุณอาจกำลังเห็นเพียงบางส่วนของเรื่องทั้งหมดค่ะ
 
 ความรู้สึกที่เกิดขึ้นอาจจริง แต่ความหมายที่คุณตีความจากมันอาจยังไม่ใช่ความจริงทั้งหมด
@@ -2182,16 +2861,8 @@ body::after{
 
 แล้วรอให้ความจริงมีโอกาสเดินเข้ามา
 
-บางสิ่งที่ดูน่ากลัวในตอนกลางคืน อาจไม่ได้เหมือนเดิมเมื่อแสงสว่างมาถึง`
-    },
+บางสิ่งที่ดูน่ากลัวในตอนกลางคืน อาจไม่ได้เหมือนเดิมเมื่อแสงสว่างมาถึง`,
 
-    {
-      id:19,
-      number:"XIX",
-      name:"THE SUN",
-      image:"cards/web/19.jpg",
-
-      reading:
 `สิ่งที่เคยมืดกำลังมีโอกาสถูกเปิดให้เห็นค่ะ
 
 ไพ่ใบนี้นำพลังของความชัดเจน ข่าว การได้รับการยอมรับ และการกลับมามองเห็นสิ่งหนึ่งอย่างตรงไปตรงมา
@@ -2206,16 +2877,8 @@ body::after{
 
 อย่ารีบกลับไปใช้ชีวิตแบบเดิมเพียงเพราะตอนนี้ทุกอย่างเริ่มสว่าง
 
-รักษาสิ่งที่กำลังดีไว้ แล้วให้มันเติบโตต่อไป`
-    },
+รักษาสิ่งที่กำลังดีไว้ แล้วให้มันเติบโตต่อไป`,
 
-    {
-      id:20,
-      number:"XX",
-      name:"JUDGEMENT",
-      image:"cards/web/20.jpg",
-
-      reading:
 `มีบางอย่างจากอดีตหรือสิ่งที่ยังค้างอยู่กำลังกลับมาให้คุณจัดการค่ะ
 
 คนหนึ่งอาจกลับมาติดต่อ
@@ -2232,16 +2895,8 @@ body::after{
 
 บางอย่างอาจกลับมาเพื่อให้คุณปิดมันอย่างสมบูรณ์
 
-คุณไม่จำเป็นต้องกลับไปเป็นคนเดิม เพียงเพราะเรื่องเดิมกลับมาค่ะ`
-    },
+คุณไม่จำเป็นต้องกลับไปเป็นคนเดิม เพียงเพราะเรื่องเดิมกลับมาค่ะ`,
 
-    {
-      id:21,
-      number:"XXI",
-      name:"THE WORLD",
-      image:"cards/web/21.jpg",
-
-      reading:
 `สิ่งหนึ่งกำลังเดินทางมาถึงจุดที่มันควรจะเป็นค่ะ
 
 ไพ่ใบนี้มีพลังของการปิดวงจร การทำสิ่งหนึ่งให้ครบ และการเดินทางไปยังบทถัดไป
@@ -2250,282 +2905,120 @@ body::after{
 เงินอาจมาจากสิ่งที่สะสมมานาน
 หรือสถานการณ์หนึ่งอาจเดินทางมาถึงจุดที่ต้องนิยามใหม่
 
-ยังมีพลังของระยะทาง ต่างประเทศ การเดินทาง และการขยายโลกของตัวเองอยู่ด้วย
+ยังมีพลังของระยะทาง ต่างประเทศ การเดินทาง และการขยายโลกของตัวเอง
 
 สิ่งที่สำคัญคือ อย่าพยายามลากบทที่จบแล้วให้ยาวออกไปเพียงเพราะคุณคุ้นเคยกับมัน
 
 บทหนึ่งจบลงไม่ได้หมายความว่าคุณเสียอะไรเสมอไป
 
 บางครั้งมันจบเพราะคุณพร้อมสำหรับโลกที่ใหญ่กว่าเดิมแล้วค่ะ`
-    }
 
-  ];
-
-
-  /* =======================================================
-     SCREEN CONTROL
-  ======================================================= */
-
-  function showScreen(target){
-
-    [landing, questionScreen, readingScreen]
-      .forEach(screen => {
-        screen.classList.remove("active");
-      });
-
-    target.classList.add("active");
-
-    currentScreen =
-      target === landing
-        ? "landing"
-        : target === questionScreen
-          ? "question"
-          : "reading";
-
-  }
+];
 
 
-  /* =======================================================
-     AUDIO
-  ======================================================= */
+const CARD_NAMES = [
 
-  function createAudio(){
+  "THE FOOL",
+  "THE MAGICIAN",
+  "THE HIGH PRIESTESS",
+  "THE EMPRESS",
+  "THE EMPEROR",
+  "THE HIEROPHANT",
+  "THE LOVERS",
+  "THE CHARIOT",
+  "STRENGTH",
+  "THE HERMIT",
+  "WHEEL OF FORTUNE",
+  "JUSTICE",
+  "THE HANGED MAN",
+  "DEATH",
+  "TEMPERANCE",
+  "THE DEVIL",
+  "THE TOWER",
+  "THE STAR",
+  "THE MOON",
+  "THE SUN",
+  "JUDGEMENT",
+  "THE WORLD"
 
-    if(audioContext) return;
-
-    try{
-
-      audioContext =
-        new (
-          window.AudioContext ||
-          window.webkitAudioContext
-        )();
-
-      masterGain =
-        audioContext.createGain();
-
-      masterGain.gain.value =
-        soundEnabled ? 0.055 : 0;
-
-      masterGain.connect(
-        audioContext.destination
-      );
-
-      const osc1 =
-        audioContext.createOscillator();
-
-      const gain1 =
-        audioContext.createGain();
-
-      osc1.type = "sine";
-      osc1.frequency.value = 55;
-
-      gain1.gain.value = 0.32;
-
-      osc1.connect(gain1);
-      gain1.connect(masterGain);
-
-      osc1.start();
-
-      const osc2 =
-        audioContext.createOscillator();
-
-      const gain2 =
-        audioContext.createGain();
-
-      osc2.type = "sine";
-      osc2.frequency.value = 82.4;
-
-      gain2.gain.value = 0.055;
-
-      osc2.connect(gain2);
-      gain2.connect(masterGain);
-
-      osc2.start();
-
-      ambienceStarted = true;
-
-    }catch(error){
-
-      console.warn(
-        "Audio unavailable:",
-        error
-      );
-
-    }
-
-  }
+];
 
 
-  function resumeAudio(){
-
-    if(!audioContext) return;
-
-    if(
-      audioContext.state === "suspended"
-    ){
-
-      audioContext.resume()
-        .catch(() => {});
-
-    }
-
-  }
+const CARDS =
+  CARD_NAMES.map(
+    (
+      name,
+      index
+    ) => ({
+      id:index,
+      name:name,
+      reading:READINGS[index]
+    })
+  );
 
 
-  function playTone(
-    frequency = 440,
-    duration = .45,
-    volume = .05
-  ){
+/* =========================================================
+   SCREEN CONTROL
+========================================================= */
 
-    if(
-      !soundEnabled ||
-      !audioContext ||
-      !masterGain
-    ) return;
+function showScreen(
+  screen
+){
 
-    try{
-
-      const osc =
-        audioContext.createOscillator();
-
-      const gain =
-        audioContext.createGain();
-
-      osc.type = "sine";
-
-      osc.frequency.setValueAtTime(
-        frequency,
-        audioContext.currentTime
-      );
-
-      gain.gain.setValueAtTime(
-        0,
-        audioContext.currentTime
-      );
-
-      gain.gain.linearRampToValueAtTime(
-        volume,
-        audioContext.currentTime + .04
-      );
-
-      gain.gain.exponentialRampToValueAtTime(
-        .001,
-        audioContext.currentTime + duration
-      );
-
-      osc.connect(gain);
-      gain.connect(masterGain);
-
-      osc.start();
-
-      osc.stop(
-        audioContext.currentTime + duration + .03
-      );
-
-    }catch(error){}
-
-  }
+  [
+    landing,
+    questionScreen,
+    readingScreen,
+    statsScreen
+  ].forEach(
+    item =>
+      item.classList.remove(
+        "active"
+      )
+  );
 
 
-  soundToggle.addEventListener(
-    "click",
+  screen.classList.add(
+    "active"
+  );
+
+
+  currentScreen =
+    screen.id;
+
+}
+
+
+/* =========================================================
+   UTILITY
+========================================================= */
+
+function wait(
+  ms
+){
+
+  return new Promise(
+    resolve =>
+      setTimeout(
+        resolve,
+        ms
+      )
+  );
+
+}
+
+
+function showDialogue(
+  text
+){
+
+  dialogueLine.classList.remove(
+    "show"
+  );
+
+
+  setTimeout(
     () => {
-
-      soundEnabled =
-        !soundEnabled;
-
-      soundIcon.textContent =
-        soundEnabled ? "◒" : "◌";
-
-      if(
-        !audioContext &&
-        soundEnabled
-      ){
-
-        createAudio();
-
-      }
-
-      if(
-        audioContext &&
-        masterGain
-      ){
-
-        masterGain.gain.setTargetAtTime(
-          soundEnabled ? .055 : 0,
-          audioContext.currentTime,
-          .08
-        );
-
-      }
-
-    }
-  );
-
-
-  /* =======================================================
-     ENTER
-  ======================================================= */
-
-  async function enterStillwater(){
-
-    if(
-      currentScreen !== "landing"
-    ) return;
-
-    createAudio();
-    resumeAudio();
-
-    playTone(220,.8,.035);
-
-    trackEvent(
-      "stillwater_enter"
-    );
-
-    portal.classList.add("active");
-
-    setTimeout(() => {
-
-      portal.classList.remove("active");
-
-      showScreen(
-        questionScreen
-      );
-
-      setTimeout(() => {
-
-        veraFigure.classList.add(
-          "visible"
-        );
-
-        playDialogue();
-
-      },500);
-
-    },850);
-
-  }
-
-
-  enterBtn.addEventListener(
-    "click",
-    enterStillwater
-  );
-
-
-  /* =======================================================
-     VERA DIALOGUE
-  ======================================================= */
-
-  function showDialogue(text){
-
-    dialogueLine.classList.remove(
-      "show"
-    );
-
-    setTimeout(() => {
 
       dialogueLine.textContent =
         text;
@@ -2534,923 +3027,1579 @@ body::after{
         "show"
       );
 
-    },250);
-
-  }
-
-
-  function playDialogue(){
-
-    showDialogue(
-      "มาถึงแล้วนะคะ"
-    );
-
-    setTimeout(() => {
-
-      showDialogue(
-        "ถ้าคุณมีคำถามหนึ่งข้อ ลองส่งมันมาให้พี่เวรา"
-      );
-
-    },2400);
-
-    setTimeout(() => {
-
-      questionForm.classList.add(
-        "visible"
-      );
-
-      questionInput.focus();
-
-    },4700);
-
-  }
-
-
-  /* =======================================================
-     SUBMIT QUESTION
-  ======================================================= */
-
-  questionForm.addEventListener(
-    "submit",
-    async event => {
-
-      event.preventDefault();
-
-      if(
-        questionSequenceRunning
-      ) return;
-
-      const question =
-        questionInput.value.trim();
-
-      if(!question){
-
-        questionInput.focus();
-
-        return;
-
-      }
-
-      if(
-        question.length < 3
-      ){
-
-        questionInput.focus();
-
-        return;
-
-      }
-
-      questionSequenceRunning =
-        true;
-
-      lastQuestion =
-        question;
-
-      questionInput.blur();
-
-      questionSubmit.disabled =
-        true;
-
-      questionInput.disabled =
-        true;
-
-      trackEvent(
-        "free_question_submitted",
-        {
-          question_length:
-            question.length
-        }
-      );
-
-      await beginReadingSequence();
-
-    }
+    },
+    250
   );
 
+}
 
-  /* =======================================================
-     READING SEQUENCE
-  ======================================================= */
 
-  async function beginReadingSequence(){
+/* =========================================================
+   AUDIO
+========================================================= */
 
-    showDialogue(
-      "พี่เวราจะลองขอคำตอบจากจักรวาลให้คุณนะคะ…"
+function createAudio(){
+
+  if(
+    audioContext
+  ){
+    return;
+  }
+
+
+  try{
+
+    audioContext =
+      new (
+        window.AudioContext ||
+        window.webkitAudioContext
+      )();
+
+
+    masterGain =
+      audioContext.createGain();
+
+
+    masterGain.gain.value =
+      soundEnabled
+        ? .055
+        : 0;
+
+
+    masterGain.connect(
+      audioContext.destination
     );
 
-    questionLight.classList.remove(
-      "travel"
+
+    const oscillator1 =
+      audioContext.createOscillator();
+
+
+    const gain1 =
+      audioContext.createGain();
+
+
+    oscillator1.type =
+      "sine";
+
+
+    oscillator1.frequency.value =
+      55;
+
+
+    gain1.gain.value =
+      .32;
+
+
+    oscillator1.connect(
+      gain1
     );
 
-    void questionLight.offsetWidth;
 
-    questionLight.classList.add(
-      "travel"
+    gain1.connect(
+      masterGain
     );
 
-    playTone(330,.7,.04);
 
-    await wait(1750);
+    oscillator1.start();
+
+
+    const oscillator2 =
+      audioContext.createOscillator();
+
+
+    const gain2 =
+      audioContext.createGain();
+
+
+    oscillator2.type =
+      "sine";
+
+
+    oscillator2.frequency.value =
+      82.4;
+
+
+    gain2.gain.value =
+      .055;
+
+
+    oscillator2.connect(
+      gain2
+    );
+
+
+    gain2.connect(
+      masterGain
+    );
+
+
+    oscillator2.start();
+
+  }catch(error){
+
+    console.warn(
+      "Audio unavailable",
+      error
+    );
+
+  }
+
+}
+
+
+function resumeAudio(){
+
+  if(
+    audioContext &&
+    audioContext.state ===
+      "suspended"
+  ){
+
+    audioContext
+      .resume()
+      .catch(
+        () => {}
+      );
+
+  }
+
+}
+
+
+function playTone(
+  frequency = 440,
+  duration = .45,
+  volume = .05
+){
+
+  if(
+    !soundEnabled ||
+    !audioContext ||
+    !masterGain
+  ){
+
+    return;
+
+  }
+
+
+  try{
+
+    const oscillator =
+      audioContext.createOscillator();
+
+
+    const gain =
+      audioContext.createGain();
+
+
+    oscillator.type =
+      "sine";
+
+
+    oscillator.frequency.setValueAtTime(
+      frequency,
+      audioContext.currentTime
+    );
+
+
+    gain.gain.setValueAtTime(
+      0,
+      audioContext.currentTime
+    );
+
+
+    gain.gain.linearRampToValueAtTime(
+      volume,
+      audioContext.currentTime + .04
+    );
+
+
+    gain.gain.exponentialRampToValueAtTime(
+      .001,
+      audioContext.currentTime +
+        duration
+    );
+
+
+    oscillator.connect(
+      gain
+    );
+
+
+    gain.connect(
+      masterGain
+    );
+
+
+    oscillator.start();
+
+
+    oscillator.stop(
+      audioContext.currentTime +
+      duration +
+      .03
+    );
+
+  }catch(error){}
+
+}
+
+
+soundToggle.addEventListener(
+  "click",
+  () => {
+
+    soundEnabled =
+      !soundEnabled;
+
+
+    soundIcon.textContent =
+      soundEnabled
+        ? "◒"
+        : "◌";
+
+
+    if(
+      soundEnabled
+    ){
+
+      createAudio();
+
+      resumeAudio();
+
+    }
+
+
+    if(
+      audioContext &&
+      masterGain
+    ){
+
+      masterGain.gain.setTargetAtTime(
+        soundEnabled
+          ? .055
+          : 0,
+
+        audioContext.currentTime,
+
+        .08
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   ENTER
+========================================================= */
+
+enterBtn.addEventListener(
+  "click",
+  async () => {
+
+    createAudio();
+
+    resumeAudio();
+
+
+    playTone(
+      220,
+      .8,
+      .035
+    );
+
+
+    trackEvent(
+      "stillwater_enter"
+    );
+
 
     portal.classList.add(
       "active"
     );
 
-    playTone(110,1.1,.035);
 
-    await wait(900);
+    await wait(
+      850
+    );
+
 
     portal.classList.remove(
       "active"
     );
 
+
+    showScreen(
+      questionScreen
+    );
+
+
+    await wait(
+      500
+    );
+
+
+    veraFigure.classList.add(
+      "visible"
+    );
+
+
+    showDialogue(
+      "มาถึงแล้วนะคะ"
+    );
+
+
+    await wait(
+      2400
+    );
+
+
+    showDialogue(
+      "ถ้าคุณมีคำถามหนึ่งข้อ ลองส่งมันมาให้พี่เวรา"
+    );
+
+
+    await wait(
+      2300
+    );
+
+
+    questionForm.classList.add(
+      "visible"
+    );
+
+
+    questionInput.focus();
+
+  }
+);
+
+
+/* =========================================================
+   QUESTION SUBMIT
+========================================================= */
+
+questionForm.addEventListener(
+  "submit",
+  async event => {
+
+    event.preventDefault();
+
+
+    if(
+      questionSequenceRunning
+    ){
+
+      return;
+
+    }
+
+
+    const question =
+      questionInput.value.trim();
+
+
+    if(
+      question.length < 3
+    ){
+
+      questionInput.focus();
+
+      return;
+
+    }
+
+
+    questionSequenceRunning =
+      true;
+
+
+    lastQuestion =
+      question;
+
+
+    questionSubmit.disabled =
+      true;
+
+
+    questionInput.disabled =
+      true;
+
+
+    trackEvent(
+      "free_question_submitted",
+      {
+        question_length:
+          question.length
+      }
+    );
+
+
+    showDialogue(
+      "พี่เวราจะลองขอคำตอบจากจักรวาลให้คุณนะคะ…"
+    );
+
+
+    questionLight.classList.remove(
+      "travel"
+    );
+
+
+    void questionLight.offsetWidth;
+
+
+    questionLight.classList.add(
+      "travel"
+    );
+
+
+    playTone(
+      330,
+      .7,
+      .04
+    );
+
+
+    await wait(
+      1750
+    );
+
+
+    portal.classList.add(
+      "active"
+    );
+
+
+    playTone(
+      110,
+      1.1,
+      .035
+    );
+
+
+    await wait(
+      900
+    );
+
+
+    portal.classList.remove(
+      "active"
+    );
+
+
     showScreen(
       readingScreen
     );
 
-    await wait(500);
+
+    await wait(
+      500
+    );
+
 
     revealCard();
 
   }
+);
 
 
-  /* =======================================================
-     CARD REVEAL
-  ======================================================= */
+/* =========================================================
+   CARD IMAGE
+========================================================= */
 
-  function revealCard(){
 
-    /*
-      ภายในระบบเลือกไพ่จาก Major Arcana 22 ใบ
-      แต่ไม่แสดงกลไกนี้ต่อผู้ใช้
-    */
+/*
+  ลำดับการหาไฟล์:
 
-    currentCard =
-      CARDS[
-        Math.floor(
-          Math.random() *
-          CARDS.length
-        )
-      ];
+  1. cards/web/0.jpg
+  2. cards/web/0.png
+  3. cards/0.jpg
+  4. cards/0.png
+  5. CDN m00.webp
 
-    cardImage.src =
-      currentCard.image;
+  ดังนั้นถ้าปาล์มมีรูปไพ่ของตัวเอง
+  ระบบจะพยายามใช้ของเราเองก่อน
+*/
 
-    cardImage.alt =
-      currentCard.name;
+function setCardImage(
+  card
+){
 
-    cardShell.classList.remove(
-      "revealed"
-    );
+  const candidates = [
 
-    readingContent.classList.remove(
-      "visible"
-    );
+    `cards/web/${card.id}.jpg`,
 
-    deepReading.classList.remove(
-      "visible"
-    );
+    `cards/web/${card.id}.png`,
 
-    secondGate.classList.remove(
-      "visible"
-    );
+    `cards/${card.id}.jpg`,
 
-    readingText.textContent =
-      "";
+    `cards/${card.id}.png`,
 
-    btnDeeper.disabled =
-      false;
+    `${CARD_CDN}m${String(card.id).padStart(2,"0")}.webp`
 
-    btnDeeper.textContent =
-      "✦ เปิดไพ่ใบที่ 2 · 19 บาท";
+  ];
 
-    setTimeout(() => {
+
+  let index = 0;
+
+
+  cardImage.onerror =
+    () => {
+
+      index++;
+
+
+      if(
+        index <
+        candidates.length
+      ){
+
+        cardImage.src =
+          candidates[index];
+
+      }else{
+
+        /*
+          ไม่ให้กรอบรูปแตก
+        */
+
+        cardImage.style.display =
+          "none";
+
+      }
+
+    };
+
+
+  cardImage.style.display =
+    "block";
+
+
+  cardImage.src =
+    candidates[0];
+
+}
+
+
+/* =========================================================
+   REVEAL CARD
+========================================================= */
+
+function revealCard(){
+
+  currentCard =
+    CARDS[
+      Math.floor(
+        Math.random() *
+        CARDS.length
+      )
+    ];
+
+
+  cardShell.classList.remove(
+    "revealed"
+  );
+
+
+  readingContent.classList.remove(
+    "visible"
+  );
+
+
+  deepReading.classList.remove(
+    "visible"
+  );
+
+
+  secondGate.classList.remove(
+    "visible"
+  );
+
+
+  readingText.textContent =
+    "";
+
+
+  btnDeeper.disabled =
+    false;
+
+
+  btnDeeper.textContent =
+    "✦ เปิดไพ่ใบที่ 2 · 19 บาท";
+
+
+  setCardImage(
+    currentCard
+  );
+
+
+  setTimeout(
+    () => {
 
       cardShell.classList.add(
         "revealed"
       );
 
-      playTone(523.25,.8,.055);
 
-    },250);
+      playTone(
+        523.25,
+        .8,
+        .055
+      );
 
-    setTimeout(() => {
+    },
+    250
+  );
+
+
+  setTimeout(
+    () => {
 
       readingText.textContent =
         currentCard.reading;
+
 
       readingContent.classList.add(
         "visible"
       );
 
-    },1450);
+    },
+    1450
+  );
 
-    setTimeout(() => {
+
+  setTimeout(
+    async () => {
 
       deepReading.classList.add(
         "visible"
       );
+
 
       trackEvent(
         "free_reading_completed",
         {
           card_id:
             currentCard.id,
+
           card_name:
             currentCard.name
         }
       );
+
 
       trackEvent(
         "deep_reading_offer_viewed",
         {
           card_id:
             currentCard.id,
+
           card_name:
             currentCard.name
         }
       );
 
-    },2600);
+
+      /*
+        เก็บยอดอ่านไพ่ใบแรกจบแบบออนไลน์
+      */
+
+      await countHit(
+        "free-reading-completed"
+      );
+
+    },
+    2600
+  );
+
+}
+
+
+/* =========================================================
+   SECOND CARD
+========================================================= */
+
+btnDeeper.addEventListener(
+  "click",
+  async () => {
+
+    if(
+      !currentCard
+    ){
+
+      return;
+
+    }
+
+
+    /*
+      ป้องกันการกดซ้ำ
+    */
+
+    btnDeeper.disabled =
+      true;
+
+
+    /*
+      เปลี่ยนสถานะปุ่ม
+    */
+
+    btnDeeper.textContent =
+      "รับคำขอแล้ว";
+
+
+    /*
+      แสดง coming soon
+    */
+
+    secondGate.classList.add(
+      "visible"
+    );
+
+
+    playTone(
+      659.25,
+      .65,
+      .045
+    );
+
+
+    /*
+      Local + GA/GTM
+    */
+
+    trackEvent(
+      "deep_reading_interest",
+      {
+        card_id:
+          currentCard.id,
+
+        card_name:
+          currentCard.name,
+
+        price_thb:
+          19
+      }
+    );
+
+
+    /*
+      Online counter
+
+      นับ 1 ครั้งต่อการกด
+    */
+
+    const result =
+      await countHit(
+        "deep-reading-clicks"
+      );
+
+
+    /*
+      ไม่แสดงยอดให้ลูกค้าเห็น
+      เราเอาไว้ดูใน Stats เท่านั้น
+    */
+
+    if(
+      result
+    ){
+
+      console.log(
+        "Stillwater deep reading clicks:",
+        result.value
+      );
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+async function loadStats(){
+
+  statDeep.textContent =
+    "…";
+
+  statComplete.textContent =
+    "…";
+
+  statRate.textContent =
+    "…";
+
+
+  const results =
+    await Promise.all([
+
+      getCount(
+        "deep-reading-clicks"
+      ),
+
+      getCount(
+        "free-reading-completed"
+      )
+
+    ]);
+
+
+  const deep =
+    results[0];
+
+  const complete =
+    results[1];
+
+
+  statDeep.textContent =
+    deep === null
+      ? "—"
+      : deep;
+
+
+  statComplete.textContent =
+    complete === null
+      ? "—"
+      : complete;
+
+
+  if(
+    deep !== null &&
+    complete !== null &&
+    complete > 0
+  ){
+
+    statRate.textContent =
+      (
+        deep /
+        complete *
+        100
+      ).toFixed(1) +
+      "%";
+
+  }else{
+
+    statRate.textContent =
+      "—";
 
   }
 
 
-  /* =======================================================
-     SECOND CARD
-  ======================================================= */
+  if(
+    deep === null
+  ){
 
-  btnDeeper.addEventListener(
-    "click",
-    () => {
+    statsNote.textContent =
+      "ยังเชื่อมตัวนับออนไลน์ไม่ได้";
 
-      if(!currentCard){
-        return;
-      }
+  }else{
 
-      trackEvent(
-        "deep_reading_interest",
-        {
-          card_id:
-            currentCard.id,
-          card_name:
-            currentCard.name,
-          price_thb:19
-        }
-      );
+    statsNote.textContent =
+      "ข้อมูลจากตัวนับออนไลน์ของ Stillwater";
 
-      playTone(
-        659.25,
-        .65,
-        .045
-      );
+  }
 
-      secondGate.classList.add(
-        "visible"
-      );
+}
 
-      btnDeeper.disabled =
-        true;
 
-      btnDeeper.textContent =
-        "รับคำขอแล้ว";
+statsRefresh.addEventListener(
+  "click",
+  loadStats
+);
 
-      trackEvent(
-        "deep_reading_gate_viewed",
-        {
-          card_id:
-            currentCard.id
-        }
-      );
 
-      setTimeout(() => {
+/* =========================================================
+   COSMOS
+========================================================= */
 
-        secondGate.scrollIntoView({
-          behavior:"smooth",
-          block:"center"
-        });
+const cosmos =
+  document.getElementById(
+    "cosmos"
+  );
 
-      },100);
-
-    }
+const ctx =
+  cosmos.getContext(
+    "2d"
   );
 
 
-  /* =======================================================
-     CANVAS — COSMOS
-  ======================================================= */
+let cw =
+  0;
 
-  const cosmos =
-    document.getElementById(
-      "cosmos"
+let ch =
+  0;
+
+
+let stars =
+  [];
+
+let particles =
+  [];
+
+
+function resizeCosmos(){
+
+  cw =
+    window.innerWidth;
+
+  ch =
+    window.innerHeight;
+
+
+  const dpr =
+    Math.min(
+      window.devicePixelRatio || 1,
+      2
     );
 
-  const ctx =
-    cosmos.getContext("2d");
 
-  let cw = 0;
-  let ch = 0;
+  cosmos.width =
+    cw * dpr;
 
-  let stars = [];
-  let particles = [];
+  cosmos.height =
+    ch * dpr;
 
-  function resizeCosmos(){
 
-    cw =
-      window.innerWidth;
+  cosmos.style.width =
+    cw + "px";
 
-    ch =
-      window.innerHeight;
+  cosmos.style.height =
+    ch + "px";
 
-    const dpr =
-      Math.min(
-        window.devicePixelRatio || 1,
+
+  ctx.setTransform(
+    dpr,
+    0,
+    0,
+    dpr,
+    0,
+    0
+  );
+
+
+  stars = [];
+
+  particles = [];
+
+
+  const starCount =
+    Math.min(
+      180,
+      Math.floor(
+        cw * ch / 6500
+      )
+    );
+
+
+  for(
+    let i = 0;
+    i < starCount;
+    i++
+  ){
+
+    stars.push({
+
+      x:
+        Math.random() * cw,
+
+      y:
+        Math.random() * ch,
+
+      r:
+        Math.random() * 1.2 + .15,
+
+      a:
+        Math.random() * .65 + .1,
+
+      speed:
+        Math.random() * .008 + .002,
+
+      phase:
+        Math.random() *
+        Math.PI *
         2
-      );
 
-    cosmos.width =
-      cw * dpr;
-
-    cosmos.height =
-      ch * dpr;
-
-    cosmos.style.width =
-      cw + "px";
-
-    cosmos.style.height =
-      ch + "px";
-
-    ctx.setTransform(
-      dpr,
-      0,
-      0,
-      dpr,
-      0,
-      0
-    );
-
-    createCosmosObjects();
+    });
 
   }
 
 
-  function createCosmosObjects(){
+  const particleCount =
+    Math.min(
+      55,
+      Math.floor(
+        cw * ch / 20000
+      )
+    );
 
-    stars = [];
-    particles = [];
 
-    const starCount =
-      Math.min(
-        180,
-        Math.floor(
-          (cw * ch) / 6500
-        )
-      );
+  for(
+    let i = 0;
+    i < particleCount;
+    i++
+  ){
 
-    for(
-      let i=0;
-      i<starCount;
-      i++
-    ){
+    particles.push({
 
-      stars.push({
-        x:Math.random()*cw,
-        y:Math.random()*ch,
-        r:Math.random()*1.2+.15,
-        a:Math.random()*.65+.1,
-        speed:Math.random()*.008+.002,
-        phase:Math.random()*Math.PI*2
-      });
+      x:
+        Math.random() * cw,
 
-    }
+      y:
+        Math.random() * ch,
 
-    const particleCount =
-      Math.min(
-        55,
-        Math.floor(
-          (cw * ch) / 20000
-        )
-      );
+      r:
+        Math.random() * 1.8 + .3,
 
-    for(
-      let i=0;
-      i<particleCount;
-      i++
-    ){
+      vx:
+        (Math.random() - .5) *
+        .12,
 
-      particles.push({
-        x:Math.random()*cw,
-        y:Math.random()*ch,
-        r:Math.random()*1.8+.3,
-        vx:(Math.random()-.5)*.12,
-        vy:(Math.random()-.5)*.10,
-        a:Math.random()*.20+.05
-      });
+      vy:
+        (Math.random() - .5) *
+        .10,
 
-    }
+      a:
+        Math.random() * .20 + .05
+
+    });
 
   }
 
+}
 
-  function drawCosmos(time){
 
-    ctx.clearRect(
+function drawCosmos(
+  time
+){
+
+  ctx.clearRect(
+    0,
+    0,
+    cw,
+    ch
+  );
+
+
+  const base =
+    ctx.createRadialGradient(
+      cw * .5,
+      ch * .45,
       0,
-      0,
-      cw,
-      ch
+      cw * .5,
+      ch * .45,
+      Math.max(
+        cw,
+        ch
+      ) * .75
     );
 
-    /* deep space */
 
-    const base =
-      ctx.createRadialGradient(
-        cw*.5,
-        ch*.45,
-        0,
-        cw*.5,
-        ch*.45,
-        Math.max(cw,ch)*.75
-      );
+  base.addColorStop(
+    0,
+    "#15102d"
+  );
 
-    base.addColorStop(
+  base.addColorStop(
+    .35,
+    "#0c0a20"
+  );
+
+  base.addColorStop(
+    1,
+    "#050510"
+  );
+
+
+  ctx.fillStyle =
+    base;
+
+
+  ctx.fillRect(
+    0,
+    0,
+    cw,
+    ch
+  );
+
+
+  const nebula1 =
+    ctx.createRadialGradient(
+      cw * .22,
+      ch * .30,
       0,
-      "#15102d"
+      cw * .22,
+      ch * .30,
+      cw * .45
     );
 
-    base.addColorStop(
-      .35,
-      "#0c0a20"
-    );
 
-    base.addColorStop(
-      1,
-      "#050510"
-    );
+  nebula1.addColorStop(
+    0,
+    "rgba(80,60,150,.13)"
+  );
 
-    ctx.fillStyle =
-      base;
+  nebula1.addColorStop(
+    1,
+    "rgba(20,15,50,0)"
+  );
 
-    ctx.fillRect(
+
+  ctx.fillStyle =
+    nebula1;
+
+
+  ctx.fillRect(
+    0,
+    0,
+    cw,
+    ch
+  );
+
+
+  const nebula2 =
+    ctx.createRadialGradient(
+      cw * .78,
+      ch * .55,
       0,
-      0,
-      cw,
-      ch
+      cw * .78,
+      ch * .55,
+      cw * .50
     );
 
-    /* nebula */
 
-    const nebula1 =
-      ctx.createRadialGradient(
-        cw*.22,
-        ch*.30,
-        0,
-        cw*.22,
-        ch*.30,
-        cw*.45
-      );
+  nebula2.addColorStop(
+    0,
+    "rgba(70,80,160,.10)"
+  );
 
-    nebula1.addColorStop(
-      0,
-      "rgba(80,60,150,.13)"
-    );
+  nebula2.addColorStop(
+    1,
+    "rgba(20,15,50,0)"
+  );
 
-    nebula1.addColorStop(
-      1,
-      "rgba(20,15,50,0)"
-    );
 
-    ctx.fillStyle =
-      nebula1;
+  ctx.fillStyle =
+    nebula2;
 
-    ctx.fillRect(
-      0,
-      0,
-      cw,
-      ch
-    );
 
-    const nebula2 =
-      ctx.createRadialGradient(
-        cw*.78,
-        ch*.55,
-        0,
-        cw*.78,
-        ch*.55,
-        cw*.50
-      );
+  ctx.fillRect(
+    0,
+    0,
+    cw,
+    ch
+  );
 
-    nebula2.addColorStop(
-      0,
-      "rgba(70,80,160,.10)"
-    );
 
-    nebula2.addColorStop(
-      1,
-      "rgba(20,15,50,0)"
-    );
-
-    ctx.fillStyle =
-      nebula2;
-
-    ctx.fillRect(
-      0,
-      0,
-      cw,
-      ch
-    );
-
-    /* stars */
-
-    for(
-      const star of stars
-    ){
+  stars.forEach(
+    star => {
 
       const alpha =
         star.a +
         Math.sin(
-          time * star.speed +
+          time *
+          star.speed +
           star.phase
-        ) * .18;
+        ) *
+        .18;
+
 
       ctx.beginPath();
+
 
       ctx.arc(
         star.x,
         star.y,
         star.r,
         0,
-        Math.PI*2
+        Math.PI * 2
       );
 
+
       ctx.fillStyle =
-        `rgba(220,225,255,${Math.max(.03,alpha)})`;
+        `rgba(
+          220,
+          225,
+          255,
+          ${Math.max(
+            .03,
+            alpha
+          )}
+        )`;
+
 
       ctx.fill();
 
     }
-
-    /* floating particles */
-
-    for(
-      const p of particles
-    ){
-
-      p.x += p.vx;
-      p.y += p.vy;
-
-      if(p.x < -10) p.x = cw+10;
-      if(p.x > cw+10) p.x = -10;
-
-      if(p.y < -10) p.y = ch+10;
-      if(p.y > ch+10) p.y = -10;
-
-      ctx.beginPath();
-
-      ctx.arc(
-        p.x,
-        p.y,
-        p.r,
-        0,
-        Math.PI*2
-      );
-
-      ctx.fillStyle =
-        `rgba(185,200,255,${p.a})`;
-
-      ctx.fill();
-
-    }
-
-    requestAnimationFrame(
-      drawCosmos
-    );
-
-  }
-
-
-  /* =======================================================
-     CANVAS — WATER
-  ======================================================= */
-
-  const water =
-    document.getElementById(
-      "water"
-    );
-
-  const wctx =
-    water.getContext("2d");
-
-  let ww = 0;
-  let wh = 0;
-
-  function resizeWater(){
-
-    ww =
-      window.innerWidth;
-
-    wh =
-      window.innerHeight;
-
-    const dpr =
-      Math.min(
-        window.devicePixelRatio || 1,
-        2
-      );
-
-    water.width =
-      ww * dpr;
-
-    water.height =
-      wh * dpr;
-
-    water.style.width =
-      ww + "px";
-
-    water.style.height =
-      wh + "px";
-
-    wctx.setTransform(
-      dpr,
-      0,
-      0,
-      dpr,
-      0,
-      0
-    );
-
-  }
-
-
-  function drawWater(time){
-
-    wctx.clearRect(
-      0,
-      0,
-      ww,
-      wh
-    );
-
-    const horizon =
-      wh * .70;
-
-    const waterGradient =
-      wctx.createLinearGradient(
-        0,
-        horizon,
-        0,
-        wh
-      );
-
-    waterGradient.addColorStop(
-      0,
-      "rgba(45,45,100,.09)"
-    );
-
-    waterGradient.addColorStop(
-      .35,
-      "rgba(25,30,75,.15)"
-    );
-
-    waterGradient.addColorStop(
-      1,
-      "rgba(4,6,20,.32)"
-    );
-
-    wctx.fillStyle =
-      waterGradient;
-
-    wctx.fillRect(
-      0,
-      horizon,
-      ww,
-      wh-horizon
-    );
-
-    /* horizon glow */
-
-    const glow =
-      wctx.createRadialGradient(
-        ww*.5,
-        horizon,
-        0,
-        ww*.5,
-        horizon,
-        ww*.6
-      );
-
-    glow.addColorStop(
-      0,
-      "rgba(170,185,255,.10)"
-    );
-
-    glow.addColorStop(
-      1,
-      "rgba(120,140,220,0)"
-    );
-
-    wctx.fillStyle =
-      glow;
-
-    wctx.fillRect(
-      0,
-      horizon-100,
-      ww,
-      200
-    );
-
-    /* horizontal ripples */
-
-    for(
-      let i=0;
-      i<22;
-      i++
-    ){
-
-      const y =
-        horizon +
-        i * 11;
-
-      const wave =
-        Math.sin(
-          time*.00055 +
-          i*.55
-        );
-
-      wctx.beginPath();
-
-      wctx.moveTo(
-        0,
-        y
-      );
-
-      for(
-        let x=0;
-        x<=ww;
-        x+=16
-      ){
-
-        const yy =
-          y +
-          Math.sin(
-            x*.018 +
-            time*.0007 +
-            i*.4
-          ) * 1.5 +
-          wave;
-
-        wctx.lineTo(
-          x,
-          yy
-        );
-
-      }
-
-      wctx.strokeStyle =
-        `rgba(180,195,245,${.018 + i*.0012})`;
-
-      wctx.lineWidth =
-        .7;
-
-      wctx.stroke();
-
-    }
-
-    /* reflected stars */
-
-    for(
-      const star of stars
-    ){
-
-      if(
-        star.y < horizon
-      ){
-
-        const distance =
-          horizon -
-          star.y;
-
-        const ry =
-          horizon +
-          distance*.17;
-
-        if(
-          ry < wh
-        ){
-
-          const shimmer =
-            Math.sin(
-              time*.002 +
-              star.x*.02
-            );
-
-          wctx.beginPath();
-
-          wctx.ellipse(
-            star.x,
-            ry,
-            star.r*3.5,
-            .7,
-            0,
-            0,
-            Math.PI*2
-          );
-
-          wctx.fillStyle =
-            `rgba(190,205,255,${Math.max(0,.025 + shimmer*.015)})`;
-
-          wctx.fill();
-
-        }
-
-      }
-
-    }
-
-    requestAnimationFrame(
-      drawWater
-    );
-
-  }
-
-
-  /* =======================================================
-     RESIZE
-  ======================================================= */
-
-  window.addEventListener(
-    "resize",
-    () => {
-
-      resizeCosmos();
-      resizeWater();
-
-    },
-    {passive:true}
   );
 
 
-  resizeCosmos();
-  resizeWater();
+  particles.forEach(
+    particle => {
+
+      particle.x +=
+        particle.vx;
+
+      particle.y +=
+        particle.vy;
+
+
+      if(
+        particle.x < -10
+      ){
+
+        particle.x =
+          cw + 10;
+
+      }
+
+
+      if(
+        particle.x >
+        cw + 10
+      ){
+
+        particle.x =
+          -10;
+
+      }
+
+
+      if(
+        particle.y < -10
+      ){
+
+        particle.y =
+          ch + 10;
+
+      }
+
+
+      if(
+        particle.y >
+        ch + 10
+      ){
+
+        particle.y =
+          -10;
+
+      }
+
+
+      ctx.beginPath();
+
+
+      ctx.arc(
+        particle.x,
+        particle.y,
+        particle.r,
+        0,
+        Math.PI * 2
+      );
+
+
+      ctx.fillStyle =
+        `rgba(
+          185,
+          200,
+          255,
+          ${particle.a}
+        )`;
+
+
+      ctx.fill();
+
+    }
+  );
+
 
   requestAnimationFrame(
     drawCosmos
   );
 
-  requestAnimationFrame(
-    drawWater
+}
+
+
+/* =========================================================
+   WATER
+========================================================= */
+
+const water =
+  document.getElementById(
+    "water"
+  );
+
+const wctx =
+  water.getContext(
+    "2d"
   );
 
 
-  /* =======================================================
-     UTIL
-  ======================================================= */
+let ww =
+  0;
 
-  function wait(ms){
+let wh =
+  0;
 
-    return new Promise(
-      resolve =>
-        setTimeout(
-          resolve,
-          ms
-        )
+
+function resizeWater(){
+
+  ww =
+    window.innerWidth;
+
+  wh =
+    window.innerHeight;
+
+
+  const dpr =
+    Math.min(
+      window.devicePixelRatio || 1,
+      2
     );
+
+
+  water.width =
+    ww * dpr;
+
+  water.height =
+    wh * dpr;
+
+
+  water.style.width =
+    ww + "px";
+
+  water.style.height =
+    wh + "px";
+
+
+  wctx.setTransform(
+    dpr,
+    0,
+    0,
+    dpr,
+    0,
+    0
+  );
+
+}
+
+
+function drawWater(
+  time
+){
+
+  wctx.clearRect(
+    0,
+    0,
+    ww,
+    wh
+  );
+
+
+  const horizon =
+    wh * .70;
+
+
+  const waterGradient =
+    wctx.createLinearGradient(
+      0,
+      horizon,
+      0,
+      wh
+    );
+
+
+  waterGradient.addColorStop(
+    0,
+    "rgba(45,45,100,.09)"
+  );
+
+
+  waterGradient.addColorStop(
+    .35,
+    "rgba(25,30,75,.15)"
+  );
+
+
+  waterGradient.addColorStop(
+    1,
+    "rgba(4,6,20,.32)"
+  );
+
+
+  wctx.fillStyle =
+    waterGradient;
+
+
+  wctx.fillRect(
+    0,
+    horizon,
+    ww,
+    wh - horizon
+  );
+
+
+  const glow =
+    wctx.createRadialGradient(
+      ww * .5,
+      horizon,
+      0,
+      ww * .5,
+      horizon,
+      ww * .6
+    );
+
+
+  glow.addColorStop(
+    0,
+    "rgba(170,185,255,.10)"
+  );
+
+
+  glow.addColorStop(
+    1,
+    "rgba(120,140,220,0)"
+  );
+
+
+  wctx.fillStyle =
+    glow;
+
+
+  wctx.fillRect(
+    0,
+    horizon - 100,
+    ww,
+    200
+  );
+
+
+  for(
+    let i = 0;
+    i < 22;
+    i++
+  ){
+
+    const y =
+      horizon +
+      i * 11;
+
+
+    wctx.beginPath();
+
+
+    wctx.moveTo(
+      0,
+      y
+    );
+
+
+    for(
+      let x = 0;
+      x <= ww;
+      x += 16
+    ){
+
+      const yy =
+        y +
+        Math.sin(
+          x * .018 +
+          time * .0007 +
+          i * .4
+        ) *
+        1.5;
+
+
+      wctx.lineTo(
+        x,
+        yy
+      );
+
+    }
+
+
+    wctx.strokeStyle =
+      `rgba(
+        180,
+        195,
+        245,
+        ${.018 + i * .0012}
+      )`;
+
+
+    wctx.lineWidth =
+      .7;
+
+
+    wctx.stroke();
 
   }
 
 
-  /* =======================================================
-     KEYBOARD
-  ======================================================= */
+  requestAnimationFrame(
+    drawWater
+  );
 
-  document.addEventListener(
-    "keydown",
-    event => {
+}
 
-      if(
-        event.key === "Enter" &&
-        event.shiftKey
-      ){
 
-        event.preventDefault();
+/* =========================================================
+   RESIZE
+========================================================= */
 
-        if(
-          currentScreen === "landing"
-        ){
+window.addEventListener(
+  "resize",
+  () => {
 
-          enterStillwater();
+    resizeCosmos();
 
-        }
+    resizeWater();
 
-      }
+  },
+  {
+    passive:true
+  }
+);
 
-    }
+
+resizeCosmos();
+
+resizeWater();
+
+
+requestAnimationFrame(
+  drawCosmos
+);
+
+
+requestAnimationFrame(
+  drawWater
+);
+
+
+/* =========================================================
+   STATS ROUTE
+========================================================= */
+
+if(
+  DEBUG_STATS
+){
+
+  showScreen(
+    statsScreen
   );
 
 
+  loadStats();
+
+}
+
 })();
+
 </script>
 
 </body>
